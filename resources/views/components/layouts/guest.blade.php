@@ -21,52 +21,53 @@
     <flux:header container class="bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700">
         <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
-        <flux:brand href="#" logo="https://fluxui.dev/img/demo/logo.png" name="Acme Inc."
+        <flux:brand href="#" logo="{{ asset('img/logo.png') }}" name="{{ config('app.name') }}"
             class="max-lg:hidden dark:hidden" />
-        <flux:brand href="#" logo="https://fluxui.dev/img/demo/dark-mode-logo.png" name="Acme Inc."
+        <flux:brand href="#" logo="{{ asset('img/logo.png') }}" name="{{ config('app.name') }}"
             class="max-lg:hidden! hidden dark:flex" />
 
         <flux:navbar class="-mb-px max-lg:hidden">
-            <flux:navbar.item icon="home" href="#" current>Home</flux:navbar.item>
-            <flux:navbar.item icon="inbox" badge="12" href="#">Inbox</flux:navbar.item>
-            <flux:navbar.item icon="document-text" href="#">Documents</flux:navbar.item>
-            <flux:navbar.item icon="calendar" href="#">Calendar</flux:navbar.item>
+            <flux:navbar.item icon="home" href="#" current>Inicio</flux:navbar.item>
+            <flux:navbar.item icon="inbox" badge="12" href="#">Recursos Operativos</flux:navbar.item>
+            <flux:navbar.item icon="document-text" href="#">Centro del Empleado</flux:navbar.item>
+            <flux:navbar.item icon="calendar" href="#">Noticias</flux:navbar.item>
+            <flux:navbar.item icon="calendar" href="#">Espacios de Trabajo</flux:navbar.item>
 
             <flux:separator vertical variant="subtle" class="my-2" />
 
-            <flux:dropdown class="max-lg:hidden">
-                <flux:navbar.item icon:trailing="chevron-down">Favorites</flux:navbar.item>
-
-                <flux:navmenu>
-                    <flux:navmenu.item href="#">Marketing site</flux:navmenu.item>
-                    <flux:navmenu.item href="#">Android app</flux:navmenu.item>
-                    <flux:navmenu.item href="#">Brand guidelines</flux:navmenu.item>
-                </flux:navmenu>
-            </flux:dropdown>
         </flux:navbar>
 
         <flux:spacer />
 
-        <flux:navbar class="me-4">
-            <flux:navbar.item icon="magnifying-glass" href="#" label="Search" />
-            <flux:navbar.item class="max-lg:hidden" icon="cog-6-tooth" href="#" label="Settings" />
-            <flux:navbar.item class="max-lg:hidden" icon="information-circle" href="#" label="Help" />
-        </flux:navbar>
 
-        <flux:dropdown position="top" align="start">
-            <flux:profile avatar="https://fluxui.dev/img/demo/user.png" />
+        @auth
+            <flux:dropdown position="top" align="start">
+                <flux:profile avatar="{{ auth()->user()->avatar_url ?? 'https://fluxui.dev/img/demo/user.png' }}"
+                    name="{{ auth()->user()->name }}" />
 
-            <flux:menu>
-                <flux:menu.radio.group>
-                    <flux:menu.radio checked>Olivia Martin</flux:menu.radio>
-                    <flux:menu.radio>Truly Delta</flux:menu.radio>
-                </flux:menu.radio.group>
+                <flux:menu>
+                    <flux:menu.item icon="user" href="{{ route('profile.view') ?? '#' }}" wire:navigate>
+                        Mi Perfil
+                    </flux:menu.item>
 
-                <flux:menu.separator />
+                    <flux:menu.separator />
 
-                <flux:menu.item icon="arrow-right-start-on-rectangle">Logout</flux:menu.item>
-            </flux:menu>
-        </flux:dropdown>
+                    <!-- SIEMPRE proteger el logout con POST y CSRF (Requisito RS-01) -->
+                    <form method="POST" action="{{ route('logout') }}" class="w-full">
+                        @csrf
+                        <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full">
+                            Cerrar sesión
+                        </flux:menu.item>
+                    </form>
+                </flux:menu>
+            </flux:dropdown>
+        @endauth
+
+        @guest
+            <flux:button href="{{ route('login') }}" variant="primary" icon="arrow-right-end-on-rectangle" wire:navigate>
+                Iniciar sesión
+            </flux:button>
+        @endguest
     </flux:header>
 
     <flux:sidebar sticky collapsible="mobile"
@@ -103,6 +104,8 @@
     <flux:main container>
         {{ $slot }}
     </flux:main>
+
+
 
     @fluxScripts
 </body>
