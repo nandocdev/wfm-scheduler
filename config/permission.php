@@ -172,7 +172,7 @@ return [
 
     'cache' => [
         'expiration_time' => \DateInterval::createFromDateString('24 hours'),
-        'key'             => 'spatie.permission.cache',
-        'store'           => 'redis', // Crítico: No usar 'default' si apunta a file/database
+        'key' => 'spatie.permission.cache',
+        'store' => 'redis', // Crítico: No usar 'default' si apunta a file/database
     ],
 ];
