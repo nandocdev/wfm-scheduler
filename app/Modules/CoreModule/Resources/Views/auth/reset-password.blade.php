@@ -6,41 +6,19 @@
             @csrf
 
             <!-- Token de restablecimiento -->
-            <input type="hidden" name="token" value="{{ $request->route('token') }}">
+            <input type="hidden" name="token" value="{{ request()->route('token') }}">
 
             <!-- Correo electrónico -->
-            <flux:input
-                name="email"
-                :label="__('Correo electrónico')"
-                :value="old('email', $request->email)"
-                type="email"
-                required
-                autofocus
-                autocomplete="username"
-                placeholder="correo@ejemplo.com"
-            />
+            <flux:input name="email" :label="__('Correo electrónico')" :value="old('email', request()->email)"
+                type="email" required autofocus autocomplete="username" placeholder="correo@ejemplo.com" />
 
             <!-- Contraseña -->
-            <flux:input
-                name="password"
-                :label="__('Nueva contraseña')"
-                type="password"
-                required
-                autocomplete="new-password"
-                :placeholder="__('Nueva contraseña')"
-                viewable
-            />
+            <flux:input name="password" :label="__('Nueva contraseña')" type="password" required
+                autocomplete="new-password" :placeholder="__('Nueva contraseña')" viewable />
 
             <!-- Confirmar contraseña -->
-            <flux:input
-                name="password_confirmation"
-                :label="__('Confirmar nueva contraseña')"
-                type="password"
-                required
-                autocomplete="new-password"
-                :placeholder="__('Confirmar nueva contraseña')"
-                viewable
-            />
+            <flux:input name="password_confirmation" :label="__('Confirmar nueva contraseña')" type="password" required
+                autocomplete="new-password" :placeholder="__('Confirmar nueva contraseña')" viewable />
 
             <div class="flex items-center justify-end">
                 <flux:button type="submit" variant="primary" class="w-full">

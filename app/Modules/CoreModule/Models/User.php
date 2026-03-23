@@ -2,6 +2,7 @@
 
 namespace App\Modules\CoreModule\Models;
 
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -13,23 +14,26 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 
 #[Fillable([
-    'name', 
-    'email', 
-    'password', 
-    'is_active', 
-    'force_password_change', 
+    'name',
+    'email',
+    'password',
+    'is_active',
+    'force_password_change',
     'last_login_at'
 ])]
 #[Hidden([
-    'password', 
-    'two_factor_secret', 
-    'two_factor_recovery_codes', 
+    'password',
+    'two_factor_secret',
+    'two_factor_recovery_codes',
     'remember_token'
 ])]
-class User extends Authenticatable
-{
+class User extends Authenticatable {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, TwoFactorAuthenticatable, HasRoles, SoftDeletes;
+
+    protected static function newFactory(): UserFactory {
+        return UserFactory::new();
+    }
 
     /**
      * El modelo User del Monolito Modular Antigravity.
@@ -41,8 +45,7 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
+    protected function casts(): array {
         return [
             'email_verified_at' => 'datetime',
             'last_login_at' => 'datetime',
@@ -55,12 +58,11 @@ class User extends Authenticatable
     /**
      * Get the user's initials
      */
-    public function initials(): string
-    {
+    public function initials(): string {
         return Str::of($this->name)
             ->explode(' ')
             ->take(2)
-            ->map(fn ($word) => Str::substr($word, 0, 1))
+            ->map(fn($word) => Str::substr($word, 0, 1))
             ->implode('');
     }
 }
