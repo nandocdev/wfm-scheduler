@@ -13,13 +13,14 @@ new class extends Component {
     /**
      * Delete the currently authenticated user.
      */
-    public function deleteUser(Logout $logout): void
-    {
+    public function deleteUser(Logout $logout): void {
         $this->validate([
             'password' => $this->currentPasswordRules(),
         ]);
 
-        tap(Auth::user(), $logout(...))->delete();
+        $user = Auth::user();
+
+        tap($user, $logout(...))->forceDelete();
 
         $this->redirect('/', navigate: true);
     }
