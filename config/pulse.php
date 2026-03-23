@@ -61,6 +61,7 @@ return [
 
         'trim' => [
             'keep' => '7 days',
+            'lottery' => [1, 1000],
         ],
 
         'redis' => [
@@ -103,17 +104,6 @@ return [
             'sample_rate' => 1,
             'ignore' => [
                 // '/^App\\Jobs\\IgnoredJob$/',
-            ],
-        ],
-
-        Recorders\Requests::class => [
-            'enabled' => true,
-            'sample_rate' => 1,
-            'threshold' => 1000,
-            'ignore' => [
-                '#^/pulse$#',
-                '#^/horizon$#',
-                '#^/telescope$#',
             ],
         ],
 
