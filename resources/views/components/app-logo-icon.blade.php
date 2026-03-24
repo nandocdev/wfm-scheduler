@@ -1,8 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 42" {{ $attributes }}>
-    <path 
-        fill="currentColor" 
-        fill-rule="evenodd" 
-        clip-rule="evenodd"
-        d="M17.2 5.633 8.6.855 0 5.633v26.51l16.2 9 16.2-9v-8.442l7.6-4.223V9.856l-8.6-4.777-8.6 4.777V18.3l-5.6 3.111V5.633ZM38 18.301l-5.6 3.11v-6.157l5.6-3.11V18.3Zm-1.06-7.856-5.54 3.078-5.54-3.079 5.54-3.078 5.54 3.079ZM24.8 18.3v-6.157l5.6 3.111v6.158L24.8 18.3Zm-1 1.732 5.54 3.078-13.14 7.302-5.54-3.078 13.14-7.3v-.002Zm-16.2 7.89 7.6 4.222V38.3L2 30.966V7.92l5.6 3.111v16.892ZM8.6 9.3 3.06 6.222 8.6 3.143l5.54 3.08L8.6 9.3Zm21.8 15.51-13.2 7.334V38.3l13.2-7.334v-6.156ZM9.6 11.034l5.6-3.11v14.6l-5.6 3.11v-14.6Z"
-    />
+<svg {{ $attributes }} viewBox="0 0 64 64" fill="none" version="1.1" id="svg2" sodipodi:docname="favicon.svg"
+    inkscape:version="1.4.3 (0d15f75042, 2025-12-25)" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg"
+    xmlns:svg="http://www.w3.org/2000/svg">
+    <defs id="defs2" />
+    <sodipodi:namedview id="namedview2" pagecolor="#ffffff" bordercolor="#000000" borderopacity="0.25"
+        inkscape:showpageshadow="2" inkscape:pageopacity="0.0" inkscape:pagecheckerboard="0"
+        inkscape:deskcolor="#d1d1d1" inkscape:zoom="12.953125" inkscape:cx="32" inkscape:cy="32"
+        inkscape:window-width="1904" inkscape:window-height="1040" inkscape:window-x="6" inkscape:window-y="30"
+        inkscape:window-maximized="1" inkscape:current-layer="svg2" />
+    <!-- Persona: cabeza -->
+    <circle cx="20.638969" cy="19.318384" r="8.7288561" fill="#e6f1fb" id="circle1" style="stroke-width:1.45481" />
+    <!-- Persona: cuerpo / silueta -->
+    <path
+        d="m 3.1812577,45.504953 c 0,-9.64102 7.8166903,-17.457711 17.4577113,-17.457711 9.64102,0 17.45771,7.816691 17.45771,17.457711"
+        stroke="#e6f1fb" stroke-width="3.00855" stroke-linecap="round" id="path1" />
+    <!-- Reloj: círculo -->
+    <circle cx="46.825539" cy="39.685715" r="14.548093" stroke="#e6f1fb" stroke-width="3.00855" id="circle2" />
+    <!-- Reloj: manecillas -->
+    <path d="m 46.825536,32.411671 v 8.00145 l 4.364427,2.909619" stroke="#e6f1fb" stroke-width="2.40684"
+        stroke-linecap="round" stroke-linejoin="round" id="path2" />
 </svg>

@@ -54,6 +54,7 @@
   * [ ] CreateDepartmentAction
   * [ ] CreateTeamAction
 * [ ] Livewire:
+
   * [ ] ListDepartments
   * [ ] CreateDepartment
 
