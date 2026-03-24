@@ -2,6 +2,7 @@
 
 namespace App\Modules\CoreModule\Models;
 
+use App\Modules\CoreModule\Concerns\Auditable;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -29,7 +30,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 ])]
 class User extends Authenticatable {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, TwoFactorAuthenticatable, HasRoles, SoftDeletes;
+    use HasFactory, Notifiable, TwoFactorAuthenticatable, HasRoles, SoftDeletes, Auditable;
 
     protected static function newFactory(): UserFactory {
         return UserFactory::new();

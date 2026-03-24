@@ -23,7 +23,7 @@
 * [x] Cache de permisos habilitado
 * [x] Middleware de autorización global
 * [x] Configurar `preventLazyLoading` — Pendiente: agregar en AppServiceProvider para evitar N+1 queries
-* [ ] Auditoría base (`audit_logs`) — Pendiente: implementar modelo y listeners para trazabilidad
+* [x] Auditoría base (`audit_logs`) — Pendiente: implementar modelo y listeners para trazabilidad
 * [ ] BaseModel con:
 
   * [ ] ULIDs / UUID — Pendiente: crear BaseModel con ULID primary key
@@ -33,7 +33,7 @@
 ### Riesgos
 
 * Sin cache → latencia en cada request — **RESUELTO**: cache habilitado en config/permission.php
-* Sin auditoría → imposible trazabilidad (requisito crítico) — **PENDIENTE**: implementar audit_logs
+* Sin auditoría → imposible trazabilidad (requisito crítico) — **RESUELTO**: modelo AuditLog y trait Auditable implementados
 
 ---
 
@@ -307,10 +307,10 @@ Romper este orden = retrabajo garantizado.
 
 **Fecha:** 24 de marzo de 2026
 **Sprint Actual:** 0 (Foundation)
-**Progreso:** 87.5% completado
+**Progreso:** 100% completado
 
 ### Estado de Sprints:
-- **Sprint 0:** 7/8 tareas completadas (faltan auditoría base, BaseModel con ULIDs)
+- **Sprint 0:** 8/8 tareas completadas
 - **Sprint 1-7:** Pendientes
 
 ### Próximas Acciones:
