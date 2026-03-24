@@ -54,19 +54,19 @@
 
                 <!-- Tabla -->
                 <div class="overflow-x-auto">
-                    <flux:table>
-                        <flux:table.header>
-                            <flux:table.header-cell>Nombre</flux:table.header-cell>
-                            <flux:table.header-cell>Departamento</flux:table.header-cell>
-                            <flux:table.header-cell>Dirección</flux:table.header-cell>
-                            <flux:table.header-cell>Estado</flux:table.header-cell>
-                            <flux:table.header-cell>Empleados</flux:table.header-cell>
-                            <flux:table.header-cell>Acciones</flux:table.header-cell>
-                        </flux:table.header>
+                    <flux:table :paginate="$positions">
+                        <flux:table.columns>
+                            <flux:table.column>Nombre</flux:table.column>
+                            <flux:table.column>Departamento</flux:table.column>
+                            <flux:table.column>Dirección</flux:table.column>
+                            <flux:table.column>Estado</flux:table.column>
+                            <flux:table.column>Empleados</flux:table.column>
+                            <flux:table.column>Acciones</flux:table.column>
+                        </flux:table.columns>
 
-                        <flux:table.body>
+                        <flux:table.rows>
                             @forelse($positions as $position)
-                                <flux:table.row>
+                                <flux:table.row :key="$position->id">
                                     <flux:table.cell>
                                         <div class="font-medium text-gray-900">{{ $position->name }}</div>
                                     </flux:table.cell>
@@ -112,7 +112,7 @@
                                     </flux:table.cell>
                                 </flux:table.row>
                             @endforelse
-                        </flux:table.body>
+                        </flux:table.rows>
                     </flux:table>
                 </div>
 

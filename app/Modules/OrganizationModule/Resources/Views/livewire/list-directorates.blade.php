@@ -43,18 +43,18 @@
 
                 <!-- Tabla -->
                 <div class="overflow-x-auto">
-                    <flux:table>
-                        <flux:table.header>
-                            <flux:table.header-cell>Nombre</flux:table.header-cell>
-                            <flux:table.header-cell>Descripción</flux:table.header-cell>
-                            <flux:table.header-cell>Estado</flux:table.header-cell>
-                            <flux:table.header-cell>Departamentos</flux:table.header-cell>
-                            <flux:table.header-cell>Acciones</flux:table.header-cell>
-                        </flux:table.header>
+                    <flux:table :paginate="$directorates">
+                        <flux:table.columns>
+                            <flux:table.column>Nombre</flux:table.column>
+                            <flux:table.column>Descripción</flux:table.column>
+                            <flux:table.column>Estado</flux:table.column>
+                            <flux:table.column>Departamentos</flux:table.column>
+                            <flux:table.column>Acciones</flux:table.column>
+                        </flux:table.columns>
 
-                        <flux:table.body>
+                        <flux:table.rows>
                             @forelse($directorates as $directorate)
-                                <flux:table.row>
+                                <flux:table.row :key="$directorate->id">
                                     <flux:table.cell>
                                         <div class="font-medium text-gray-900">{{ $directorate->name }}</div>
                                     </flux:table.cell>
@@ -97,7 +97,7 @@
                                     </flux:table.cell>
                                 </flux:table.row>
                             @endforelse
-                        </flux:table.body>
+                        </flux:table.rows>
                     </flux:table>
                 </div>
 
