@@ -1,61 +1,173 @@
 ---
 name: new-task
-description: Desarrollar una tarea específica del ROADMAP del Sistema WFM Call Center CSS, respetando estrictamente la arquitectura de Monolito Modular guiado por Dominio (DDD).
+description: Ejecutar una tarea del ROADMAP en HoarariosWFM (Monolito Modular) usando Laravel + Livewire + PostgreSQL, respetando estrictamente la arquitectura.
 ---
 
-<!-- OPENSPEC:START -->
-**Guardrails (Reglas Inquebrantables)**
-- **Respeta los límites modulares:** Un módulo solo puede depender de módulos en capas inferiores (Foundation -> Organization -> Workforce -> Operations) o de `app/Shared/`. NUNCA invoques Actions, Models o Controllers de un módulo horizontal directamente; utiliza **Eventos** o **Contratos compartidos**.
-- **Controladores anémicos y lógica en Actions:** Los controladores no deben tener más de 10 líneas. El flujo estricto es: `FormRequest -> DTO -> Action -> Response`. Las Actions contienen toda la lógica de negocio y son agnósticas a HTTP.
-- **Autorización y Seguridad:** Todas las rutas de escritura deben estar protegidas por middleware de rol y validadas por una `Policy` que controle el alcance jerárquico (`team_id` / `parent_id` / `.own` / `.team`).
-- **Mantén cambios mínimos y enfocados:** Desarrolla solo lo que pide la tarea actual del `ROADMAP.md`, sin agregar features extra.
-- **No generes código en la etapa de propuesta:** Primero diseña la solución creando los documentos de propuesta (`proposal.md`, `tasks.md`, `design.md`) en el directorio `specs/<capability>/`.
-- **Espera aprobación:** No avances a la implementación del código hasta que el usuario apruebe explícitamente la propuesta arquitectónica.
+## 🎯 Contexto obligatorio
 
-**Steps (Flujo de Trabajo)**
-1. Lee y entiende la tarea concreta extraída del `ROADMAP.md` (ejemplo: "- [ ] UC-OP-05 — Solicitud de Permiso Total con validación de duplicados").
-2. Revisa la documentación base del proyecto (`07_Arquitectura.md`, `08_ModuleModels.md`, `05_DDL.md`, `03_casos_uso.md`) y determina:
-   - Módulo(s) involucrado(s) (ej. `Workflow/LeaveRequest`).
-   - Artefactos necesarios (DTO, Action, Event, Listener, Policy, Observer).
-   - Dependencias transversales (¿Requiere emitir un evento para que `Scheduling` se entere?).
-3. Elige un identificador único basado en verbos para la tarea (change-id), ejemplo: `feat-leave-request-creation`, `fix-schedule-overlap`, `refactor-hierarchy-query`.
-4. Crea una estructura de propuesta lógica (virtual en la conversación):
-   - `proposal.md`
-   - `tasks.md`
-   - `design.md` (si la tarea implica cruzar límites de módulos o decisiones de rendimiento).
-   - `specs/<capability>/spec.md`
-5. En `proposal.md`, describe en español:
-   - Objetivo exacto de la tarea.
-   - Módulo objetivo y ubicación de archivos.
-   - Estrategia técnica (Mapeo de DTO, lógica principal de la Action, validaciones en FormRequest).
-   - Riesgos principales (rendimiento, solapamiento de fechas, dependencias circulares) y mitigación.
-   - Preguntas abiertas al usuario si hay ambigüedad.
-6. En `tasks.md`, genera un checklist técnico ordenado y accionable:
-   - Crear DTO (clase `readonly` PHP 8.3).
-   - Crear FormRequest con método `toDTO()`.
-   - Crear Action con un único método público `handle()`.
-   - Crear / Actualizar Policy para validación RBAC/Jerárquica.
-   - Escribir tests unitarios (enfocados en la Action y la Policy).
-   - Registrar artefactos en el `ModuleServiceProvider`.
-   - Commit semántico en español.
-7. En `design.md` (si aplica): Explica el trade-off arquitectónico. Por ejemplo, explicar por qué se usó un Evento en lugar de llamar directamente a un servicio de otro módulo para evitar acoplamiento.
-8. En `specs/<capability>/spec.md`: Documenta el cambio basándote en los Casos de Uso.
-   ## ADDED / MODIFIED Requirements
-   #### Caso de Uso:[ID del Caso de Uso] - [Nombre]
-   - Escenario principal...
-   - Excepciones / Flujos alternativos...
-9. Valida mentalmente la solución propuesta contra las reglas del proyecto:
-   - ¿Usa tipado estricto (`strict_types=1`) y clases modernas de PHP 8.3?
-   - ¿Se auditan los cambios críticos (`audit_logs` / Observers)?
-   - ¿Se aplica `SoftDeletes` en lugar de borrado físico?
-   - ¿El flujo de dependencias respeta el diagrama de capas de `08_ModuleModels.md`?
-10. Presenta la propuesta completa al usuario y detente. Espera la instrucción de "Aprobado, procede con el código".
+Proyecto: HoarariosWFM
+Arquitectura: Monolito Modular (app/Modules)
+Stack: Laravel 12 + Livewire 3 + FluxUI + PostgreSQL
 
-**Reference (Documentación Oficial del Proyecto)**
-- Arquitectura y Reglas: `07_Arquitectura.md`, `08_ModuleModels.md`
-- Base de Datos y Modelos: `05_DDL.md`, `04_model.md`
-- Requisitos y Casos de Uso: `02_requisitos.md`, `03_casos_uso.md`
-- Seguridad y Roles: `06_Permisos.md`
-- Roadmap actual: `ROADMAP.md`
-- Commits Convencionales en español: feat, fix, refactor, test, docs, chore. (Ejemplo: `feat(leave-request): implementar creación de permisos con validación de solapamiento`).
-<!-- OPENSPEC:END -->
+Documentación base (leer SIEMPRE antes de generar código):
+- docs/technical/07_Arquitectura.md
+- docs/technical/08_ModuleModels.md
+- docs/technical/05_DDL.md
+- docs/technical/04_model.md
+- docs/technical/03_casos_uso.md
+- docs/technical/02_requisitos.md
+- docs/technical/06_Permisos.md
+- docs/technical/ROADMAP.md
+
+---
+
+## 🚫 Reglas Inquebrantables
+
+- Livewire = controlador UI → NUNCA lógica de negocio
+- Lógica de negocio → SOLO en Actions (una responsabilidad)
+- Validación → Livewire Forms (NO FormRequest en web)
+- Escrituras → DB::transaction()
+- Autorización → Policies SIEMPRE
+- Módulos NO se acoplan directamente (usar Events o DTOs)
+- PostgreSQL nativo (jsonb, constraints, índices)
+- Evitar N+1 (usar eager loading obligatorio)
+- No sobreingeniería
+
+---
+
+## ⚙️ Tarea a ejecutar
+
+{{TAREA_DEL_ROADMAP}}
+
+Ejemplo:
+- UC-OP-05 — Solicitud de Permiso Total con validación de duplicados
+
+---
+
+## 🧠 Proceso interno (Copilot)
+
+1. Identificar:
+   - Módulo destino
+   - Entidades involucradas
+   - Caso de uso asociado
+
+2. Determinar:
+   - DTO necesario
+   - Action principal
+   - Eventos (si aplica)
+   - Policy requerida
+   - Validaciones críticas
+
+3. Detectar riesgos:
+   - race conditions
+   - duplicados (constraints)
+   - N+1 queries
+   - dependencias entre módulos
+
+---
+
+## 📦 Output obligatorio (código listo para producción)
+
+Generar SOLO lo necesario, separado por archivos reales:
+
+### Backend (obligatorio)
+- Model (si aplica)
+- Migration (PostgreSQL optimizada)
+- DTO (readonly, tipado estricto)
+- Action (transaccional)
+- Event + Listener (si aplica)
+- Policy
+
+### Livewire (obligatorio en UI)
+- Componente Livewire (orquestador)
+- Livewire Form (validación)
+- Blade con FluxUI (`<flux:input>`, `<flux:button>`, etc.)
+
+### Infraestructura
+- Routes (web.php del módulo)
+- Registro en ModuleServiceProvider
+
+---
+
+## ⚠️ Reglas Livewire específicas
+
+- Usar `wire:model` con Form Objects
+- Usar `wire:submit`
+- Redirecciones con `navigate: true`
+- UI SIEMPRE con FluxUI (prohibido HTML plano si existe componente)
+- NO lógica en métodos del componente (solo delegación)
+
+---
+
+## 🧪 Validaciones mínimas obligatorias
+
+- No permitir duplicados (DB constraint + validación)
+- Validar ownership (`.own`, `.team`)
+- Validar estado (ej: no crear sobre registros publicados)
+- Manejo de errores consistente
+
+---
+
+## 🔍 Checklist de validación (Copilot debe cumplir TODO)
+
+- [ ] Código dentro de app/Modules/{Modulo}
+- [ ] Livewire NO contiene lógica de negocio
+- [ ] Action implementa DB::transaction()
+- [ ] DTO usado correctamente
+- [ ] Policy aplicada en Livewire
+- [ ] Sin N+1 queries (uso de with())
+- [ ] Uso correcto de PostgreSQL (sin sintaxis MySQL)
+- [ ] Índices y constraints definidos
+- [ ] Eventos usados si hay interacción entre módulos
+- [ ] UI construida con FluxUI
+- [ ] Código tipado (PHP 8.2+)
+- [ ] Sin dependencias cruzadas entre módulos
+
+---
+
+## ⚠️ Anti-patrones prohibidos
+
+- CRUD directo en Livewire
+- Queries dentro de Blade
+- Lógica en Models (fat models)
+- Llamar otro módulo directamente
+- Uso de DB::raw innecesario
+- Validaciones duplicadas sin constraint en DB
+
+---
+
+## 🧾 Entrega final
+
+- Código completo, listo para copiar/pegar
+- Separado por archivos (paths reales)
+- Sin explicaciones largas
+- Comentarios solo si son críticos
+
+---
+
+## 🧩 Commits (OBLIGATORIO)
+
+Generar commits atómicos usando Conventional Commits en español:
+
+Formato:
+<tipo>(<modulo>): <descripcion>
+
+Tipos:
+- feat
+- fix
+- refactor
+- test
+- docs
+- chore
+
+Ejemplo:
+
+feat(workflows): implementar solicitud de permiso total
+feat(workflows): agregar validación de duplicados en leave_requests
+fix(workflows): corregir race condition en aprobación de permisos
+refactor(workflows): extraer lógica a LeaveRequestAction
+
+Reglas:
+- Un commit por unidad lógica
+- No mezclar responsabilidades
+- Mensajes claros y técnicos
