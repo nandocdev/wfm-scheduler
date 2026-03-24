@@ -14,9 +14,18 @@ use App\Modules\OrganizationModule\Policies\DirectoratePolicy;
 use App\Modules\OrganizationModule\Policies\DepartmentPolicy;
 use App\Modules\OrganizationModule\Policies\PositionPolicy;
 use App\Modules\OrganizationModule\Policies\TeamPolicy;
+use App\Modules\OrganizationModule\Livewire\CreateDepartment;
+use App\Modules\OrganizationModule\Livewire\CreateDirectorate;
+use App\Modules\OrganizationModule\Livewire\CreatePosition;
+use App\Modules\OrganizationModule\Livewire\CreateTeam;
+use App\Modules\OrganizationModule\Livewire\ListDepartments;
+use App\Modules\OrganizationModule\Livewire\ListDirectorates;
+use App\Modules\OrganizationModule\Livewire\ListPositions;
+use App\Modules\OrganizationModule\Livewire\ListTeams;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 
 /**
  * Registra todos los componentes del módulo Organization.
@@ -28,7 +37,11 @@ class ModuleServiceProvider extends ServiceProvider {
         $this->registerRoutes();
         $this->registerObservers();
         $this->registerPolicies();
-        $this->loadViews();
+        $this->registerLivewireComponents();
+        $this->loadViewsFrom(
+            __DIR__ . '/../Resources/Views',
+            'organization'
+        );
     }
 
     private function registerRoutes(): void {
@@ -52,10 +65,14 @@ class ModuleServiceProvider extends ServiceProvider {
         Gate::policy(Team::class, TeamPolicy::class);
     }
 
-    private function loadViews(): void {
-        $this->loadViewsFrom(
-            __DIR__ . '/../Resources/Views',
-            'organization'
-        );
+    private function registerLivewireComponents(): void {
+        Livewire::component('organization.list-directorates', ListDirectorates::class);
+        Livewire::component('organization.create-directorate', CreateDirectorate::class);
+        Livewire::component('organization.list-departments', ListDepartments::class);
+        Livewire::component('organization.create-department', CreateDepartment::class);
+        Livewire::component('organization.list-positions', ListPositions::class);
+        Livewire::component('organization.create-position', CreatePosition::class);
+        Livewire::component('organization.list-teams', ListTeams::class);
+        Livewire::component('organization.create-team', CreateTeam::class);
     }
 }

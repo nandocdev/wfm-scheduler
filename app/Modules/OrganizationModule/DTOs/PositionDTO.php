@@ -3,13 +3,13 @@
 namespace App\Modules\OrganizationModule\DTOs;
 
 /**
- * Datos de entrada validados para crear un equipo.
+ * Datos de entrada validados para crear un cargo.
  */
-readonly class TeamDTO {
+readonly class PositionDTO {
     public function __construct(
+        public int $department_id,
         public string $name,
         public ?string $description = null,
-        public bool $is_active = true,
     ) {
     }
 
@@ -20,9 +20,9 @@ readonly class TeamDTO {
      */
     public static function fromArray(array $data): self {
         return new self(
+            department_id: $data['department_id'],
             name: $data['name'],
             description: $data['description'] ?? null,
-            is_active: $data['is_active'] ?? true,
         );
     }
 }

@@ -17,13 +17,17 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Directorates
-Route::resource('directorates', DirectorateController::class);
+Route::get('directorates', App\Modules\OrganizationModule\Livewire\ListDirectorates::class)->name('directorates.index');
+Route::get('directorates/create', App\Modules\OrganizationModule\Livewire\CreateDirectorate::class)->name('directorates.create');
 
 // Departments
-Route::resource('departments', DepartmentController::class);
+Route::get('departments', App\Modules\OrganizationModule\Livewire\ListDepartments::class)->name('departments.index');
+Route::get('departments/create', App\Modules\OrganizationModule\Livewire\CreateDepartment::class)->name('departments.create');
 
 // Positions
-Route::resource('positions', PositionController::class);
+Route::get('positions', App\Modules\OrganizationModule\Livewire\ListPositions::class)->name('positions.index');
+Route::get('positions/create', App\Modules\OrganizationModule\Livewire\CreatePosition::class)->name('positions.create');
 
 // Teams
-Route::resource('teams', TeamController::class);
+Route::get('teams', App\Modules\OrganizationModule\Livewire\ListTeams::class)->name('teams.index');
+Route::get('teams/create', App\Modules\OrganizationModule\Livewire\CreateTeam::class)->name('teams.create');

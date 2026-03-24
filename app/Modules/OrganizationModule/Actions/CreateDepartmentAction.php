@@ -16,24 +16,22 @@ use Illuminate\Support\Facades\DB;
  * @throws \Illuminate\Database\QueryException
  * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
  */
-class CreateDepartmentAction
-{
+class CreateDepartmentAction {
     /**
      * Ejecuta la creación del departamento.
      *
      * @param  DepartmentDTO  $dto  Datos validados del departamento
      * @return Department           Departamento creado y persistido
      */
-    public function execute(DepartmentDTO $dto): Department
-    {
+    public function execute(DepartmentDTO $dto): Department {
         // Validar que la dirección existe
         Directorate::findOrFail($dto->directorate_id);
 
         return DB::transaction(function () use ($dto) {
             return Department::create([
                 'directorate_id' => $dto->directorate_id,
-                'name'          => $dto->name,
-                'description'   => $dto->description,
+                'name' => $dto->name,
+                'description' => $dto->description,
             ]);
         });
     }

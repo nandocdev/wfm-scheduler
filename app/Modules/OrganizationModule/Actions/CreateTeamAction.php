@@ -12,21 +12,19 @@ use Illuminate\Support\Facades\DB;
  *
  * @throws \Illuminate\Database\QueryException
  */
-class CreateTeamAction
-{
+class CreateTeamAction {
     /**
      * Ejecuta la creación del equipo.
      *
      * @param  TeamDTO  $dto  Datos validados del equipo
      * @return Team           Equipo creado y persistido
      */
-    public function execute(TeamDTO $dto): Team
-    {
+    public function execute(TeamDTO $dto): Team {
         return DB::transaction(function () use ($dto) {
             return Team::create([
-                'name'        => $dto->name,
+                'name' => $dto->name,
                 'description' => $dto->description,
-                'is_active'   => $dto->is_active,
+                'is_active' => $dto->is_active,
             ]);
         });
     }
