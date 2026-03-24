@@ -1,0 +1,30 @@
+<?php
+
+namespace App\Modules\OrganizationModule\Actions;
+
+use App\Modules\OrganizationModule\Models\Position;
+use App\Modules\OrganizationModule\Events\PositionStatusToggled;
+use Illuminate\Support\Facades\DB;
+
+/**
+ * Cambia el estado activo/inactivo de una posición.
+ */
+class TogglePositionStatusAction {
+    /**
+     * Ejecuta el cambio de estado de la posición.
+     *
+     * @param  Position  $position  Posición a cambiar estado
+     * @return Position             Posición con estado actualizado
+     */
+    public function execute(Position $position): Position {
+        return DB::transaction(function () use ($position) {
+            $position->update([
+                'is_active' => !$position->is_active,
+            ]);
+
+            event(new PositionStatusToggled($position));
+
+            return $position->fresh();
+        });
+    }
+}
