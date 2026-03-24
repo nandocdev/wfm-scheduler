@@ -46,7 +46,7 @@
                     name="{{ auth()->user()->name }}" />
 
                 <flux:menu>
-                    <flux:menu.item icon="user" href="{{ route('profile.view') ?? '#' }}" wire:navigate>
+                    <flux:menu.item icon="user" href="{{ route('profile.edit') ?? '#' }}" wire:navigate>
                         Mi Perfil
                     </flux:menu.item>
 

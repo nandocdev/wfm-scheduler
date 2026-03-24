@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
-class AuditLog extends Model
-{
+class AuditLog extends Model {
     protected $fillable = [
         'entity_type', 'entity_id', 'action',
         'before', 'after', 'ip_address', 'user_id'
@@ -19,8 +18,7 @@ class AuditLog extends Model
         'after' => 'json',
     ];
 
-    public function user(): BelongsTo
-    {
+    public function user(): BelongsTo {
         return $this->belongsTo(\App\Modules\CoreModule\Models\User::class);
     }
 
