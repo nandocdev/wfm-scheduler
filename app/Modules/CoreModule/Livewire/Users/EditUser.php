@@ -8,19 +8,18 @@ use App\Modules\CoreModule\Models\User;
 use App\Modules\CoreModule\Models\Role;
 use App\Modules\CoreModule\Livewire\Forms\UserForm;
 use App\Modules\CoreModule\Actions\UpdateUserAction;
+use Flux\Flux;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 
 #[Title('Editar Usuario')]
-class EditUser extends Component
-{
+class EditUser extends Component {
     public User $user;
     public UserForm $form;
 
-    public function mount(User $user): void
-    {
+    public function mount(User $user): void {
         $this->authorize('update', $user);
-        
+
         $this->user = $user;
         $this->form->set($user);
     }
@@ -28,19 +27,17 @@ class EditUser extends Component
     /**
      * Actualiza el usuario existente delegando en la Action.
      */
-    public function save(UpdateUserAction $action)
-    {
+    public function save(UpdateUserAction $action) {
         $this->validate();
 
         $action->execute($this->user, $this->form->toDTO());
 
-        flux()->toast('El perfil del usuario ha sido actualizado.');
+        Flux::toast('El perfil del usuario ha sido actualizado.');
 
         return $this->redirectRoute('users.index', navigate: true);
     }
 
-    public function render()
-    {
+    public function render() {
         return view('core::livewire.users.edit-user', [
             'available_roles' => Role::all(),
         ]);

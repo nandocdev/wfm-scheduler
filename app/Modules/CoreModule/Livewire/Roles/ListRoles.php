@@ -7,16 +7,16 @@ namespace App\Modules\CoreModule\Livewire\Roles;
 use App\Modules\CoreModule\Models\Role;
 use App\Modules\CoreModule\Models\Permission;
 use App\Modules\CoreModule\Actions\SyncRolePermissionsAction;
+use Flux\Flux;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 
 #[Title('Gestión de Roles')]
-class ListRoles extends Component
-{
+class ListRoles extends Component {
     public string $name = '';
     public string $code = '';
     public int $hierarchy_level = 10;
-    
+
     public ?Role $editingRole = null;
     public array $selectedPermissions = [];
 
@@ -29,34 +29,31 @@ class ListRoles extends Component
     /**
      * Muestra el modal para editar permisos de un rol.
      */
-    public function editPermissions(Role $role): void
-    {
+    public function editPermissions(Role $role): void {
         $this->editingRole = $role;
         $this->selectedPermissions = $role->permissions->pluck('name')->toArray();
-        
-        flux()->modal('role-permissions')->show();
+
+        Flux::modal('role-permissions')->show();
     }
 
     /**
      * Sincroniza permisos mediante la Action.
      */
-    public function savePermissions(SyncRolePermissionsAction $action): void
-    {
+    public function savePermissions(SyncRolePermissionsAction $action): void {
         $this->authorize('update', $this->editingRole);
-        
+
         $action->execute($this->editingRole, $this->selectedPermissions);
-        
-        flux()->modal('role-permissions')->hide();
-        flux()->toast('Permisos del rol actualizados correctamente.');
+
+        Flux::modal('role-permissions')->close();
+        Flux::toast('Permisos del rol actualizados correctamente.');
     }
 
     /**
      * Crea un nuevo rol institucional.
      */
-    public function createRole(): void
-    {
+    public function createRole(): void {
         $this->authorize('create', Role::class);
-        
+
         $this->validate();
 
         Role::create([
@@ -67,11 +64,10 @@ class ListRoles extends Component
         ]);
 
         $this->reset(['name', 'code', 'hierarchy_level']);
-        flux()->toast('Nuevo rol institucional registrado.');
+        Flux::toast('Nuevo rol institucional registrado.');
     }
 
-    public function render()
-    {
+    public function render() {
         return view('core::livewire.roles.list-roles', [
             'roles' => Role::with('permissions')->orderBy('hierarchy_level')->get(),
             'available_permissions' => Permission::all()->groupBy('module'), // Agrupación lógica
