@@ -11,23 +11,30 @@
             </flux:sidebar.header>
 
             <flux:sidebar.nav>
-                <flux:sidebar.group :heading="__('Platform')" class="grid">
-                    <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-                        {{ __('Dashboard') }}
-                    </flux:sidebar.item>
-                </flux:sidebar.group>
-            </flux:sidebar.nav>
-
-            <flux:spacer />
-
-            <flux:sidebar.nav>
-                <flux:sidebar.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                    {{ __('Repository') }}
-                </flux:sidebar.item>
-
-                <flux:sidebar.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
-                    {{ __('Documentation') }}
-                </flux:sidebar.item>
+                @foreach(\App\Helpers\MenuHelper::getSidebarItems() as $item)
+                    @if(isset($item['submenu']) && !empty($item['submenu']))
+                        <flux:navlist.group :heading="$item['label']" :icon="$item['icon']" expandable :expanded="$item['is_active']">
+                            @foreach($item['submenu'] as $subItem)
+                                <flux:navlist.item 
+                                    :href="isset($subItem['route']) ? route($subItem['route']) : '#'" 
+                                    :current="$subItem['is_active']"
+                                    wire:navigate
+                                >
+                                    {{ $subItem['label'] }}
+                                </flux:navlist.item>
+                            @endforeach
+                        </flux:navlist.group>
+                    @else
+                        <flux:sidebar.item 
+                            :icon="$item['icon']" 
+                            :href="isset($item['route']) ? route($item['route']) : '#'" 
+                            :current="$item['is_active']" 
+                            wire:navigate
+                        >
+                            {{ $item['label'] }}
+                        </flux:sidebar.item>
+                    @endif
+                @endforeach
             </flux:sidebar.nav>
 
             <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
