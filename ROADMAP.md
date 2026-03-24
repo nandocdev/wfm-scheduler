@@ -51,8 +51,8 @@
 * [x] Observers con cache invalidation
 * [ ] Actions:
 
-  * [ ] CreateDepartmentAction
-  * [ ] CreateTeamAction
+  * [x] CreateDepartmentAction
+  * [x] CreateTeamAction
 * [ ] Livewire:
 
   * [ ] ListDepartments
