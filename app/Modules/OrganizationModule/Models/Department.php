@@ -2,21 +2,36 @@
 
 namespace App\Modules\OrganizationModule\Models;
 
+use App\Modules\CoreModule\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Department extends Model
-{
-    protected $fillable = ['directorate_id', 'name', 'description'];
+/**
+ * Modelo para Departments (Departamentos).
+ *
+ * Representa los departamentos dentro de una dirección.
+ */
+class Department extends Model {
+    use Auditable;
 
-    public function directorate(): BelongsTo
-    {
+    protected $fillable = [
+        'directorate_id',
+        'name',
+        'description',
+    ];
+
+    /**
+     * Dirección a la que pertenece este departamento.
+     */
+    public function directorate(): BelongsTo {
         return $this->belongsTo(Directorate::class);
     }
 
-    public function positions(): HasMany
-    {
+    /**
+     * Cargos pertenecientes a este departamento.
+     */
+    public function positions(): HasMany {
         return $this->hasMany(Position::class);
     }
 }

@@ -2,15 +2,27 @@
 
 namespace App\Modules\OrganizationModule\Models;
 
+use App\Modules\CoreModule\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Directorate extends Model
-{
-    protected $fillable = ['name', 'description'];
+/**
+ * Modelo para Directorates (Direcciones).
+ *
+ * Representa las direcciones de la organización.
+ */
+class Directorate extends Model {
+    use Auditable;
 
-    public function departments(): HasMany
-    {
+    protected $fillable = [
+        'name',
+        'description',
+    ];
+
+    /**
+     * Departamentos pertenecientes a esta dirección.
+     */
+    public function departments(): HasMany {
         return $this->hasMany(Department::class);
     }
 }
