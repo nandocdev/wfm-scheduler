@@ -45,6 +45,37 @@ class MenuHelper
                     ],
                 ],
             ],
+            [
+                'label'      => __('Organización'),
+                'icon'       => 'building-office',
+                'permission' => null, // TODO: definir permisos específicos
+                'submenu'    => [
+                    [
+                        'label'   => __('Direcciones'),
+                        'route'   => 'organization.directorates.index',
+                        'pattern' => 'organization/directorates*',
+                        'permission' => null, // TODO: 'directorates.view'
+                    ],
+                    [
+                        'label'   => __('Departamentos'),
+                        'route'   => 'organization.departments.index',
+                        'pattern' => 'organization/departments*',
+                        'permission' => null, // TODO: 'departments.view'
+                    ],
+                    [
+                        'label'   => __('Equipos'),
+                        'route'   => 'organization.teams.index',
+                        'pattern' => 'organization/teams*',
+                        'permission' => null, // TODO: 'teams.view'
+                    ],
+                    [
+                        'label'   => __('Posiciones'),
+                        'route'   => 'organization.positions.index',
+                        'pattern' => 'organization/positions*',
+                        'permission' => null, // TODO: 'positions.view'
+                    ],
+                ],
+            ],
             // Los módulos adicionales pueden inyectar aquí sus menús
             // O podemos centralizar las llamadas a métodos estáticos de los módulos
         ])->filter(fn ($item) => self::canView($item))
