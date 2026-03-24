@@ -66,16 +66,16 @@
                                     {{ $department->teams_count ?? 0 }}
                                 </flux:table.cell>
                                 <flux:table.cell>
-                                    <div class="flex space-x-2">
-                                        <flux:link href="{{ route('organization.departments.show', $department) }}"
-                                            variant="ghost" size="sm">
-                                            Ver
-                                        </flux:link>
-                                        <flux:link href="{{ route('organization.departments.edit', $department) }}"
-                                            variant="ghost" size="sm">
-                                            Editar
-                                        </flux:link>
-                                    </div>
+                                    <flux:button.group>
+                                        <flux:button href="{{ route('organization.departments.show', $department) }}"
+                                            variant="ghost" size="sm" title="Ver departamento">
+                                            <flux:icon.eye class="w-4 h-4" />
+                                        </flux:button>
+                                        <flux:button href="{{ route('organization.departments.edit', $department) }}"
+                                            variant="ghost" size="sm" title="Editar departamento">
+                                            <flux:icon.pencil-square class="w-4 h-4" />
+                                        </flux:button>
+                                    </flux:button.group>
                                 </flux:table.cell>
                             </flux:table.row>
                         @empty
