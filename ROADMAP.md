@@ -25,7 +25,6 @@
 * [x] Configurar `preventLazyLoading` — Pendiente: agregar en AppServiceProvider para evitar N+1 queries
 * [x] Auditoría base (`audit_logs`) — Pendiente: implementar modelo y listeners para trazabilidad
 * [ ] BaseModel con:
-
   * [ ] ULIDs / UUID — Pendiente: crear BaseModel con ULID primary key
   * [x] SoftDeletes — Implementado en User model
 * [x] ServiceProvider del módulo
