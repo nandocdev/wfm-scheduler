@@ -9,13 +9,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
-class AppServiceProvider extends ServiceProvider
-{
+class AppServiceProvider extends ServiceProvider {
     /**
      * Register any application services.
      */
-    public function register(): void
-    {
+    public function register(): void {
         // Registro dinámico de módulos institucional (Monolito Modular)
         foreach (config('modules.enabled', []) as $provider) {
             if (class_exists($provider)) {
@@ -27,16 +25,14 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
-    {
+    public function boot(): void {
         $this->configureDefaults();
     }
 
     /**
      * Configure default behaviors for production-ready applications.
      */
-    protected function configureDefaults(): void
-    {
+    protected function configureDefaults(): void {
         Date::use(CarbonImmutable::class);
 
         DB::prohibitDestructiveCommands(
@@ -45,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
 
         Model::preventLazyLoading();
 
-        Password::defaults(fn (): ?Password => app()->isProduction()
+        Password::defaults(fn(): ?Password => app()->isProduction()
             ? Password::min(12)
                 ->mixedCase()
                 ->letters()

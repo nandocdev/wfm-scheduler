@@ -10,10 +10,8 @@ use Illuminate\Database\Eloquent\Model;
  *
  * Registra automáticamente cambios en created, updated, deleted.
  */
-trait Auditable
-{
-    public static function bootAuditable(): void
-    {
+trait Auditable {
+    public static function bootAuditable(): void {
         static::created(function (Model $model) {
             AuditLog::log(
                 entityType: $model::class,

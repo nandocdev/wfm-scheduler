@@ -11,8 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * Registra todas las operaciones CRUD en modelos auditables
  * para mantener trazabilidad completa.
  */
-class AuditLog extends Model
-{
+class AuditLog extends Model {
     protected $fillable = [
         'user_id',
         'entity_type',
@@ -32,8 +31,7 @@ class AuditLog extends Model
     /**
      * Usuario que realizó la acción.
      */
-    public function user(): BelongsTo
-    {
+    public function user(): BelongsTo {
         return $this->belongsTo(User::class);
     }
 
