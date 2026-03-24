@@ -72,30 +72,24 @@
                         </flux:table.cell>
 
                         <flux:table.cell align="end">
-                            <flux:dropdown>
-                                <flux:button variant="ghost" icon="ellipsis-horizontal" size="sm" />
+                            <flux:button.group>
+                                <flux:button :href="route('users.edit', $user)"
+                                    variant="ghost" size="sm" title="Editar usuario" wire:navigate>
+                                    <flux:icon.pencil-square class="w-4 h-4" />
+                                </flux:button>
 
-                                <flux:menu>
-                                    <flux:menu.item :href="route('users.edit', $user)" icon="pencil-square" wire:navigate>
-                                        Editar Perfil
-                                    </flux:menu.item>
+                                @can('update', $user)
+                                    <flux:button wire:click="toggleStatus({{ $user->id }})"
+                                        variant="ghost" size="sm"
+                                        :title="$user->is_active ? 'Desactivar usuario' : 'Activar usuario'">
+                                        <flux:icon :name="$user->is_active ? 'lock-closed' : 'lock-open'" class="w-4 h-4" />
+                                    </flux:button>
+                                @endcan
 
-                                    @can('update', $user)
-                                        <flux:menu.item 
-                                            wire:click="toggleStatus({{ $user->id }})" 
-                                            :icon="$user->is_active ? 'lock-closed' : 'lock-open'"
-                                        >
-                                            {{ $user->is_active ? 'Desactivar' : 'Activar' }}
-                                        </flux:menu.item>
-                                    @endcan
-                                    
-                                    <flux:menu.separator />
-                                    
-                                    <flux:menu.item variant="danger" icon="trash">
-                                        Eliminar
-                                    </flux:menu.item>
-                                </flux:menu>
-                            </flux:dropdown>
+                                <flux:button variant="danger" size="sm" title="Eliminar usuario">
+                                    <flux:icon.trash class="w-4 h-4" />
+                                </flux:button>
+                            </flux:button.group>
                         </flux:table.cell>
                     </flux:table.row>
                 @empty

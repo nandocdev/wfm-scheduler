@@ -76,12 +76,12 @@
                                 </flux:table.cell>
                                 <flux:table.cell>
                                     <flux:button.group>
-                                        <flux:button href="{{ route('organization.teams.show', $team) }}"
-                                            variant="ghost" size="sm" title="Ver equipo">
+                                        <flux:button href="{{ route('organization.teams.show', $team) }}" variant="ghost"
+                                            size="sm" title="Ver equipo">
                                             <flux:icon.eye class="w-4 h-4" />
                                         </flux:button>
-                                        <flux:button href="{{ route('organization.teams.edit', $team) }}"
-                                            variant="ghost" size="sm" title="Editar equipo">
+                                        <flux:button href="{{ route('organization.teams.edit', $team) }}" variant="ghost"
+                                            size="sm" title="Editar equipo">
                                             <flux:icon.pencil-square class="w-4 h-4" />
                                         </flux:button>
                                     </flux:button.group>
