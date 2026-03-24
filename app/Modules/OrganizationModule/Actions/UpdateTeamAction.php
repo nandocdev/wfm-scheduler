@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Modules\OrganizationModule\Actions;
+
+use App\Modules\OrganizationModule\DTOs\TeamDTO;
+use App\Modules\OrganizationModule\Events\TeamUpdated;
+use App\Modules\OrganizationModule\Models\Team;
+use Illuminate\Support\Facades\DB;
+
+/**
+ * Actualiza un equipo existente en el sistema.
+ */
+class UpdateTeamAction {
+    /**
+     * Ejecuta la actualización del equipo.
+     *
+     * @param  Team    $team  Equipo a actualizar
+     * @param  TeamDTO $dto   Datos validados del equipo
+     * @return Team           Equipo actualizado y persistido
+     */
+    public function execute(Team $team, TeamDTO $dto): Team {
+        return DB::transaction(function () use ($team, $dto) {
+            $team->update([
+                'name' => $dto->name,
+                'description' => $dto->description,
+                'is_active' => $dto->is_active,
+            ]);
+
+            event(new TeamUpdated($team));
+
+            return $team->fresh();
+        });
+    }
+}

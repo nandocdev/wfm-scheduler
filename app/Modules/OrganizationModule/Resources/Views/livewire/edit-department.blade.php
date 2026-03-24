@@ -5,10 +5,10 @@
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
                 <div class="flex items-center space-x-4">
-                    <flux:link href="{{ route('organization.departments.index') }}" variant="ghost">
+                    <flux:link href="{{ route('organization.departments.show', $department) }}" variant="ghost">
                         ← Volver
                     </flux:link>
-                    <h1 class="text-2xl font-bold text-gray-900">Crear Departamento</h1>
+                    <h1 class="text-2xl font-bold text-gray-900">Editar Departamento</h1>
                 </div>
             </div>
 
@@ -41,23 +41,14 @@
                 </div>
 
                 <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
-                    <flux:link href="{{ route('organization.departments.index') }}" variant="ghost">
+                    <flux:link href="{{ route('organization.departments.show', $department) }}" variant="ghost">
                         Cancelar
                     </flux:link>
                     <flux:button type="submit" variant="primary">
-                        Crear Departamento
+                        Actualizar Departamento
                     </flux:button>
                 </div>
             </form>
         </div>
     </div>
-
-    @push('scripts')
-        <script>
-            $wire.on('departmentCreated', (event) => {
-                // Redirigir a la lista o mostrar mensaje
-                window.location.href = '{{ route("organization.departments.index") }}';
-            });
-        </script>
-    @endpush
 @endsection

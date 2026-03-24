@@ -5,10 +5,10 @@
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
                 <div class="flex items-center space-x-4">
-                    <flux:link href="{{ route('organization.positions.index') }}" variant="ghost">
+                    <flux:link href="{{ route('organization.positions.show', $position) }}" variant="ghost">
                         ← Volver
                     </flux:link>
-                    <h1 class="text-2xl font-bold text-gray-900">Crear Posición</h1>
+                    <h1 class="text-2xl font-bold text-gray-900">Editar Posición</h1>
                 </div>
             </div>
 
@@ -48,23 +48,14 @@
                 </div>
 
                 <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
-                    <flux:link href="{{ route('organization.positions.index') }}" variant="ghost">
+                    <flux:link href="{{ route('organization.positions.show', $position) }}" variant="ghost">
                         Cancelar
                     </flux:link>
                     <flux:button type="submit" variant="primary">
-                        Crear Posición
+                        Actualizar Posición
                     </flux:button>
                 </div>
             </form>
         </div>
     </div>
-
-    @push('scripts')
-        <script>
-            $wire.on('positionCreated', (event) => {
-                // Redirigir a la lista o mostrar mensaje
-                window.location.href = '{{ route("organization.positions.index") }}';
-            });
-        </script>
-    @endpush
 @endsection
