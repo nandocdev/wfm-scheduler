@@ -20,20 +20,25 @@
                             label="Buscar" />
                     </div>
                     <div>
-                        <flux:select wire:model.live="directorateFilter" placeholder="Todas las direcciones"
-                            label="Dirección">
-                            <flux:option value="">Todas las direcciones</flux:option>
+                        <label for="directorateFilter"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Dirección</label>
+                        <select wire:model.live="directorateFilter" id="directorateFilter"
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <option value="">Todas las direcciones</option>
                             @foreach($this->directorates as $directorate)
-                                <flux:option value="{{ $directorate->id }}">{{ $directorate->name }}</flux:option>
+                                <option value="{{ $directorate->id }}">{{ $directorate->name }}</option>
                             @endforeach
-                        </flux:select>
+                        </select>
                     </div>
                     <div>
-                        <flux:select wire:model.live="perPage" label="Por página">
-                            <flux:option value="10">10</flux:option>
-                            <flux:option value="25">25</flux:option>
-                            <flux:option value="50">50</flux:option>
-                        </flux:select>
+                        <label for="perPage" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Por
+                            página</label>
+                        <select wire:model.live="perPage" id="perPage"
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
                     </div>
                 </div>
 

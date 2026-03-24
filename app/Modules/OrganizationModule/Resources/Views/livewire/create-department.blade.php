@@ -15,12 +15,15 @@
             <form wire:submit="save" class="p-6 space-y-6">
                 <div class="grid grid-cols-1 gap-6">
                     <flux:field>
-                        <flux:select wire:model="directorate_id" label="Dirección *" placeholder="Selecciona una dirección"
-                            required>
+                        <label for="directorate_id"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Dirección *</label>
+                        <select wire:model="directorate_id" id="directorate_id" required
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <option value="">Selecciona una dirección</option>
                             @foreach($this->directorates as $directorate)
-                                <flux:option value="{{ $directorate->id }}">{{ $directorate->name }}</flux:option>
+                                <option value="{{ $directorate->id }}">{{ $directorate->name }}</option>
                             @endforeach
-                        </flux:select>
+                        </select>
                         <flux:error name="directorate_id" />
                     </flux:field>
 

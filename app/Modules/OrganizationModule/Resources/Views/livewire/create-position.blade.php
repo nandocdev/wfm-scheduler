@@ -21,14 +21,17 @@
                     </flux:field>
 
                     <flux:field>
-                        <flux:select wire:model="department_id" label="Departamento *"
-                            placeholder="Selecciona un departamento" required>
+                        <label for="department_id"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Departamento *</label>
+                        <select wire:model="department_id" id="department_id" required
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <option value="">Selecciona un departamento</option>
                             @foreach($this->departments as $department)
-                                <flux:option value="{{ $department->id }}">
+                                <option value="{{ $department->id }}">
                                     {{ $department->name }} ({{ $department->directorate->name }})
-                                </flux:option>
+                                </option>
                             @endforeach
-                        </flux:select>
+                        </select>
                         <flux:error name="department_id" />
                     </flux:field>
 

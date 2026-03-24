@@ -20,18 +20,24 @@
                             label="Buscar" />
                     </div>
                     <div>
-                        <flux:select wire:model.live="activeFilter" placeholder="Todos los estados" label="Estado">
-                            <flux:option value="">Todos los estados</flux:option>
-                            <flux:option value="1">Activas</flux:option>
-                            <flux:option value="0">Inactivas</flux:option>
-                        </flux:select>
+                        <label for="activeFilter"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Estado</label>
+                        <select wire:model.live="activeFilter" id="activeFilter"
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <option value="">Todos los estados</option>
+                            <option value="1">Activas</option>
+                            <option value="0">Inactivas</option>
+                        </select>
                     </div>
                     <div>
-                        <flux:select wire:model.live="perPage" label="Por página">
-                            <flux:option value="10">10</flux:option>
-                            <flux:option value="25">25</flux:option>
-                            <flux:option value="50">50</flux:option>
-                        </flux:select>
+                        <label for="perPage" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Por
+                            página</label>
+                        <select wire:model.live="perPage" id="perPage"
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
                     </div>
                 </div>
 
