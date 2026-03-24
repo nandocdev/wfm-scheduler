@@ -81,10 +81,10 @@
 
 ### LocationModule
 
-* [ ] Models: Province, District, Township
-* [ ] Seeder geográfico (Panamá completo)
-* [ ] Relaciones jerárquicas optimizadas
-* [ ] Indexación FK
+* [x] Models: Province, District, Township
+* [x] Seeder geográfico (Panamá completo desde CSV)
+* [x] Relaciones jerárquicas optimizadas
+* [x] Indexación FK
 
 ### Riesgos
 

@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder {
         ]);
 
         $this->call([
+            PanamaGeographySeeder::class,
             RolesAndPermissionsSeeder::class,
             UsersPerRoleSeeder::class,
         ]);
