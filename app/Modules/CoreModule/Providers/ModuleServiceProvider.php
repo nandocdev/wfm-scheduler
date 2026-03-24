@@ -7,6 +7,7 @@ use App\Modules\CoreModule\Actions\Fortify\ResetUserPassword;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -45,8 +46,7 @@ class ModuleServiceProvider extends ServiceProvider {
     /**
      * Registra las políticas de autorización del módulo.
      */
-    protected function registerPolicies(): void
-    {
+    protected function registerPolicies(): void {
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Role::class, RolePolicy::class);
     }
@@ -58,13 +58,13 @@ class ModuleServiceProvider extends ServiceProvider {
         $viewsPath = __DIR__ . '/../Resources/Views';
 
         if (file_exists(__DIR__ . '/../Routes/web.php')) {
-            $this->loadRoutesFrom(__DIR__ . '/../Routes/web.php');
+            Route::middleware('web')->group(__DIR__ . '/../Routes/web.php');
         }
 
         if (is_dir($viewsPath)) {
             $this->loadViewsFrom($viewsPath, 'core');
             Blade::anonymousComponentPath($viewsPath, 'core');
-            
+
             // Registro manual de componentes para control granular
             Livewire::component('core.users.list-users', \App\Modules\CoreModule\Livewire\Users\ListUsers::class);
             Livewire::component('core.users.create-user', \App\Modules\CoreModule\Livewire\Users\CreateUser::class);
