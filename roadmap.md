@@ -24,7 +24,7 @@
 ### ✅ Implementado
 - ✅ Migraciones optimizadas con constraints e índices
 - ✅ Modelos Eloquent con relaciones jerárquicas
-- ✅ Seeder completo con datos de Panamá
+- ✅ Seeder completo con datos de Panamá desde CSV (13 provincias, 78 distritos, 646 corregimientos)
 - ✅ API REST para ubicaciones
 - ✅ Vista web con estadísticas geográficas
 - ✅ ModuleServiceProvider registrado
