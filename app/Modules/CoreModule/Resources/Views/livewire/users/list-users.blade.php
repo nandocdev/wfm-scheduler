@@ -14,15 +14,11 @@
 
     <flux:card class="space-y-6">
         <div class="flex flex-col md:flex-row gap-4 items-end">
-            <flux:input 
-                wire:model.live.debounce.300ms="search" 
-                placeholder="Buscar por nombre o email..." 
-                class="flex-1"
-                icon="magnifying-glass"
-                clearable
-            />
+            <flux:input wire:model.live.debounce.300ms="search" placeholder="Buscar por nombre o email..."
+                class="flex-1" icon="magnifying-glass" clearable />
 
-            <flux:select wire:model.live="role" :label="__('Filtrar por Rol')" placeholder="Todos los roles" class="w-full md:w-64">
+            <flux:select wire:model.live="role" :label="__('Filtrar por Rol')" placeholder="Todos los roles"
+                class="w-full md:w-64">
                 @foreach($all_roles as $roleItem)
                     <flux:select.option value="{{ $roleItem->name }}">{{ $roleItem->name }}</flux:select.option>
                 @endforeach
@@ -73,20 +69,19 @@
 
                         <flux:table.cell align="end">
                             <flux:button.group>
-                                <flux:button :href="route('users.edit', $user)"
-                                    variant="ghost" size="sm" title="Editar usuario" wire:navigate>
+                                <flux:button :href="route('users.edit', $user)" variant="ghost" size="sm"
+                                    title="Editar usuario" wire:navigate>
                                     <flux:icon.pencil-square class="w-4 h-4" />
                                 </flux:button>
 
                                 @can('update', $user)
-                                    <flux:button wire:click="toggleStatus({{ $user->id }})"
-                                        variant="ghost" size="sm"
+                                    <flux:button wire:click="toggleStatus({{ $user->id }})" variant="ghost" size="sm"
                                         :title="$user->is_active ? 'Desactivar usuario' : 'Activar usuario'">
                                         <flux:icon :name="$user->is_active ? 'lock-closed' : 'lock-open'" class="w-4 h-4" />
                                     </flux:button>
                                 @endcan
 
-                                <flux:button variant="danger" size="sm" title="Eliminar usuario">
+                                <flux:button size="sm" title="Eliminar usuario">
                                     <flux:icon.trash class="w-4 h-4" />
                                 </flux:button>
                             </flux:button.group>
@@ -95,7 +90,8 @@
                 @empty
                     <flux:table.row>
                         <flux:table.cell colspan="5" class="text-center py-10">
-                            <flux:text size="sm" class="text-zinc-500 italic">No se encontraron usuarios con esos criterios.</flux:text>
+                            <flux:text size="sm" class="text-zinc-500 italic">No se encontraron usuarios con esos criterios.
+                            </flux:text>
                         </flux:table.cell>
                     </flux:table.row>
                 @endforelse
