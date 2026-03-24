@@ -23,7 +23,7 @@
 * [x] Cache de permisos habilitado
 * [x] Middleware de autorización global
 * [x] Configurar `preventLazyLoading` — Pendiente: agregar en AppServiceProvider para evitar N+1 queries
-* [x] Auditoría base (`audit_logs`) — Pendiente: implementar modelo y listeners para trazabilidad
+* [x] Auditoría base (`audit_logs`) — Implementado: modelo AuditLog y trait Auditable con listeners para trazabilidad
 * [ ] BaseModel con:
   * [ ] ULIDs / UUID — Pendiente: crear BaseModel con ULID primary key
   * [x] SoftDeletes — Implementado en User model
@@ -36,7 +36,28 @@
 
 ---
 
-# 🏢 Sprint 1 — Organization + Location (estructura)
+# � Sprint 0+ — UI/UX Enhancements (acabado)
+
+> Mejoras de experiencia de usuario aplicadas globalmente
+
+### Mejoras de Interfaz
+
+* [x] **Botones de acción con iconos:** Reemplazar texto plano por `flux:button.group` con iconos Heroicons
+  * [x] OrganizationModule: list-directorates, list-departments, list-teams, list-positions
+  * [x] CoreModule: list-users (dropdown → button group)
+* [x] **Consistencia visual:** Todos los módulos usan el mismo patrón de botones
+* [x] **Accesibilidad:** Atributos `title` en todos los botones de acción
+* [x] **Iconos utilizados:** eye (👁️), pencil-square (✏️), lock-closed/open (🔒/🔓), trash (🗑️)
+
+### Impacto
+
+* **UX mejorada:** Interfaz más intuitiva y moderna
+* **Consistencia:** Patrón uniforme en todas las tablas del sistema
+* **Accesibilidad:** Tooltips informativos en botones
+
+---
+
+# �🏢 Sprint 1 — Organization + Location (estructura)
 
 > Base estructural. Sin esto no existe jerarquía.
 
@@ -309,26 +330,41 @@ Romper este orden = retrabajo garantizado.
 # 📈 Avance Actual del Proyecto
 
 **Fecha:** 24 de marzo de 2026
-**Sprint Actual:** 0 (Foundation)
-**Progreso:** 100% completado
+**Sprint Actual:** 0 (Foundation) - Completado + Mejoras UI
+**Progreso:** 100% Foundation + UI Enhancements
 
 ### Estado de Sprints:
-- **Sprint 0:** 8/8 tareas completadas
-- **Sprint 1-7:** Pendientes
+- **Sprint 0:** 8/8 tareas completadas + 2 mejoras UI
+- **Sprint 1:** 7/10 tareas completadas (OrganizationModule base listo)
+- **Sprint 2-7:** Pendientes
 
 ### Próximas Acciones:
-- Completar elementos críticos de Sprint 0 (auditoría, preventLazyLoading)
-- Iniciar Sprint 1 (Organization + Location)
+- ✅ **Completado:** Mejoras de UI (botones con iconos en todas las tablas)
+- Completar elementos críticos de Sprint 0 (BaseModel con ULIDs)
+- Iniciar Sprint 1 completo (LocationModule)
+- Implementar EmployeesModule (núcleo de negocio)
 
 ### Métricas Funcionales:
 - [x] Usuario puede iniciar sesión (implementado con Fortify)
+- [x] Usuario puede gestionar organización (directorates, departments, teams, positions)
+- [x] Usuario puede gestionar usuarios del sistema
+- [x] Interfaz moderna con iconos y botones consistentes
 - [ ] Usuario puede ver su equipo (pendiente: EmployeesModule)
 - [ ] WFM puede crear horario (pendiente: SchedulingModule)
 - [ ] Operador puede ver su horario (pendiente)
 - [ ] Operador puede pedir permiso (pendiente: WorkflowsModule)
 - [ ] Coordinador puede aprobar (pendiente)
 
-El proyecto está en fase de foundation sólida, con base RBAC y UI administrativa funcional. Faltan módulos de negocio para alcanzar usabilidad real.
+### Métricas de Calidad:
+- [x] RBAC completo con Spatie Permission
+- [x] Auditoría implementada para trazabilidad
+- [x] UI consistente con Flux + Heroicons
+- [x] Arquitectura modular funcional
+- [x] Cache de permisos habilitado
+- [ ] BaseModel con ULIDs (pendiente)
+- [ ] preventLazyLoading (pendiente)
+
+El proyecto está en fase de **foundation sólida con UI pulida**. Base RBAC completa, organización jerárquica implementada, UI moderna y consistente. Listo para iniciar módulos de negocio (Employees → Scheduling → Workflows).
 
 ---
 
@@ -336,11 +372,16 @@ El proyecto está en fase de foundation sólida, con base RBAC y UI administrati
 
 No midas por “features hechas”, mide por:
 
-* [ ] Usuario puede iniciar sesión
-* [ ] Usuario puede ver su equipo
-* [ ] WFM puede crear horario
-* [ ] Operador puede ver su horario
-* [ ] Operador puede pedir permiso
-* [ ] Coordinador puede aprobar
+* [x] Usuario puede iniciar sesión
+* [x] Usuario puede gestionar estructura organizacional (direcciones, departamentos, equipos, posiciones)
+* [x] Usuario puede gestionar usuarios del sistema
+* [x] Interfaz de usuario moderna y consistente con iconos
+* [x] Sistema de permisos RBAC completo
+* [x] Auditoría y trazabilidad implementada
+* [ ] Usuario puede ver su equipo (pendiente: EmployeesModule)
+* [ ] WFM puede crear horario (pendiente: SchedulingModule)
+* [ ] Operador puede ver su horario (pendiente)
+* [ ] Operador puede pedir permiso (pendiente: WorkflowsModule)
+* [ ] Coordinador puede aprobar (pendiente)
 
 Si eso no funciona → tu sistema no existe.
