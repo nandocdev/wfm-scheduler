@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Cache;
  */
 class PositionObserver {
     public function created(Position $position): void {
-        Cache::tags(['organization'])->flush();
+        Cache::forget('positions_list');
     }
 
     public function updated(Position $position): void {
@@ -21,5 +21,6 @@ class PositionObserver {
 
     public function deleted(Position $position): void {
         Cache::forget("position:{$position->id}");
+        Cache::forget('positions_list');
     }
 }

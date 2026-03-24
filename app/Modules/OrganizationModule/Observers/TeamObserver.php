@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Cache;
  */
 class TeamObserver {
     public function created(Team $team): void {
-        Cache::tags(['organization'])->flush();
+        Cache::forget('teams_list');
     }
 
     public function updated(Team $team): void {
@@ -21,5 +21,6 @@ class TeamObserver {
 
     public function deleted(Team $team): void {
         Cache::forget("team:{$team->id}");
+        Cache::forget('teams_list');
     }
 }

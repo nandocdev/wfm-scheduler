@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Cache;
  */
 class DirectorateObserver {
     public function created(Directorate $directorate): void {
-        Cache::tags(['organization'])->flush();
+        Cache::forget('directorates_list');
     }
 
     public function updated(Directorate $directorate): void {
@@ -21,5 +21,6 @@ class DirectorateObserver {
 
     public function deleted(Directorate $directorate): void {
         Cache::forget("directorate:{$directorate->id}");
+        Cache::forget('directorates_list');
     }
 }

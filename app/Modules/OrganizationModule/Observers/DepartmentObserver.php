@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Cache;
  */
 class DepartmentObserver {
     public function created(Department $department): void {
-        Cache::tags(['organization'])->flush();
+        Cache::forget('departments_list');
     }
 
     public function updated(Department $department): void {
@@ -21,5 +21,6 @@ class DepartmentObserver {
 
     public function deleted(Department $department): void {
         Cache::forget("department:{$department->id}");
+        Cache::forget('departments_list');
     }
 }
