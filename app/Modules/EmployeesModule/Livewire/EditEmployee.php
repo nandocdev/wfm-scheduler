@@ -138,6 +138,6 @@ class EditEmployee extends Component {
      * Renderiza el componente.
      */
     public function render() {
-        return view('employees::edit-employee');
+        return view('livewire.edit-employee');
     }
 }

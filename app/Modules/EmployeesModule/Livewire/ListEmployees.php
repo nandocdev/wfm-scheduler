@@ -100,7 +100,7 @@ class ListEmployees extends Component {
     }
 
     public function render() {
-        return view('employees::livewire.list-employees', [
+        return view('livewire.list-employees', [
             'employees' => $this->employees,
             'filterOptions' => $this->filterOptions,
         ]);

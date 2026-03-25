@@ -137,7 +137,7 @@ class CreateEmployee extends Component {
     }
 
     public function render() {
-        return view('employees::livewire.create-employee', [
+        return view('livewire.create-employee', [
             'selectOptions' => $this->selectOptions,
         ]);
     }
