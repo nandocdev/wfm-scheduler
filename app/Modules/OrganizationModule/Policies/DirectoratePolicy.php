@@ -3,7 +3,7 @@
 namespace App\Modules\OrganizationModule\Policies;
 
 use App\Modules\OrganizationModule\Models\Directorate;
-use App\Modules\Users\Models\User;
+use App\Modules\CoreModule\Models\User;
 
 /**
  * Define los permisos de acceso al recurso Directorate.
