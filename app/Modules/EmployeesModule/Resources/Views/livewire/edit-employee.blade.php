@@ -111,7 +111,7 @@
                     <flux:label>Ubicación *</flux:label>
                     <flux:select wire:model="location_id" placeholder="Seleccionar ubicación">
                         @foreach($locations as $location)
-                        <flux:option value="{{ $location->id }}">{{ $location->name }}</flux:option>
+                            <flux:option value="{{ $location->id }}">{{ $location->name }}</flux:option>
                         @endforeach
                     </flux:select>
                     <flux:error name="location_id" />
@@ -121,7 +121,7 @@
                     <flux:label>Equipo *</flux:label>
                     <flux:select wire:model.live="team_id" placeholder="Seleccionar equipo">
                         @foreach($teams as $team)
-                        <flux:option value="{{ $team->id }}">{{ $team->name }}</flux:option>
+                            <flux:option value="{{ $team->id }}">{{ $team->name }}</flux:option>
                         @endforeach
                     </flux:select>
                     <flux:error name="team_id" />
@@ -132,7 +132,8 @@
                     <flux:select wire:model="manager_id" placeholder="Seleccionar manager">
                         <flux:option value="">Sin manager</flux:option>
                         @foreach($possibleManagers as $manager)
-                        <flux:option value="{{ $manager->id }}">{{ $manager->full_name }} - {{ $manager->position }}</flux:option>
+                            <flux:option value="{{ $manager->id }}">{{ $manager->full_name }} - {{ $manager->position }}
+                            </flux:option>
                         @endforeach
                     </flux:select>
                     <flux:error name="manager_id" />
