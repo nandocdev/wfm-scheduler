@@ -18,6 +18,7 @@ class Team extends Model {
     protected $fillable = [
         'name',
         'description',
+        'supervisor_id',
         'is_active',
     ];
 
@@ -30,6 +31,13 @@ class Team extends Model {
      */
     public function members(): HasMany {
         return $this->hasMany(TeamMember::class);
+    }
+
+    /**
+     * Supervisor del equipo.
+     */
+    public function supervisor(): \Illuminate\Database\Eloquent\Relations\BelongsTo {
+        return $this->belongsTo(\App\Modules\EmployeesModule\Models\Employee::class, 'supervisor_id');
     }
 
     /**
