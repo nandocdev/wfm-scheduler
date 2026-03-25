@@ -30,7 +30,7 @@
 - ✅ ModuleServiceProvider registrado
 
 ## Próximas Iteraciones
-- 📋 Gestión de empleados (próxima prioridad)
+- ✅ Gestión de empleados (COMPLETADA - Iteración 3)
 - 📋 Programación de horarios
 - 📋 Control de asistencia
 - 📋 Reportes y analytics
