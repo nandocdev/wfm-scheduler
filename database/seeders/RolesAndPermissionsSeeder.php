@@ -23,6 +23,7 @@ class RolesAndPermissionsSeeder extends Seeder {
 
         // 1. Permisos definidos explícitamente en el código actual
         $permissions = [
+            // Core Module
             'users.view',
             'users.create',
             'users.edit',
@@ -30,6 +31,33 @@ class RolesAndPermissionsSeeder extends Seeder {
             'roles.view',
             'roles.create',
             'roles.edit',
+
+            // Organization Module
+            'directorates.viewAny',
+            'directorates.create',
+            'directorates.update',
+            'directorates.delete',
+            'departments.viewAny',
+            'departments.create',
+            'departments.update',
+            'departments.delete',
+            'teams.viewAny',
+            'teams.create',
+            'teams.update',
+            'teams.delete',
+            'positions.viewAny',
+            'positions.create',
+            'positions.update',
+            'positions.delete',
+
+            // Employees Module
+            'employees.view',
+            'employees.view.all',
+            'employees.create',
+            'employees.edit',
+            'employees.edit.all',
+            'employees.delete',
+            'employees.delete.all',
         ];
 
         // Registro de permisos

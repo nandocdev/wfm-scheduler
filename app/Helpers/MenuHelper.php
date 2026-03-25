@@ -46,31 +46,44 @@ class MenuHelper {
             [
                 'label' => __('Organización'),
                 'icon' => 'building-office',
-                'permission' => null, // TODO: definir permisos específicos
+                'permission' => null, // Agrupador sin permiso específico
                 'submenu' => [
                     [
                         'label' => __('Direcciones'),
                         'route' => 'organization.directorates.index',
                         'pattern' => 'organization/directorates*',
-                        'permission' => null, // TODO: 'directorates.view'
+                        'permission' => 'directorates.viewAny',
                     ],
                     [
                         'label' => __('Departamentos'),
                         'route' => 'organization.departments.index',
                         'pattern' => 'organization/departments*',
-                        'permission' => null, // TODO: 'departments.view'
+                        'permission' => 'departments.viewAny',
                     ],
                     [
                         'label' => __('Equipos'),
                         'route' => 'organization.teams.index',
                         'pattern' => 'organization/teams*',
-                        'permission' => null, // TODO: 'teams.view'
+                        'permission' => 'teams.viewAny',
                     ],
                     [
                         'label' => __('Posiciones'),
                         'route' => 'organization.positions.index',
                         'pattern' => 'organization/positions*',
-                        'permission' => null, // TODO: 'positions.view'
+                        'permission' => 'positions.viewAny',
+                    ],
+                ],
+            ],
+            [
+                'label' => __('Empleados'),
+                'icon' => 'users',
+                'permission' => 'employees.view',
+                'submenu' => [
+                    [
+                        'label' => __('Lista de Empleados'),
+                        'route' => 'employees.index',
+                        'pattern' => 'employees*',
+                        'permission' => 'employees.view',
                     ],
                 ],
             ],
