@@ -17,6 +17,9 @@ class AssignEmployeesToTeamAction {
      */
     public function assign(AssignEmployeesToTeamDTO $dto): void {
         DB::transaction(function () use ($dto) {
+            $team = Team::find($dto->teamId);
+            $supervisorId = $team?->supervisor_id;
+
             foreach ($dto->employeeIds as $employeeId) {
                 // Marcar cualquier asignación previa como inactiva
                 TeamMember::where('employee_id', $employeeId)
@@ -30,6 +33,12 @@ class AssignEmployeesToTeamAction {
                     'joined_at' => now(),
                     'is_active' => true,
                 ]);
+
+                // Sincronizar supervisor (parent_id) si el equipo tiene uno asignado
+                if ($supervisorId) {
+                    \App\Modules\EmployeesModule\Models\Employee::where('id', $employeeId)
+                        ->update(['parent_id' => $supervisorId]);
+                }
             }
         });
     }
@@ -39,10 +48,20 @@ class AssignEmployeesToTeamAction {
      */
     public function unassign(AssignEmployeesToTeamDTO $dto): void {
         DB::transaction(function () use ($dto) {
+            $team = Team::find($dto->teamId);
+            $supervisorId = $team?->supervisor_id;
+
             TeamMember::where('team_id', $dto->teamId)
                 ->whereIn('employee_id', $dto->employeeIds)
                 ->where('is_active', true)
                 ->update(['is_active' => false, 'left_at' => now()]);
+
+            // Limpiar parent_id solo si coincide con el supervisor del equipo del que se está saliendo
+            if ($supervisorId) {
+                \App\Modules\EmployeesModule\Models\Employee::whereIn('id', $dto->employeeIds)
+                    ->where('parent_id', $supervisorId)
+                    ->update(['parent_id' => null]);
+            }
         });
     }
 }

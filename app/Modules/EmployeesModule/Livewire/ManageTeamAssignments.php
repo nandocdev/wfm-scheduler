@@ -13,10 +13,39 @@ use Livewire\Component;
  */
 class ManageTeamAssignments extends Component {
     public int $selectedTeamId = 0;
+    public ?int $supervisor_id = null;
     public array $selectedUnassigned = [];
     public array $selectedAssigned = [];
 
     protected $listeners = ['refresh' => '$refresh'];
+ 
+    /**
+     * Carga el supervisor actual al cambiar de equipo.
+     */
+    public function updatedSelectedTeamId($value): void {
+        $this->supervisor_id = Team::find($value)?->supervisor_id;
+        $this->selectedAssigned = [];
+        $this->selectedUnassigned = [];
+    }
+
+    /**
+     * Actualiza el supervisor del equipo.
+     */
+    public function updateSupervisor(): void {
+        if (!$this->selectedTeamId) return;
+
+        $team = Team::find($this->selectedTeamId);
+        if ($team instanceof Team) {
+            $team->update(['supervisor_id' => $this->supervisor_id]);
+        }
+
+        // Sincronizar parent_id a todos los miembros actuales
+        Employee::whereHas('currentTeamMember', function ($q) {
+            $q->where('team_id', $this->selectedTeamId);
+        })->update(['parent_id' => $this->supervisor_id]);
+
+        session()->flash('success', 'Supervisor del equipo actualizado y jerarquía sincronizada.');
+    }
 
     /**
      * Reglas de validación.
@@ -30,14 +59,24 @@ class ManageTeamAssignments extends Component {
     /**
      * Obtiene los equipos disponibles.
      */
-    public function getTeamsProperty(): \Illuminate\Database\Eloquent\Collection {
+    public function getTeamsProperty(): \Illuminate\Support\Collection {
         return Team::where('is_active', true)->orderBy('name')->get();
+    }
+
+    /**
+     * Obtiene los supervisores disponibles para asignar al equipo.
+     */
+    public function getSupervisorsProperty(): \Illuminate\Support\Collection {
+        return Employee::where('is_manager', true)
+            ->where('is_active', true)
+            ->orderBy('first_name')
+            ->get();
     }
 
     /**
      * Obtiene empleados sin asignar a ningún equipo.
      */
-    public function getUnassignedEmployeesProperty(): \Illuminate\Database\Eloquent\Collection {
+    public function getUnassignedEmployeesProperty(): \Illuminate\Support\Collection {
         return Employee::whereDoesntHave('currentTeamMember')
             ->where('is_active', true)
             ->orderBy('first_name')
@@ -48,7 +87,7 @@ class ManageTeamAssignments extends Component {
     /**
      * Obtiene empleados asignados al equipo seleccionado.
      */
-    public function getAssignedEmployeesProperty(): \Illuminate\Database\Eloquent\Collection {
+    public function getAssignedEmployeesProperty(): \Illuminate\Support\Collection {
         if (!$this->selectedTeamId) {
             return collect();
         }
