@@ -58,6 +58,16 @@ class RolesAndPermissionsSeeder extends Seeder {
             'employees.edit.all',
             'employees.delete',
             'employees.delete.all',
+            'employees.manageTeamAssignments',
+
+            // Communications Module
+            'news.viewAny',
+            'news.view',
+            'news.create',
+            'news.update',
+            'news.delete',
+            'shoutouts.manage',
+            'polls.manage',
         ];
 
         // Registro de permisos
