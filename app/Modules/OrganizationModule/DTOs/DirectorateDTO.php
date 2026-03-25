@@ -9,6 +9,7 @@ readonly class DirectorateDTO {
     public function __construct(
         public string $name,
         public ?string $description = null,
+        public bool $is_active = true,
     ) {
     }
 
@@ -21,6 +22,7 @@ readonly class DirectorateDTO {
         return new self(
             name: $data['name'],
             description: $data['description'] ?? null,
+            is_active: (bool) ($data['is_active'] ?? true),
         );
     }
 }
