@@ -13,6 +13,7 @@ use App\Modules\LocationModule\Models\Township;
 use App\Modules\EmployeesModule\Models\EmploymentStatus;
 use App\Modules\EmployeesModule\Models\Employee;
 use App\Modules\CoreModule\Models\User;
+use Flux\Flux;
 use Livewire\Component;
 
 /**
@@ -84,7 +85,8 @@ class CreateEmployee extends Component {
             'departments' => Department::orderBy('name')->pluck('name', 'id'),
             'positions' => Position::orderBy('name')->pluck('name', 'id'),
             'employment_statuses' => EmploymentStatus::orderBy('name')->pluck('name', 'id'),
-            'managers' => Employee::where('is_manager', true)->orderBy('last_name')->orderBy('first_name')
+            'employees' => Employee::where('is_manager', true)->orderBy('last_name')->orderBy('first_name')
+                ->get()
                 ->pluck('full_name', 'id'),
             'users' => User::doesntHave('employee')->orderBy('name')->pluck('name', 'id'),
         ];
@@ -131,13 +133,12 @@ class CreateEmployee extends Component {
         $action = app(CreateEmployeeAction::class);
         $employee = $action->execute($dto);
 
-        session()->flash('success', 'Empleado creado correctamente.');
-
-        return $this->redirect(route('employees.show', $employee), navigate: true);
+        Flux::toast('Empleado creado correctamente.');
+        $this->redirect(route('employees.show', $employee), navigate: true);
     }
 
     public function render() {
-        return view('livewire.create-employee', [
+        return view('employees::livewire.create-employee', [
             'selectOptions' => $this->selectOptions,
         ]);
     }

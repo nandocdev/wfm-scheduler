@@ -30,6 +30,9 @@ class ModuleServiceProvider extends ServiceProvider {
 
         // 2. Autorización
         $this->registerPolicies();
+
+        // 3. Carga de vistas con namespace
+        $this->loadViews();
     }
 
     /**
@@ -46,9 +49,6 @@ class ModuleServiceProvider extends ServiceProvider {
         }
 
         if (is_dir($viewsPath)) {
-            // Agregar ubicación de vistas para acceso sin namespace (componentes globales disponibles)
-            \Illuminate\Support\Facades\View::addLocation($viewsPath);
-
             // Registro manual de componentes para control granular
             Livewire::component('employees.list-employees', \App\Modules\EmployeesModule\Livewire\ListEmployees::class);
             Livewire::component('employees.create-employee', \App\Modules\EmployeesModule\Livewire\CreateEmployee::class);
@@ -64,9 +64,7 @@ class ModuleServiceProvider extends ServiceProvider {
     }
 
     private function loadViews(): void {
-        $this->loadViewsFrom(
-            __DIR__ . '/../Resources/Views',
-            'employees'
-        );
+        $viewsPath = __DIR__ . '/../Resources/Views';
+        $this->loadViewsFrom($viewsPath, 'employees');
     }
 }
