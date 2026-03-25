@@ -46,7 +46,8 @@ class ModuleServiceProvider extends ServiceProvider {
         }
 
         if (is_dir($viewsPath)) {
-            $this->loadViewsFrom($viewsPath, 'employees');
+            // Agregar ubicación de vistas para acceso sin namespace (componentes globales disponibles)
+            \Illuminate\Support\Facades\View::addLocation($viewsPath);
 
             // Registro manual de componentes para control granular
             Livewire::component('employees.list-employees', \App\Modules\EmployeesModule\Livewire\ListEmployees::class);
