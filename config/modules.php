@@ -20,5 +20,6 @@ return [
         \App\Modules\OperationsModule\Providers\ModuleServiceProvider::class,
         \App\Modules\WorkflowsModule\Providers\ModuleServiceProvider::class,
         \App\Modules\SupportModule\Providers\ModuleServiceProvider::class,
+        \App\Modules\CommunicationsModule\Providers\CommunicationsServiceProvider::class,
     ],
 ];

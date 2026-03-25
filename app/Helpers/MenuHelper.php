@@ -93,8 +93,19 @@ class MenuHelper {
                     ],
                 ],
             ],
-            // Los módulos adicionales pueden inyectar aquí sus menús
-            // O podemos centralizar las llamadas a métodos estáticos de los módulos
+            [
+                'label' => __('Comunicaciones'),
+                'icon' => 'chat-bubble-left-right',
+                'permission' => 'news.viewAny', 
+                'submenu' => [
+                    [
+                        'label' => __('Noticias'),
+                        'route' => 'communications.news.index',
+                        'pattern' => 'admin/communications/news*',
+                        'permission' => 'news.viewAny',
+                    ],
+                ],
+            ],
         ])->filter(fn($item) => self::canView($item))
             ->map(fn($item) => self::processActiveStates($item));
     }
