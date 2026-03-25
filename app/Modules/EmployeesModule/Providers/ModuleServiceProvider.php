@@ -5,8 +5,6 @@ namespace App\Modules\EmployeesModule\Providers;
 use App\Modules\EmployeesModule\Models\Employee;
 use App\Modules\EmployeesModule\Observers\EmployeeObserver;
 use App\Modules\EmployeesModule\Policies\EmployeePolicy;
-use App\Modules\EmployeesModule\Livewire\CreateEmployee;
-use App\Modules\EmployeesModule\Livewire\ListEmployees;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -22,12 +20,20 @@ use Livewire\Livewire;
  * @created 2026-03-25
  */
 class ModuleServiceProvider extends ServiceProvider {
+    public function register(): void {
+        // Registrar componentes Livewire en register() para asegurar que estén disponibles temprano
+    }
+
     public function boot(): void {
         $this->registerRoutes();
         $this->registerObservers();
         $this->registerPolicies();
-        $this->registerLivewireComponents();
         $this->loadViews();
+
+        // Asegurar que Livewire discover los componentes
+        \Livewire\Livewire::component('employees::list-employees', \App\Modules\EmployeesModule\Livewire\ListEmployees::class);
+        \Livewire\Livewire::component('employees::create-employee', \App\Modules\EmployeesModule\Livewire\CreateEmployee::class);
+        \Livewire\Livewire::component('employees::edit-employee', \App\Modules\EmployeesModule\Livewire\EditEmployee::class);
     }
 
     private function registerRoutes(): void {
@@ -43,11 +49,6 @@ class ModuleServiceProvider extends ServiceProvider {
 
     private function registerPolicies(): void {
         Gate::policy(Employee::class, EmployeePolicy::class);
-    }
-
-    private function registerLivewireComponents(): void {
-        Livewire::component('employees::list-employees', ListEmployees::class);
-        Livewire::component('employees::create-employee', CreateEmployee::class);
     }
 
     private function loadViews(): void {

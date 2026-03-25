@@ -19,6 +19,6 @@
         </div>
 
         <!-- Lista de empleados -->
-        <livewire:employees::list-employees />
+        @livewire('employees::list-employees')
     </div>
 @endsection

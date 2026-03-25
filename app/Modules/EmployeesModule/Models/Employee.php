@@ -6,12 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Employee extends Model
-{
+class Employee extends Model {
     protected $fillable = [
-        'employee_number', 'username', 'first_name', 'last_name', 'email', 
+        'employee_number', 'username', 'first_name', 'last_name', 'email',
         'birth_date', 'gender', 'blood_type', 'phone', 'mobile_phone', 'address',
-        'township_id', 'department_id', 'position_id', 'employment_status_id', 
+        'township_id', 'department_id', 'position_id', 'employment_status_id',
         'parent_id', 'user_id', 'hire_date', 'salary', 'is_active', 'is_manager', 'metadata'
     ];
 
@@ -25,60 +24,73 @@ class Employee extends Model
     ];
 
     // Relaciones Fundacionales
-    public function user(): BelongsTo
-    {
+    public function user(): BelongsTo {
         return $this->belongsTo(\App\Modules\CoreModule\Models\User::class);
     }
 
-    public function township(): BelongsTo
-    {
+    public function township(): BelongsTo {
         return $this->belongsTo(\App\Modules\LocationModule\Models\Township::class);
     }
 
-    public function department(): BelongsTo
-    {
+    public function department(): BelongsTo {
         return $this->belongsTo(\App\Modules\OrganizationModule\Models\Department::class);
     }
 
-    public function position(): BelongsTo
-    {
+    public function position(): BelongsTo {
         return $this->belongsTo(\App\Modules\OrganizationModule\Models\Position::class);
     }
 
-    public function employmentStatus(): BelongsTo
-    {
+    public function employmentStatus(): BelongsTo {
         return $this->belongsTo(EmploymentStatus::class);
     }
 
     // Jerarquía Operativa (Adjacency List)
-    public function manager(): BelongsTo
-    {
+    public function manager(): BelongsTo {
         return $this->belongsTo(Employee::class, 'parent_id');
     }
 
-    public function subordinates(): HasMany
-    {
+    public function subordinates(): HasMany {
         return $this->hasMany(Employee::class, 'parent_id');
     }
 
     // Detalles del Empleado
-    public function positions(): HasMany
-    {
+    public function positions(): HasMany {
         return $this->hasMany(EmployeePosition::class);
     }
 
-    public function dependents(): HasMany
-    {
+    public function dependents(): HasMany {
         return $this->hasMany(EmployeeDependent::class);
     }
 
-    public function diseases(): HasMany
-    {
+    public function diseases(): HasMany {
         return $this->hasMany(EmployeeDisease::class);
     }
 
-    public function disabilities(): HasMany
-    {
+    public function disabilities(): HasMany {
         return $this->hasMany(EmployeeDisability::class);
+    }
+
+    // Accessors
+    public function getFullNameAttribute(): string {
+        return trim("{$this->first_name} {$this->last_name}");
+    }
+
+    public function getGenderLabelAttribute(): string {
+        return match ($this->gender) {
+            'M' => 'Masculino',
+            'F' => 'Femenino',
+            'O' => 'Otro',
+            default => 'No especificado',
+        };
+    }
+
+    public function getContractTypeLabelAttribute(): string {
+        return match ($this->contract_type ?? '') {
+            'full_time' => 'Tiempo completo',
+            'part_time' => 'Medio tiempo',
+            'contract' => 'Contrato',
+            'temporary' => 'Temporal',
+            default => 'No especificado',
+        };
     }
 }
