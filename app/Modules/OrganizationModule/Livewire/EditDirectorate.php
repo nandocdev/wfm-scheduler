@@ -22,7 +22,7 @@ class EditDirectorate extends Component {
 
         $this->name = $directorate->name;
         $this->description = $directorate->description;
-        $this->is_active = $directorate->is_active;
+        $this->is_active = (bool) $directorate->is_active;
     }
 
     /**
