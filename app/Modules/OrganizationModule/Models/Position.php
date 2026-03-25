@@ -5,6 +5,7 @@ namespace App\Modules\OrganizationModule\Models;
 use App\Modules\CoreModule\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Modelo para Positions (Cargos).

@@ -24,7 +24,7 @@ class CreateDirectorateAction {
             return Directorate::create([
                 'name' => $dto->name,
                 'description' => $dto->description,
-                'is_active' => $dto->is_active,
+                'is_active' => property_exists($dto, 'is_active') ? $dto->is_active : true,
             ]);
         });
     }

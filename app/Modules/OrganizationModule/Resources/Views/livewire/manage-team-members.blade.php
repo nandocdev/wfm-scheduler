@@ -135,9 +135,9 @@
                     <flux:label>Empleado</flux:label>
                     <flux:select wire:model="employee_id" placeholder="Selecciona un empleado">
                         @foreach($availableEmployees as $employee)
-                            <flux:option value="{{ $employee->id }}">
+                                <flux:select.option value="{{ $employee->id }}">
                                 {{ $employee->name }} ({{ $employee->employee_number }})
-                            </flux:option>
+                            </flux:select.option>
                         @endforeach
                     </flux:select>
                     <flux:error name="employee_id" />
