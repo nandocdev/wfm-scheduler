@@ -26,6 +26,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('department_id')->constrained()->onDelete('cascade');
             $table->string('name');
+            $table->text('description')->nullable();
             $table->string('position_code')->unique();
             $table->decimal('salary', 10, 2)->nullable();
             $table->boolean('is_active')->default(true);

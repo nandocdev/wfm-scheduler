@@ -66,4 +66,11 @@ class User extends Authenticatable {
             ->map(fn($word) => Str::substr($word, 0, 1))
             ->implode('');
     }
+
+    /**
+     * Registro de empleado asociado a este usuario.
+     */
+    public function employee(): \Illuminate\Database\Eloquent\Relations\HasOne {
+        return $this->hasOne(\App\Modules\EmployeesModule\Models\Employee::class);
+    }
 }

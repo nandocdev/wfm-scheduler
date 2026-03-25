@@ -16,9 +16,16 @@ class Position extends Model {
 
     protected $fillable = [
         'department_id',
-        'title',
+        'name',
         'description',
         'position_code',
+        'salary',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'salary' => 'decimal:2',
+        'is_active' => 'boolean',
     ];
 
     /**
