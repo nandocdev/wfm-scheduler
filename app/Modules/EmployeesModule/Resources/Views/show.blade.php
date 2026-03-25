@@ -7,8 +7,8 @@
         <!-- Header -->
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900">{{ $employee->full_name }}</h1>
-                <p class="text-gray-600">{{ $employee->position }} • {{ $employee->department }}</p>
+                <flux:heading size="xl">{{ $employee->full_name }}</flux:heading>
+                <flux:subheading>{{ $employee->position?->name }} • {{ $employee->department?->name }}</flux:subheading>
             </div>
 
             <div class="flex items-center gap-3">
@@ -29,12 +29,12 @@
             <!-- Información principal -->
             <div class="lg:col-span-2 space-y-6">
                 <!-- Detalles personales -->
-                <flux:card>
-                    <flux:card.header>
+                <flux:card class="space-y-4">
+                    <div>
                         <flux:heading size="md">Información Personal</flux:heading>
-                    </flux:card.header>
+                    </div>
 
-                    <flux:card.content>
+                    <div>
                         <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <dt class="text-sm font-medium text-gray-500">Nombre completo</dt>
@@ -70,7 +70,7 @@
                 </flux:card>
 
                 <!-- Información laboral -->
-                <flux:card>
+                <flux:card class="space-y-4">
                     <flux:card.header>
                         <flux:heading size="md">Información Laboral</flux:heading>
                     </flux:card.header>
@@ -79,11 +79,11 @@
                         <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <dt class="text-sm font-medium text-gray-500">Posición</dt>
-                                <dd class="text-sm text-gray-900">{{ $employee->position }}</dd>
+                                <dd class="text-sm text-gray-900">{{ $employee->position?->name }}</dd>
                             </div>
                             <div>
                                 <dt class="text-sm font-medium text-gray-500">Departamento</dt>
-                                <dd class="text-sm text-gray-900">{{ $employee->department }}</dd>
+                                <dd class="text-sm text-gray-900">{{ $employee->department?->name }}</dd>
                             </div>
                             <div>
                                 <dt class="text-sm font-medium text-gray-500">Fecha de contratación</dt>
@@ -109,24 +109,24 @@
             <!-- Información adicional -->
             <div class="space-y-6">
                 <!-- Ubicación -->
-                <flux:card>
+                <flux:card class="space-y-4">
                     <flux:card.header>
                         <flux:heading size="md">Ubicación</flux:heading>
                     </flux:card.header>
 
                     <flux:card.content>
                         <div class="space-y-2">
-                            <div class="text-sm text-gray-900">{{ $employee->location->name }}</div>
-                            <div class="text-sm text-gray-600">{{ $employee->location->address }}</div>
-                            <div class="text-sm text-gray-600">{{ $employee->location->city }},
-                                {{ $employee->location->state }}</div>
+                            <div class="text-sm text-gray-900">{{ $employee->township?->name }}</div>
+                            <div class="text-sm text-gray-600">{{ $employee->address }}</div>
+                            <div class="text-sm text-gray-600">{{ $employee->township?->district?->name }},
+                                {{ $employee->township?->district?->province?->name }}</div>
                         </div>
                     </flux:card.content>
                 </flux:card>
 
                 <!-- Reporta a -->
                 @if($employee->manager)
-                    <flux:card>
+                    <flux:card class="space-y-4">
                         <flux:card.header>
                             <flux:heading size="md">Reporta a</flux:heading>
                         </flux:card.header>
@@ -140,7 +140,7 @@
                                 </div>
                                 <div>
                                     <div class="text-sm font-medium text-gray-900">{{ $employee->manager->full_name }}</div>
-                                    <div class="text-sm text-gray-600">{{ $employee->manager->position }}</div>
+                                    <div class="text-sm text-gray-600">{{ $employee->manager->position?->name }}</div>
                                 </div>
                             </div>
                         </flux:card.content>
@@ -149,7 +149,7 @@
 
                 <!-- Subordinados -->
                 @if($employee->subordinates->count() > 0)
-                    <flux:card>
+                    <flux:card class="space-y-4">
                         <flux:card.header>
                             <flux:heading size="md">Subordinados ({{ $employee->subordinates->count() }})</flux:heading>
                         </flux:card.header>
@@ -165,7 +165,7 @@
                                         </div>
                                         <div>
                                             <div class="text-sm font-medium text-gray-900">{{ $subordinate->full_name }}</div>
-                                            <div class="text-sm text-gray-600">{{ $subordinate->position }}</div>
+                                            <div class="text-sm text-gray-600">{{ $subordinate->position?->title }}</div>
                                         </div>
                                     </div>
                                 @endforeach

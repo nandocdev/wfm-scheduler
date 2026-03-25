@@ -7,8 +7,8 @@
         <!-- Header -->
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900">Crear Empleado</h1>
-                <p class="text-gray-600">Agrega un nuevo empleado a la organización</p>
+                <flux:heading size="xl">Crear Empleado</flux:heading>
+                <flux:subheading>Agrega un nuevo empleado a la organización</flux:subheading>
             </div>
 
             <flux:button href="{{ route('employees.index') }}" variant="ghost" wire:navigate>
@@ -17,6 +17,6 @@
         </div>
 
         <!-- Formulario de creación -->
-        <livewire:employees::create-employee />
+        @livewire('employees.create-employee')
     </div>
 @endsection

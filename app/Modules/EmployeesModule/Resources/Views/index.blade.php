@@ -7,8 +7,8 @@
         <!-- Header -->
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900">Empleados</h1>
-                <p class="text-gray-600">Gestiona la información de los empleados de la organización</p>
+                <flux:heading size="xl">Empleados</flux:heading>
+                <flux:subheading>Gestiona la información de los empleados de la organización</flux:subheading>
             </div>
 
             @can('create', \App\Modules\EmployeesModule\Models\Employee::class)

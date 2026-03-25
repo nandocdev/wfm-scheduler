@@ -7,8 +7,8 @@
         <!-- Header -->
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900">Editar Empleado</h1>
-                <p class="text-gray-600">Modifica la información de {{ $employee->full_name }}</p>
+                <flux:heading size="xl">Editar Empleado</flux:heading>
+                <flux:subheading>Modifica la información de {{ $employee->full_name }}</flux:subheading>
             </div>
 
             <div class="flex items-center gap-3">
@@ -23,6 +23,6 @@
         </div>
 
         <!-- Formulario de edición -->
-        <livewire:employees::edit-employee :employee="$employee" />
+        @livewire('employees.edit-employee', ['employee' => $employee])
     </div>
 @endsection
