@@ -80,6 +80,7 @@ class EditPosition extends Component {
     }
 
     public function render() {
-        return view('organization::livewire.edit-position');
+        return view('organization::livewire.edit-position')
+            ->layout('layouts.app');
     }
 }

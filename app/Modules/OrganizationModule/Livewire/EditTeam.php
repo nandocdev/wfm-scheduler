@@ -67,6 +67,7 @@ class EditTeam extends Component {
     }
 
     public function render() {
-        return view('organization::livewire.edit-team');
+        return view('organization::livewire.edit-team')
+            ->layout('layouts.app');
     }
 }

@@ -36,6 +36,7 @@ class ShowDepartment extends Component {
     }
 
     public function render() {
-        return view('organization::livewire.show-department');
+        return view('organization::livewire.show-department')
+            ->layout('layouts.app');
     }
 }

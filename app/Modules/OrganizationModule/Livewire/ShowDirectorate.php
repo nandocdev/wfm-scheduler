@@ -36,6 +36,7 @@ class ShowDirectorate extends Component {
     }
 
     public function render() {
-        return view('organization::livewire.show-directorate');
+        return view('organization::livewire.show-directorate')
+            ->layout('layouts.app');
     }
 }

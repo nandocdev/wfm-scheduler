@@ -67,6 +67,7 @@ class EditDirectorate extends Component {
     }
 
     public function render() {
-        return view('organization::livewire.edit-directorate');
+        return view('organization::livewire.edit-directorate')
+            ->layout('layouts.app');
     }
 }

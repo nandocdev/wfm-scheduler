@@ -1,6 +1,3 @@
-@extends('layouts.app')
-
-@section('content')
     <div class="container mx-auto px-4 py-8">
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
@@ -91,13 +88,3 @@
             </div>
         </div>
     </div>
-
-    @push('scripts')
-        <script>
-            $wire.on('directorateStatusToggled', (event) => {
-                // Recargar la página para mostrar el estado actualizado
-                window.location.reload();
-            });
-        </script>
-    @endpush
-@endsection
