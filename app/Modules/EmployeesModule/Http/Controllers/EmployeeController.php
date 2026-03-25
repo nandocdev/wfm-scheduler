@@ -28,14 +28,14 @@ class EmployeeController extends Controller {
      */
     public function index(): View {
         // La lógica de filtrado se implementará en el Livewire component
-        return view('index');
+        return view('employees::index');
     }
 
     /**
      * Muestra el formulario para crear un empleado.
      */
     public function create(): View {
-        return view('create');
+        return view('employees::create');
     }
 
     /**
@@ -57,14 +57,14 @@ class EmployeeController extends Controller {
      * Muestra los detalles de un empleado.
      */
     public function show(Employee $employee): View {
-        return view('show', compact('employee'));
+        return view('employees::show', compact('employee'));
     }
 
     /**
      * Muestra el formulario para editar un empleado.
      */
     public function edit(Employee $employee): View {
-        return view('edit', compact('employee'));
+        return view('employees::edit', compact('employee'));
     }
 
     /**
