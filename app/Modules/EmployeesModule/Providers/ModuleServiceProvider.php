@@ -22,6 +22,7 @@ use Livewire\Livewire;
 class ModuleServiceProvider extends ServiceProvider {
     public function register(): void {
         // Registrar componentes Livewire en register() para asegurar que estén disponibles temprano
+        $this->registerLivewireComponents();
     }
 
     public function boot(): void {
@@ -29,11 +30,13 @@ class ModuleServiceProvider extends ServiceProvider {
         $this->registerObservers();
         $this->registerPolicies();
         $this->loadViews();
+    }
 
-        // Asegurar que Livewire discover los componentes
-        \Livewire\Livewire::component('employees::list-employees', \App\Modules\EmployeesModule\Livewire\ListEmployees::class);
-        \Livewire\Livewire::component('employees::create-employee', \App\Modules\EmployeesModule\Livewire\CreateEmployee::class);
-        \Livewire\Livewire::component('employees::edit-employee', \App\Modules\EmployeesModule\Livewire\EditEmployee::class);
+    private function registerLivewireComponents(): void {
+        // Configurar namespace para componentes Livewire del módulo
+        Livewire::component('employees::list-employees', \App\Modules\EmployeesModule\Livewire\ListEmployees::class);
+        Livewire::component('employees::create-employee', \App\Modules\EmployeesModule\Livewire\CreateEmployee::class);
+        Livewire::component('employees::edit-employee', \App\Modules\EmployeesModule\Livewire\EditEmployee::class);
     }
 
     private function registerRoutes(): void {
