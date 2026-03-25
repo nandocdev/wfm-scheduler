@@ -2,7 +2,7 @@ id,name,district_id
 1,Bocas del Toro (Cabecera),1
 2,Bastimentos,1
 3,Cauchero,1
-4,"Punta Laurel ",1
+4,Punta Laurel ,1
 5,Tierra Oscura,1
 6,Changuinola (Cabecera),2
 7,Almirante,2
@@ -213,7 +213,7 @@ id,name,district_id
 212,Setegantí,28
 213,Taimatí,28
 214,Tucutí,28
-215," Agua Fría",28
+215, Agua Fría,28
 216,Cucunatí,28
 217,Río Congo Arriba,28
 218,Santa Fe,28

@@ -31,7 +31,7 @@ class PanamaGeographySeeder extends Seeder {
         $provinces = $this->readCsv($csvPath);
 
         foreach ($provinces as $province) {
-            Province::create([
+            Province::firstOrCreate([
                 'name' => $province['name'],
             ]);
         }
@@ -47,7 +47,7 @@ class PanamaGeographySeeder extends Seeder {
         $districts = $this->readCsv($csvPath);
 
         foreach ($districts as $district) {
-            District::create([
+            District::firstOrCreate([
                 'province_id' => $district['province_id'],
                 'name' => $district['name'],
             ]);
@@ -64,9 +64,9 @@ class PanamaGeographySeeder extends Seeder {
         $townships = $this->readCsv($csvPath);
 
         foreach ($townships as $township) {
-            Township::create([
+            Township::firstOrCreate([
                 'district_id' => $township['district_id'],
-                'name' => trim($township['name']), // Limpiar espacios en blanco
+                'name' => trim($township['name']),
             ]);
         }
     }
