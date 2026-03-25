@@ -21,32 +21,40 @@ use Livewire\Livewire;
  */
 class ModuleServiceProvider extends ServiceProvider {
     public function register(): void {
-        // Registrar componentes Livewire en register() para asegurar que estén disponibles temprano
-        $this->registerLivewireComponents();
+        // Registro de bindings del módulo
     }
 
     public function boot(): void {
-        $this->registerRoutes();
-        $this->registerObservers();
+        // 1. Carga de infraestructura modular
+        $this->registerInfrastructure();
+
+        // 2. Autorización
         $this->registerPolicies();
-        $this->loadViews();
     }
 
-    private function registerLivewireComponents(): void {
-        // Configurar namespace para componentes Livewire del módulo
-        Livewire::component('employees::list-employees', \App\Modules\EmployeesModule\Livewire\ListEmployees::class);
-        Livewire::component('employees::create-employee', \App\Modules\EmployeesModule\Livewire\CreateEmployee::class);
-        Livewire::component('employees::edit-employee', \App\Modules\EmployeesModule\Livewire\EditEmployee::class);
-    }
+    /**
+     * Registra rutas, vistas y namespaces del módulo.
+     */
+    protected function registerInfrastructure(): void {
+        $viewsPath = __DIR__ . '/../Resources/Views';
 
-    private function registerRoutes(): void {
-        Route::middleware(['web', 'auth'])
-            ->prefix('employees')
-            ->name('employees.')
-            ->group(__DIR__ . '/../Routes/web.php');
-    }
+        if (file_exists(__DIR__ . '/../Routes/web.php')) {
+            Route::middleware(['web', 'auth'])
+                ->prefix('employees')
+                ->name('employees.')
+                ->group(__DIR__ . '/../Routes/web.php');
+        }
 
-    private function registerObservers(): void {
+        if (is_dir($viewsPath)) {
+            $this->loadViewsFrom($viewsPath, 'employees');
+
+            // Registro manual de componentes para control granular
+            Livewire::component('employees.list-employees', \App\Modules\EmployeesModule\Livewire\ListEmployees::class);
+            Livewire::component('employees.create-employee', \App\Modules\EmployeesModule\Livewire\CreateEmployee::class);
+            Livewire::component('employees.edit-employee', \App\Modules\EmployeesModule\Livewire\EditEmployee::class);
+        }
+
+        // Registrar observers
         Employee::observe(EmployeeObserver::class);
     }
 
