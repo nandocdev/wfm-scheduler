@@ -45,7 +45,7 @@ class ModuleServiceProvider extends ServiceProvider {
     }
 
     private function registerRoutes(): void {
-        Route::middleware(['web', 'auth', 'verified'])
+        Route::middleware(['web', 'auth'])
             ->prefix('organization')
             ->name('organization.')
             ->group(__DIR__ . '/../Routes/web.php');
