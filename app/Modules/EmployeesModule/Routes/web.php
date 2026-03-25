@@ -21,3 +21,6 @@ Route::get('/{employee}', [EmployeeController::class, 'show'])->name('show');
 Route::get('/{employee}/edit', [EmployeeController::class, 'edit'])->name('edit');
 Route::put('/{employee}', [EmployeeController::class, 'update'])->name('update');
 Route::delete('/{employee}', [EmployeeController::class, 'destroy'])->name('destroy');
+
+// Team Management
+Route::get('/teams/manage', \App\Modules\EmployeesModule\Livewire\ManageTeamAssignments::class)->name('teams.manage');

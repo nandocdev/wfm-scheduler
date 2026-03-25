@@ -31,6 +31,7 @@
 
 ## Próximas Iteraciones
 - ✅ Gestión de empleados (COMPLETADA - Iteración 3)
+- ✅ Gestión de equipos (COMPLETADA - Submódulo de empleados)
 - 📋 Programación de horarios
 - 📋 Control de asistencia
 - 📋 Reportes y analytics

@@ -53,6 +53,7 @@ class ModuleServiceProvider extends ServiceProvider {
             Livewire::component('employees.list-employees', \App\Modules\EmployeesModule\Livewire\ListEmployees::class);
             Livewire::component('employees.create-employee', \App\Modules\EmployeesModule\Livewire\CreateEmployee::class);
             Livewire::component('employees.edit-employee', \App\Modules\EmployeesModule\Livewire\EditEmployee::class);
+            Livewire::component('employees.manage-team-assignments', \App\Modules\EmployeesModule\Livewire\ManageTeamAssignments::class);
         }
 
         // Registrar observers

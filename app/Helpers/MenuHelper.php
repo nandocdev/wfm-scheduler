@@ -85,6 +85,12 @@ class MenuHelper {
                         'pattern' => 'employees*',
                         'permission' => 'employees.view',
                     ],
+                    [
+                        'label' => __('Gestión de Equipos'),
+                        'route' => 'employees.teams.manage',
+                        'pattern' => 'employees/teams/manage',
+                        'permission' => 'employees.manageTeamAssignments',
+                    ],
                 ],
             ],
             // Los módulos adicionales pueden inyectar aquí sus menús

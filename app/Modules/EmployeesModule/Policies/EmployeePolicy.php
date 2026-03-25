@@ -97,12 +97,15 @@ class EmployeePolicy {
 
         // Si el usuario tiene un empleado asociado, filtrar por su team
         if ($user->employee) {
-            return $query->whereHas('position', function ($q) use ($user) {
-                $q->where('team_id', $user->employee->position->team_id ?? null);
-            });
+            $teamId = $user->employee->currentTeamMember?->team_id;
+            if ($teamId) {
+                return $query->whereHas('currentTeamMember', function ($q) use ($teamId) {
+                    $q->where('team_id', $teamId)->where('is_active', true);
+                });
+            }
         }
 
-        // Si no tiene empleado asociado, no mostrar nada
+        // Si no tiene empleado asociado o team, no mostrar nada
         return $query->whereRaw('1 = 0');
     }
 
@@ -110,10 +113,20 @@ class EmployeePolicy {
      * Verifica si el usuario y el empleado están en el mismo team.
      */
     private function isInSameTeam(User $user, Employee $employee): bool {
-        if (!$user->employee || !$employee->position) {
+        if (!$user->employee) {
             return false;
         }
 
-        return $user->employee->position->team_id === $employee->position->team_id;
+        $userTeamId = $user->employee->currentTeamMember?->team_id;
+        $employeeTeamId = $employee->currentTeamMember?->team_id;
+
+        return $userTeamId && $userTeamId === $employeeTeamId;
+    }
+
+    /**
+     * Determina si el usuario puede gestionar asignaciones de equipos.
+     */
+    public function manageTeamAssignments(User $user): bool {
+        return $user->hasPermissionTo('teams.members.manage');
     }
 }

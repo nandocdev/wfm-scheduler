@@ -53,6 +53,15 @@ class Employee extends Model {
         return $this->hasMany(Employee::class, 'parent_id');
     }
 
+    // Equipos
+    public function teamMembers(): HasMany {
+        return $this->hasMany(\App\Modules\OrganizationModule\Models\TeamMember::class);
+    }
+
+    public function currentTeamMember() {
+        return $this->hasOne(\App\Modules\OrganizationModule\Models\TeamMember::class)->where('is_active', true);
+    }
+
     // Detalles del Empleado
     public function positions(): HasMany {
         return $this->hasMany(EmployeePosition::class);
