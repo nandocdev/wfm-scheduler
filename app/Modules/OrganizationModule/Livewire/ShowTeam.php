@@ -36,6 +36,7 @@ class ShowTeam extends Component {
     }
 
     public function render() {
-        return view('organization::livewire.show-team');
+        return view('organization::livewire.show-team')
+            ->layout('layouts.app');
     }
 }
