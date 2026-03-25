@@ -8,27 +8,24 @@ use App\Modules\CoreModule\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder {
-    /**
-     * Seed the application's database.
-     */
-    public function run(): void {
-        // User::factory(10)->create();
-
-        $testUser = User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-
+    public function run(): void
+    {
         $this->call([
             PanamaGeographySeeder::class,
+            OrganizationModuleSeeder::class,
+            EmploymentStatusSeeder::class,
             RolesAndPermissionsSeeder::class,
-            UsersPerRoleSeeder::class,
+            UserFromEmployeeSeeder::class,
+            AssignEmployeeRolesSeeder::class,
+            EmployeeSeeder::class,
         ]);
 
+        // Asegurar que el usuario administrador mantenga permisos totales
+        $adminUser = User::query()->where('email', 'yhernandez@css.gob.pa')->first();
         $adminRole = Role::query()->where('name', 'admin')->where('guard_name', 'web')->first();
 
-        if ($adminRole !== null) {
-            $testUser->syncRoles([$adminRole->name]);
+        if ($adminUser !== null && $adminRole !== null) {
+            $adminUser->assignRole($adminRole->name);
         }
     }
 }
