@@ -4,7 +4,7 @@ namespace App\Modules\OrganizationModule\Models;
 
 use App\Modules\CoreModule\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Modelo para Positions (Cargos).
@@ -33,5 +33,12 @@ class Position extends Model {
      */
     public function department(): BelongsTo {
         return $this->belongsTo(Department::class);
+    }
+
+    /**
+     * Empleados que ocupan este cargo.
+     */
+    public function users(): HasMany {
+        return $this->hasMany(\App\Modules\EmployeesModule\Models\Employee::class);
     }
 }

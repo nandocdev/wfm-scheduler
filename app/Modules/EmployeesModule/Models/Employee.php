@@ -80,6 +80,10 @@ class Employee extends Model {
     }
 
     // Accessors
+    public function getNameAttribute(): string {
+        return $this->full_name;
+    }
+
     public function getFullNameAttribute(): string {
         return trim("{$this->first_name} {$this->last_name}");
     }

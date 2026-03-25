@@ -56,7 +56,9 @@ class ListTeams extends Component {
     }
 
     public function render() {
-        $teams = $this->getTeamsQuery()->paginate($this->perPage);
+        $teams = $this->getTeamsQuery()
+            ->withCount('users')
+            ->paginate($this->perPage);
 
         return view('organization::livewire.list-teams', [
             'teams' => $teams,
