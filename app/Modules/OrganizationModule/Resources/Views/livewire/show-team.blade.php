@@ -9,6 +9,9 @@
                     <h1 class="text-2xl font-bold text-gray-900">{{ $team->name }}</h1>
                 </div>
                 <div class="flex space-x-2">
+                    <flux:link href="{{ route('organization.teams.members', $team) }}" variant="outline" size="sm">
+                        Gestionar Miembros
+                    </flux:link>
                     <flux:link href="{{ route('organization.teams.edit', $team) }}" variant="outline" size="sm">
                         Editar
                     </flux:link>
