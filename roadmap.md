@@ -32,6 +32,13 @@
 ## Próximas Iteraciones
 - ✅ Gestión de empleados (COMPLETADA - Iteración 3)
 - ✅ Gestión de equipos (COMPLETADA - Submódulo de empleados)
+  - ✅ CRUD de equipos
+  - ✅ Modelo TeamMember para asignaciones históricas
+  - ⏳ **ASIGNACIÓN DE EMPLEADOS A EQUIPOS** (PENDIENTE)
+    - ⏳ Actions para asignar/quitar empleados de equipos
+    - ⏳ Livewire component para gestión de miembros
+    - ⏳ Validaciones de negocio (empleado activo, fechas válidas)
+    - ⏳ Historial de asignaciones por empleado
 - 📋 Programación de horarios
 - 📋 Control de asistencia
 - 📋 Reportes y analytics
