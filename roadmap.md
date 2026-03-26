@@ -39,6 +39,20 @@
     - ✅ Livewire component para gestión de miembros
     - ✅ Validaciones de negocio (empleado activo, fechas válidas)
     - ✅ Historial de asignaciones por empleado
+
+## Iteración 4 - Módulo de Comunicaciones (COMPLETADA)
+### ✅ Implementado
+- ✅ Sistema de categorización polimórfica (News, Polls, Shoutouts)
+- ✅ Tags y categorías con relaciones morphToMany
+- ✅ Workflow de moderación con estados (draft, pending_review, published, archived)
+- ✅ Sistema de aprobación con historial de versiones
+- ✅ Panel de moderación para administradores
+- ✅ DTOs, Actions y Policies para todas las operaciones
+- ✅ Vistas administrativas con tabs y formularios
+- ✅ Migraciones con campos de auditoría y moderación
+- ✅ Tests unitarios pasando
+
+## Próximas Iteraciones
 - 📋 Programación de horarios
 - 📋 Control de asistencia
 - 📋 Reportes y analytics
