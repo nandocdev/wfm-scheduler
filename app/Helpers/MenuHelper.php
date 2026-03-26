@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Helpers;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth as AuthFacade;
+use Illuminate\Support\Facades\Route as RouteFacade;
 
 /**
  * Helper institucional para la gestión de la navegación (Sidebar y Navbar).
@@ -13,9 +14,14 @@ use Illuminate\Support\Facades\Route;
  */
 class MenuHelper {
     /**
+     * Usuario actual para verificación de permisos.
+     */
+    protected static $currentUser = null;
+    /**
      * Retorna la colección de elementos del menú lateral.
      */
-    public static function getSidebarItems(): Collection {
+    public static function getSidebarItems($user = null): Collection {
+        self::$currentUser = $user ?: AuthFacade::user();
         return collect([
             [
                 'label' => __('Dashboard'),
@@ -96,13 +102,31 @@ class MenuHelper {
             [
                 'label' => __('Comunicaciones'),
                 'icon' => 'chat-bubble-left-right',
-                'permission' => 'news.viewAny', 
+                'permission' => 'news.viewAny',
                 'submenu' => [
                     [
                         'label' => __('Noticias'),
                         'route' => 'communications.news.index',
                         'pattern' => 'admin/communications/news*',
                         'permission' => 'news.viewAny',
+                    ],
+                    [
+                        'label' => __('Categorías'),
+                        'route' => 'communications.admin.categories.index',
+                        'pattern' => 'admin/communications/categories*',
+                        'permission' => 'communications.manage',
+                    ],
+                    [
+                        'label' => __('Etiquetas'),
+                        'route' => 'communications.admin.tags.index',
+                        'pattern' => 'admin/communications/tags*',
+                        'permission' => 'communications.manage',
+                    ],
+                    [
+                        'label' => __('Moderación'),
+                        'route' => 'communications.moderation.index',
+                        'pattern' => 'admin/communications/moderation*',
+                        'permission' => 'communications.moderate',
                     ],
                 ],
             ],
@@ -119,23 +143,18 @@ class MenuHelper {
             return true;
         }
 
-        // Si tiene submenú, es visible si al menos un hijo es visible
-        if (isset($item['submenu']) && !empty($item['submenu'])) {
-            $visibleSubmenu = collect($item['submenu'])->filter(fn($sub) => self::canView($sub));
-            return $visibleSubmenu->isNotEmpty();
-        }
-
-        return auth()->user()?->can($item['permission']) ?? false;
+        $user = self::$currentUser ?: AuthFacade::user();
+        return $user && $user->can($item['permission']);
     }
 
     /**
      * Procesa recursivamente el estado activo basado en la ruta actual.
      */
     protected static function processActiveStates(array $item): array {
-        // Limpiar submenú basado en permisos antes de marcar el estado activo del padre
+        // Si tiene submenú, procesar los hijos pero no filtrar nuevamente
+        // ya que el filtrado se hace en el método getSidebarItems
         if (isset($item['submenu'])) {
             $item['submenu'] = collect($item['submenu'])
-                ->filter(fn($sub) => self::canView($sub))
                 ->map(fn($sub) => self::processActiveStates($sub))
                 ->toArray();
         }
@@ -155,7 +174,7 @@ class MenuHelper {
         }
 
         // Si la ruta coincide directamente
-        if (isset($item['route']) && Route::currentRouteName() === $item['route']) {
+        if (isset($item['route']) && RouteFacade::currentRouteName() === $item['route']) {
             return true;
         }
 

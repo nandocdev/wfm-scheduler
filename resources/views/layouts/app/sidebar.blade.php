@@ -14,7 +14,7 @@
         </flux:sidebar.header>
 
         <flux:sidebar.nav>
-            @foreach(\App\Helpers\MenuHelper::getSidebarItems() as $item)
+            @foreach(\App\Helpers\MenuHelper::getSidebarItems(auth()->user()) as $item)
                 @if(isset($item['submenu']) && !empty($item['submenu']))
                     <flux:navlist.group :heading="$item['label']" :icon="$item['icon']" expandable
                         :expanded="$item['is_active']">
