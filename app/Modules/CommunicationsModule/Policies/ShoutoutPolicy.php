@@ -45,4 +45,11 @@ class ShoutoutPolicy {
     public function delete(User $user, Shoutout $shoutout): bool {
         return $user->hasPermissionTo('shoutouts.manage');
     }
+
+    /**
+     * Determina si el usuario puede moderar este contenido.
+     */
+    public function moderateContent(User $authUser, Shoutout $shoutout): bool {
+        return $authUser->hasPermissionTo('communications.moderate');
+    }
 }

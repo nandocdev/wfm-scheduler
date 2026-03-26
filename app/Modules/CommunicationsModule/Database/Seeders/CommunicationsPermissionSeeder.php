@@ -18,7 +18,7 @@ class CommunicationsPermissionSeeder extends Seeder {
             'news.viewAny',
             'news.view',
             'news.create',
-            'news.update',
+            'news.edit',
             'news.delete',
             'shoutouts.manage',
             'polls.manage',
@@ -81,7 +81,7 @@ class CommunicationsPermissionSeeder extends Seeder {
             'supervisor' => ['comments.view', 'comments.create', 'reactions.view', 'reactions.create', 'mentions.view', 'notifications.view'],
             'coordinator' => ['comments.view', 'comments.create', 'comments.edit', 'reactions.view', 'reactions.create', 'mentions.view', 'notifications.view'],
             'chief' => ['comments.view', 'comments.create', 'comments.edit', 'comments.delete', 'reactions.view', 'reactions.create', 'reactions.edit', 'mentions.view', 'mentions.edit', 'notifications.view', 'notifications.edit'],
-            'wfm' => ['comments.view', 'comments.create', 'comments.edit', 'comments.delete', 'reactions.view', 'reactions.create', 'reactions.edit', 'reactions.delete', 'mentions.view', 'mentions.edit', 'mentions.delete', 'notifications.view', 'notifications.edit', 'notifications.delete'],
+            'wfm' => array_merge($permissions, ['comments.view', 'comments.create', 'comments.edit', 'comments.delete', 'reactions.view', 'reactions.create', 'reactions.edit', 'reactions.delete', 'mentions.view', 'mentions.edit', 'mentions.delete', 'notifications.view', 'notifications.edit', 'notifications.delete']),
             'director' => array_merge($permissions, ['comments.restore', 'comments.force_delete', 'reactions.restore', 'reactions.force_delete', 'mentions.restore', 'mentions.force_delete', 'notifications.restore', 'notifications.force_delete']),
             'admin' => $permissions,
         ];

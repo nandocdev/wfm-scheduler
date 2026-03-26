@@ -64,7 +64,7 @@ class RolesAndPermissionsSeeder extends Seeder {
             'news.viewAny',
             'news.view',
             'news.create',
-            'news.update',
+            'news.edit',
             'news.delete',
             'shoutouts.manage',
             'polls.manage',

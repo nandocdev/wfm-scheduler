@@ -45,4 +45,11 @@ class PollPolicy {
     public function delete(User $user, Poll $poll): bool {
         return $user->hasPermissionTo('polls.manage');
     }
+
+    /**
+     * Determina si el usuario puede moderar este contenido.
+     */
+    public function moderateContent(User $authUser, Poll $poll): bool {
+        return $authUser->hasPermissionTo('communications.moderate');
+    }
 }

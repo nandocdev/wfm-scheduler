@@ -15,7 +15,7 @@ class UpdateNewsRequest extends FormRequest {
      * Autorización basada en permisos.
      */
     public function authorize(): bool {
-        return $this->user()->can('news.update');
+        return $this->user()->can('news.edit');
     }
 
     /**

@@ -41,4 +41,19 @@ class NewsPolicy {
     public function forceDelete(User $authUser, News $news): bool {
         return $authUser->hasPermissionTo('news.delete');
     }
+
+    /**
+     * Determina si el usuario puede ver contenido pendiente de revisión.
+     */
+    public function viewPending(User $authUser): bool {
+        return $authUser->hasPermissionTo('communications.view_pending')
+            || $authUser->hasPermissionTo('communications.moderate');
+    }
+
+    /**
+     * Determina si el usuario puede moderar este contenido.
+     */
+    public function moderateContent(User $authUser, News $news): bool {
+        return $authUser->hasPermissionTo('communications.moderate');
+    }
 }

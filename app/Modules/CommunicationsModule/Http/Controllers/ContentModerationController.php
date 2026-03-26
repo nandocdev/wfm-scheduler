@@ -37,7 +37,7 @@ class ContentModerationController extends Controller {
             ->latest()
             ->paginate(20);
 
-        return view('communications::moderation.index', compact(
+        return view('communications::admin.moderation.index', compact(
             'pendingNews',
             'pendingPolls',
             'pendingShoutouts'
