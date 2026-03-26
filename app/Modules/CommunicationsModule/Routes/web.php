@@ -57,4 +57,8 @@ Route::middleware('auth')->group(function () {
     // Reacciones en shoutouts
     Route::post('shoutouts/{shoutout}/reactions', [ReactionController::class, 'store'])
         ->name('reactions.store');
+
+    // Página principal de comunicaciones (landing page)
+    Route::get('/', \App\Modules\CommunicationsModule\Livewire\Home::class)
+        ->name('home');
 });
