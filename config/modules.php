@@ -6,7 +6,7 @@ return [
     | Modulos Registrados (Antigravity)
     |--------------------------------------------------------------------------
     |
-    | Aquí se definen todos los Proveedores de Servicios de cada módulo del 
+    | Aquí se definen todos los Proveedores de Servicios de cada módulo del
     | Monolito Modular. Se cargan automáticamente en el AppServiceProvider.
     |
     */
@@ -20,6 +20,6 @@ return [
         \App\Modules\OperationsModule\Providers\ModuleServiceProvider::class,
         \App\Modules\WorkflowsModule\Providers\ModuleServiceProvider::class,
         \App\Modules\SupportModule\Providers\ModuleServiceProvider::class,
-        \App\Modules\CommunicationsModule\Providers\CommunicationsServiceProvider::class,
+        \App\Modules\CommunicationsModule\Providers\ModuleServiceProvider::class,
     ],
 ];
