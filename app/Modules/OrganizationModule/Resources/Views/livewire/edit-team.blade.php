@@ -24,6 +24,18 @@
                 </flux:field>
 
                 <flux:field>
+                    <flux:select wire:model="supervisor_id" label="Supervisor" placeholder="Selecciona un supervisor">
+                        <option value="">Sin supervisor</option>
+                        @foreach($this->availableSupervisors as $employee)
+                            <option value="{{ $employee->id }}">
+                                {{ $employee->first_name }} {{ $employee->last_name }} ({{ $employee->employee_number }})
+                            </option>
+                        @endforeach
+                    </flux:select>
+                    <flux:error name="supervisor_id" />
+                </flux:field>
+
+                <flux:field>
                     <flux:checkbox wire:model="is_active" label="Equipo activo" />
                     <flux:error name="is_active" />
                 </flux:field>

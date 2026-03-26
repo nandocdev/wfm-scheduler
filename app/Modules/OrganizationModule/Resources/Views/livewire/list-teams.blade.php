@@ -80,8 +80,8 @@
                                             size="sm" title="Ver equipo">
                                             <flux:icon.eye class="w-4 h-4" />
                                         </flux:button>
-                                        <flux:button href="{{ route('organization.teams.members', $team) }}" variant="ghost"
-                                            size="sm" title="Gestionar miembros">
+                                        <flux:button href="{{ route('organization.teams.transfer', $team) }}"
+                                            variant="ghost" size="sm" title="Gestionar miembros">
                                             <flux:icon.users class="w-4 h-4" />
                                         </flux:button>
                                         <flux:button href="{{ route('organization.teams.edit', $team) }}" variant="ghost"

@@ -9,16 +9,19 @@
                     <h1 class="text-2xl font-bold text-gray-900">{{ $team->name }}</h1>
                 </div>
                 <div class="flex space-x-2">
-                    <flux:link href="{{ route('organization.teams.members', $team) }}" variant="outline" size="sm">
-                        Gestionar Miembros
-                    </flux:link>
-                    <flux:link href="{{ route('organization.teams.edit', $team) }}" variant="outline" size="sm">
-                        Editar
-                    </flux:link>
-                    <flux:button wire:click="toggleStatus" variant="{{ $team->is_active ? 'destructive' : 'primary' }}"
-                        size="sm">
-                        {{ $team->is_active ? 'Desactivar' : 'Activar' }}
-                    </flux:button>
+
+                    <flux:button.group>
+                        <flux:button href="{{ route('organization.teams.members', $team) }}" icon="users">
+                        </flux:button>
+                        <flux:button href="{{ route('organization.teams.transfer', $team) }}" icon="arrows-right-left">
+                        </flux:button>
+                        <flux:button href="{{ route('organization.teams.edit', $team) }}" icon="pencil-square">
+                        </flux:button>
+                        <flux:button wire:click="toggleStatus" icon="{{ $team->is_active ? 'eye-slash' : 'eye' }}">
+                        </flux:button>
+                    </flux:button.group>
+
+
                 </div>
             </div>
         </div>
