@@ -70,11 +70,76 @@
                                     <flux:heading size="lg">{{ $news->title }}</flux:heading>
                                     <flux:text class="mt-2 line-clamp-2 flex-1">{{ $news->excerpt ?: str($news->content)->limit(100) }}</flux:text>
                                     <div class="mt-5 flex items-center justify-between gap-3">
-                                        <flux:button href="#" variant="ghost" icon-trailing="arrow-right" size="sm" class="-ml-3" wire:navigate>
-                                            Leer más
-                                        </flux:button>
+                                        <div class="flex items-center gap-2">
+                                            <flux:button
+                                                wire:click="toggleComments({{ $news->id }})"
+                                                variant="ghost"
+                                                size="sm"
+                                                icon="chat-bubble-left"
+                                                class="-ml-3">
+                                                {{ $news->comments_count }} comentarios
+                                            </flux:button>
+                                            <flux:button
+                                                wire:click="selectNewsForComment({{ $news->id }})"
+                                                variant="ghost"
+                                                size="sm"
+                                                icon="plus">
+                                                Comentar
+                                            </flux:button>
+                                        </div>
                                         <flux:text class="text-xs">{{ $news->published_at->diffForHumans() }}</flux:text>
                                     </div>
+
+                                    <!-- Formulario de comentario -->
+                                    @if($commentForm['news_id'] === $news->id)
+                                        <div class="mt-4 border-t border-zinc-200 pt-4 dark:border-zinc-700">
+                                            <form wire:submit="submitComment" class="space-y-3">
+                                                <flux:textarea
+                                                    wire:model="commentForm.content"
+                                                    placeholder="Escribe tu comentario..."
+                                                    rows="3"
+                                                    required />
+                                                <div class="flex gap-2">
+                                                    <flux:button type="submit" variant="primary" size="sm">
+                                                        Publicar
+                                                    </flux:button>
+                                                    <flux:button
+                                                        wire:click="$set('commentForm.news_id', null)"
+                                                        variant="ghost"
+                                                        size="sm">
+                                                        Cancelar
+                                                    </flux:button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    @endif
+
+                                    <!-- Comentarios -->
+                                    @if($showComments && $selectedNewsId === $news->id && $selectedNews)
+                                        <div class="mt-4 border-t border-zinc-200 pt-4 dark:border-zinc-700">
+                                            <flux:heading size="sm" class="mb-3">Comentarios</flux:heading>
+                                            <div class="space-y-3">
+                                                @forelse($selectedNews->comments->where('is_active', true) as $comment)
+                                                    <div class="flex gap-3">
+                                                        <div class="flex-shrink-0">
+                                                            <div class="h-8 w-8 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center">
+                                                                <span class="text-xs font-medium">{{ substr($comment->user->name, 0, 2) }}</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex-1">
+                                                            <div class="flex items-center gap-2">
+                                                                <flux:text class="font-medium text-sm">{{ $comment->user->name }}</flux:text>
+                                                                <flux:text class="text-xs text-zinc-500">{{ $comment->created_at->diffForHumans() }}</flux:text>
+                                                            </div>
+                                                            <flux:text class="text-sm mt-1">{{ $comment->content }}</flux:text>
+                                                        </div>
+                                                    </div>
+                                                @empty
+                                                    <flux:text class="text-sm text-zinc-500 italic">No hay comentarios aún.</flux:text>
+                                                @endforelse
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
                             </flux:card>
                         @empty
@@ -135,6 +200,46 @@
                         @endif
                     </flux:card>
                 @endif
+
+                <!-- Notificaciones Recientes -->
+                @if($recentNotifications->count() > 0)
+                    <flux:card class="shadow-sm">
+                        <flux:heading size="lg">Notificaciones</flux:heading>
+                        <flux:subheading class="mb-4">Actualizaciones recientes.</flux:subheading>
+
+                        <div class="space-y-3">
+                            @foreach($recentNotifications as $notification)
+                                <div class="flex gap-3 p-2 rounded-lg bg-zinc-50 dark:bg-zinc-800/50">
+                                    <div class="flex-shrink-0 mt-0.5">
+                                        @switch($notification->type)
+                                            @case('comment')
+                                                <span class="text-blue-500">💬</span>
+                                                @break
+                                            @case('reaction')
+                                                <span class="text-red-500">❤️</span>
+                                                @break
+                                            @case('mention')
+                                                <span class="text-green-500">@</span>
+                                                @break
+                                            @default
+                                                <span class="text-gray-500">🔔</span>
+                                        @endswitch
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <flux:text class="text-sm line-clamp-2">{{ $notification->message }}</flux:text>
+                                        <flux:text class="text-xs text-zinc-500 mt-1">{{ $notification->created_at->diffForHumans() }}</flux:text>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <div class="mt-4 pt-3 border-t border-zinc-200 dark:border-zinc-700">
+                            <flux:button href="#" variant="ghost" size="sm" class="w-full" wire:navigate>
+                                Ver todas las notificaciones
+                            </flux:button>
+                        </div>
+                    </flux:card>
+                @endif
             </aside>
         </div>
     </div>
@@ -158,7 +263,30 @@
                             <flux:text class="text-xs uppercase tracking-[0.16em]">Reconocimiento</flux:text>
                         </div>
                     </div>
-                    <flux:text class="line-clamp-3">{{ $shoutout->message }}</flux:text>
+                    <flux:text class="line-clamp-3 mb-4">{{ $shoutout->message }}</flux:text>
+
+                    <!-- Reacciones -->
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-1">
+                            @php
+                                $reactionTypes = ['like' => '👍', 'love' => '❤️', 'celebrate' => '🎉', 'support' => '🤝'];
+                            @endphp
+                            @foreach($reactionTypes as $type => $emoji)
+                                @php
+                                    $count = $shoutout->reactions->where('type', $type)->count();
+                                    $userReacted = in_array($type, $shoutout->user_reactions ?? []);
+                                @endphp
+                                <flux:button
+                                    wire:click="toggleReaction({{ $shoutout->id }}, '{{ $type }}')"
+                                    variant="{{ $userReacted ? 'primary' : 'ghost' }}"
+                                    size="sm"
+                                    class="h-8 px-2 text-xs">
+                                    {{ $emoji }} {{ $count }}
+                                </flux:button>
+                            @endforeach
+                        </div>
+                        <flux:text class="text-xs text-zinc-500">{{ $shoutout->created_at->diffForHumans() }}</flux:text>
+                    </div>
                 </flux:card>
             @empty
                 <flux:card class="col-span-full border-dashed bg-zinc-50/50 py-8 text-center dark:bg-zinc-800/50">
