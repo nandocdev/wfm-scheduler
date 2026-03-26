@@ -14,45 +14,45 @@
             <flux:input wire:model.live.debounce.300ms="search" placeholder="Buscar noticia..." icon="magnifying-glass" />
         </div>
 
-        <flux:table>
-            <flux:columns>
-                <flux:column>ID</flux:column>
-                <flux:column>Título</flux:column>
-                <flux:column>Autor</flux:column>
-                <flux:column>Publicación</flux:column>
-                <flux:column>Estado</flux:column>
-                <flux:column align="end">Acciones</flux:column>
-            </flux:columns>
+        <flux:table :paginate="$news">
+            <flux:table.columns>
+                <flux:table.column>ID</flux:table.column>
+                <flux:table.column>Título</flux:table.column>
+                <flux:table.column>Autor</flux:table.column>
+                <flux:table.column>Publicación</flux:table.column>
+                <flux:table.column>Estado</flux:table.column>
+                <flux:table.column align="end">Acciones</flux:table.column>
+            </flux:table.columns>
 
-            <flux:rows>
+            <flux:table.rows>
                 @forelse($news as $item)
-                    <flux:row :key="$item->id">
-                        <flux:cell>{{ $item->id }}</flux:cell>
-                        <flux:cell class="max-w-xs truncate">{{ $item->title }}</flux:cell>
-                        <flux:cell>{{ $item->author->name }}</flux:cell>
-                        <flux:cell>{{ $item->published_at->format('d/m/Y H:i') }}</flux:cell>
-                        <flux:cell>
+                    <flux:table.row :key="$item->id">
+                        <flux:table.cell>{{ $item->id }}</flux:table.cell>
+                        <flux:table.cell class="max-w-xs truncate">{{ $item->title }}</flux:table.cell>
+                        <flux:table.cell>{{ $item->author->name }}</flux:cell>
+                        <flux:table.cell>{{ $item->published_at->format('d/m/Y H:i') }}</flux:cell>
+                        <flux:table.cell>
                             <flux:badge :color="$item->is_active ? 'green' : 'red'" size="sm">
                                 {{ $item->is_active ? 'Activa' : 'Inactiva' }}
                             </flux:badge>
-                        </flux:cell>
-                        <flux:cell align="end">
+                        </flux:table.cell>
+                        <flux:table.cell align="end">
                             <div class="flex justify-end gap-2">
                                 <flux:button href="{{ route('communications.news.edit', $item) }}" variant="ghost" icon="pencil-square" size="sm" wire:navigate />
                                 <flux:button wire:click="deleteNews({{ $item->id }})" 
                                     wire:confirm="¿Estás seguro de eliminar esta noticia? Esta acción no se puede deshacer."
                                     variant="ghost" color="red" icon="trash" size="sm" />
                             </div>
-                        </flux:cell>
-                    </flux:row>
+                        </flux:table.cell>
+                    </flux:table.row>
                 @empty
-                    <flux:row>
-                        <flux:cell colspan="6" align="center" class="py-12">
-                            <flux:text color="zinc">No hay noticias registradas que coincidan con la búsqueda.</flux:text>
-                        </flux:cell>
-                    </flux:row>
+                    <flux:table.row>
+                        <flux:table.cell colspan="6" align="center" class="py-12">
+                            <flux:text>No hay noticias registradas que coincidan con la búsqueda.</flux:text>
+                        </flux:table.cell>
+                    </flux:table.row>
                 @endforelse
-            </flux:rows>
+            </flux:table.rows>
         </flux:table>
 
         <div class="mt-4">

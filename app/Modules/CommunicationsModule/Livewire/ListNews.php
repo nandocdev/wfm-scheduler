@@ -7,6 +7,7 @@ namespace App\Modules\CommunicationsModule\Livewire;
 use App\Modules\CommunicationsModule\Models\News;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Flux\Flux;
 
 /**
  * Listado de noticias en el panel de administración.
@@ -24,7 +25,7 @@ class ListNews extends Component {
         $this->authorize('delete', $news);
         
         $news->delete();
-        flux()->toast('Noticia eliminada correctamente.');
+        Flux::toast('Noticia eliminada correctamente.');
     }
 
     /**

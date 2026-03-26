@@ -7,6 +7,7 @@ namespace App\Modules\CommunicationsModule\Livewire;
 use App\Modules\CommunicationsModule\Actions\CreateNewsAction;
 use App\Modules\CommunicationsModule\Livewire\Forms\NewsForm;
 use App\Modules\CommunicationsModule\Models\News;
+use Flux\Flux;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -34,7 +35,7 @@ class CreateNews extends Component {
 
         $news = $action->execute($this->form->toDTO());
 
-        flux()->toast('Noticia creada satisfactoriamente.');
+        Flux::toast('Noticia creada satisfactoriamente.');
         
         $this->redirectRoute('communications.news.index', navigate: true);
     }

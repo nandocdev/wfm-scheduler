@@ -7,6 +7,7 @@ namespace App\Modules\CommunicationsModule\Livewire;
 use App\Modules\CommunicationsModule\Actions\UpdateNewsAction;
 use App\Modules\CommunicationsModule\Livewire\Forms\NewsForm;
 use App\Modules\CommunicationsModule\Models\News;
+use Flux\Flux;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -36,7 +37,7 @@ class EditNews extends Component {
 
         $action->execute($this->news, $this->form->toDTO());
 
-        flux()->toast('Noticia actualizada satisfactoriamente.');
+        Flux::toast('Noticia actualizada satisfactoriamente.');
         
         $this->redirectRoute('communications.news.index', navigate: true);
     }
@@ -47,7 +48,7 @@ class EditNews extends Component {
     public function deleteMedia(int $mediaId): void {
         $media = $this->news->media()->findOrFail($mediaId);
         $media->delete();
-        flux()->toast('Archivo eliminado correctamente.');
+        Flux::toast('Archivo eliminado correctamente.');
     }
 
     /**
