@@ -8,8 +8,7 @@ use App\Modules\CoreModule\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder {
-    public function run(): void
-    {
+    public function run(): void {
         $this->call([
             PanamaGeographySeeder::class,
             OrganizationModuleSeeder::class,
@@ -18,6 +17,7 @@ class DatabaseSeeder extends Seeder {
             UserFromEmployeeSeeder::class,
             AssignEmployeeRolesSeeder::class,
             EmployeeSeeder::class,
+            CommunicationsModuleSeeder::class,
         ]);
 
         // Asegurar que el usuario administrador mantenga permisos totales

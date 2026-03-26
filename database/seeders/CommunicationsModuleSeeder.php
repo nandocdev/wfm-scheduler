@@ -7,13 +7,16 @@ use App\Modules\CommunicationsModule\Models\Tag;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class CommunicationsModuleSeeder extends Seeder
-{
+class CommunicationsModuleSeeder extends Seeder {
     /**
      * Run the database seeds.
      */
-    public function run(): void
-    {
+    public function run(): void {
+        // Ejecutar seeder de permisos primero
+        $this->call([
+            \App\Modules\CommunicationsModule\Database\Seeders\CommunicationsPermissionSeeder::class,
+        ]);
+
         // Categorías por defecto
         $categories = [
             [
@@ -54,7 +57,10 @@ class CommunicationsModuleSeeder extends Seeder
         ];
 
         foreach ($categories as $category) {
-            Category::create($category);
+            Category::firstOrCreate(
+                ['slug' => $category['slug']],
+                $category
+            );
         }
 
         // Tags por defecto
@@ -70,7 +76,10 @@ class CommunicationsModuleSeeder extends Seeder
         ];
 
         foreach ($tags as $tag) {
-            Tag::create($tag);
+            Tag::firstOrCreate(
+                ['slug' => $tag['slug']],
+                $tag
+            );
         }
     }
 }
