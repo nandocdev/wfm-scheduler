@@ -15,6 +15,7 @@ class CommunicationsModuleSeeder extends Seeder {
         // Ejecutar seeder de permisos primero
         $this->call([
             \App\Modules\CommunicationsModule\Database\Seeders\CommunicationsPermissionSeeder::class,
+            \App\Modules\CommunicationsModule\Database\Seeders\NewsSeeder::class,
         ]);
 
         // Categorías por defecto
