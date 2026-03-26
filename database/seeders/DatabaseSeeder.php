@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder {
             UserFromEmployeeSeeder::class,
             AssignEmployeeRolesSeeder::class,
             EmployeeSeeder::class,
+            TeamManagerSeeder::class,
             CommunicationsModuleSeeder::class,
         ]);
 

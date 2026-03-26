@@ -7,21 +7,18 @@ use App\Modules\OrganizationModule\Models\Position;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class OrganizationModuleSeeder extends Seeder
-{
+class OrganizationModuleSeeder extends Seeder {
     /**
      * Run the database seeds.
      */
-    public function run(): void
-    {
+    public function run(): void {
         DB::transaction(function () {
             $this->seedDepartments();
             $this->seedPositions();
         });
     }
 
-    private function seedDepartments(): void
-    {
+    private function seedDepartments(): void {
         $csvPath = database_path('data/departments.csv');
 
         if (!file_exists($csvPath)) {
@@ -57,8 +54,7 @@ class OrganizationModuleSeeder extends Seeder
         $this->command->info('Direcciones y Departamentos sembrados exitosamente.');
     }
 
-    private function seedPositions(): void
-    {
+    private function seedPositions(): void {
         $csvPath = database_path('data/positions.csv');
 
         if (!file_exists($csvPath)) {
@@ -73,11 +69,11 @@ class OrganizationModuleSeeder extends Seeder
                 ['id' => $pos['id']],
                 [
                     'department_id' => 1,
-                    'name'          => $pos['name'],
-                    'position_code' => 'P' . str_pad((string)$pos['id'], 5, '0', STR_PAD_LEFT),
-                    'is_active'     => true,
-                    'created_at'    => now(),
-                    'updated_at'    => now(),
+                    'name' => $pos['name'],
+                    'position_code' => 'P' . str_pad((string) $pos['id'], 5, '0', STR_PAD_LEFT),
+                    'is_active' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]
             );
         }
@@ -85,8 +81,9 @@ class OrganizationModuleSeeder extends Seeder
         $this->command->info('Cargos sembrados exitosamente.');
     }
 
-    private function readCsv(string $filePath): array
-    {
+
+
+    private function readCsv(string $filePath): array {
         $data = [];
         $header = null;
 
