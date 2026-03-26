@@ -52,6 +52,14 @@
 - ✅ Migraciones con campos de auditoría y moderación
 - ✅ Tests unitarios pasando
 
+## Iteración 4.1 - Interacción Social (EN DESARROLLO)
+### 📋 Pendiente
+- 📋 Sistema de comentarios en News
+- 📋 Likes y reacciones en Shoutouts
+- 📋 Sistema de menciones (@usuario)
+- 📋 Notificaciones en tiempo real
+- 📋 Events y Listeners para interacciones sociales
+
 ## Próximas Iteraciones
 - 📋 Programación de horarios
 - 📋 Control de asistencia
