@@ -15,7 +15,7 @@ test('can assign employee to team', function () {
     $dto = new AssignEmployeeToTeamDTO(
         employee_id: $employee->id,
         team_id: $team->id,
-        start_date: '2024-01-01',
+        joined_at: '2024-01-01',
     );
 
     $action = new AssignEmployeeToTeamAction();
@@ -24,7 +24,7 @@ test('can assign employee to team', function () {
     expect($result)->toBeInstanceOf(TeamMember::class);
     expect($result->employee_id)->toBe($employee->id);
     expect($result->team_id)->toBe($team->id);
-    expect($result->start_date->format('Y-m-d'))->toBe('2024-01-01');
+    expect($result->joined_at->format('Y-m-d'))->toBe('2024-01-01');
     expect($result->is_active)->toBe(true);
 
     // Verify team has the employee
@@ -41,7 +41,7 @@ test('can remove employee from team', function () {
     $assignDto = new AssignEmployeeToTeamDTO(
         employee_id: $employee->id,
         team_id: $team->id,
-        start_date: '2024-01-01',
+        joined_at: '2024-01-01',
     );
     $assignAction = new AssignEmployeeToTeamAction();
     $assignAction->execute($assignDto);
@@ -50,7 +50,7 @@ test('can remove employee from team', function () {
     $removeDto = new RemoveEmployeeFromTeamDTO(
         employee_id: $employee->id,
         team_id: $team->id,
-        end_date: '2024-12-31',
+        left_at: '2024-12-31',
     );
 
     $removeAction = new RemoveEmployeeFromTeamAction();
@@ -58,7 +58,7 @@ test('can remove employee from team', function () {
 
     expect($result)->toBeInstanceOf(TeamMember::class);
     expect($result->is_active)->toBe(false);
-    expect($result->end_date->format('Y-m-d'))->toBe('2024-12-31');
+    expect($result->left_at->format('Y-m-d'))->toBe('2024-12-31');
 
     // Verify team no longer has the employee
     $team->load('users');
@@ -74,7 +74,7 @@ test('prevents assigning employee to multiple active teams', function () {
     $dto1 = new AssignEmployeeToTeamDTO(
         employee_id: $employee->id,
         team_id: $team1->id,
-        start_date: '2024-01-01',
+        joined_at: '2024-01-01',
     );
     $action = new AssignEmployeeToTeamAction();
     $action->execute($dto1);
@@ -83,7 +83,7 @@ test('prevents assigning employee to multiple active teams', function () {
     $dto2 = new AssignEmployeeToTeamDTO(
         employee_id: $employee->id,
         team_id: $team2->id,
-        start_date: '2024-01-01',
+        joined_at: '2024-01-01',
     );
     $action->execute($dto2);
 
