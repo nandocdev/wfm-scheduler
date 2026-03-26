@@ -40,3 +40,4 @@ Route::get('teams/create', App\Modules\OrganizationModule\Livewire\CreateTeam::c
 Route::get('teams/{team}', App\Modules\OrganizationModule\Livewire\ShowTeam::class)->name('teams.show');
 Route::get('teams/{team}/edit', App\Modules\OrganizationModule\Livewire\EditTeam::class)->name('teams.edit');
 Route::get('teams/{team}/members', App\Modules\OrganizationModule\Livewire\ManageTeamMembers::class)->name('teams.members');
+Route::get('teams/{team}/transfer', App\Modules\OrganizationModule\Livewire\TeamMemberTransfer::class)->name('teams.transfer');
