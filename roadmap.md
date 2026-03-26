@@ -52,13 +52,26 @@
 - ✅ Migraciones con campos de auditoría y moderación
 - ✅ Tests unitarios pasando
 
-## Iteración 4.1 - Interacción Social (EN DESARROLLO)
-### 📋 Pendiente
-- 📋 Sistema de comentarios en News
-- 📋 Likes y reacciones en Shoutouts
-- 📋 Sistema de menciones (@usuario)
-- 📋 Notificaciones en tiempo real
-- 📋 Events y Listeners para interacciones sociales
+## Iteración 4.1 - Interacción Social (COMPLETADA)
+### ✅ Implementado
+- ✅ Migraciones para comments, reactions, mentions, notifications
+- ✅ Modelos Eloquent con relaciones polimórficas y jerárquicas
+- ✅ Events y Listeners para notificaciones automáticas
+- ✅ Actions para gestión de interacciones (CreateCommentAction, ToggleReactionAction, ProcessMentionsAction)
+- ✅ DTOs para validación de datos
+- ✅ Controllers RESTful para comentarios y reacciones
+- ✅ Policies de autorización para todos los recursos
+- ✅ Observers para gestión de caché
+- ✅ Rutas registradas en ModuleServiceProvider
+- ✅ Tests unitarios pasando
+
+### Detalles técnicos
+- ✅ Comentarios jerárquicos (parent_id) en News
+- ✅ Reacciones toggle con tipos enum (like, love, etc.) en Shoutouts
+- ✅ Sistema de menciones polimórfico (@usuario) con contexto
+- ✅ Notificaciones con expiración automática
+- ✅ Procesamiento automático de menciones en contenido
+- ✅ Event-driven architecture para desacoplamiento
 
 ## Próximas Iteraciones
 - 📋 Programación de horarios

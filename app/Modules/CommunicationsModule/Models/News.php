@@ -8,6 +8,8 @@ use App\Modules\CoreModule\Concerns\Auditable;
 use App\Modules\CoreModule\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -63,6 +65,27 @@ class News extends Model implements HasMedia {
      */
     public function tags(): MorphToMany {
         return $this->morphToMany(Tag::class, 'taggable');
+    }
+
+    /**
+     * Comentarios de la noticia.
+     */
+    public function comments(): \Illuminate\Database\Eloquent\Relations\HasMany {
+        return $this->hasMany(Comment::class);
+    }
+
+    /**
+     * Comentarios activos de la noticia.
+     */
+    public function activeComments(): \Illuminate\Database\Eloquent\Relations\HasMany {
+        return $this->comments()->active()->orderBy('created_at', 'asc');
+    }
+
+    /**
+     * Menciones en la noticia.
+     */
+    public function mentions(): \Illuminate\Database\Eloquent\Relations\MorphMany {
+        return $this->morphMany(Mention::class, 'mentionable');
     }
 
     /**

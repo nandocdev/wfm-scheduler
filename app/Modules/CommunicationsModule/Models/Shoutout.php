@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace App\Modules\CommunicationsModule\Models;
 
+use App\Modules\EmployeesModule\Models\Employee;
 use App\Modules\CoreModule\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
  * Modelo para Shoutouts.
@@ -49,6 +54,27 @@ class Shoutout extends Model {
      */
     public function tags(): MorphToMany {
         return $this->morphToMany(Tag::class, 'taggable');
+    }
+
+    /**
+     * Reacciones del shoutout.
+     */
+    public function reactions(): \Illuminate\Database\Eloquent\Relations\HasMany {
+        return $this->hasMany(Reaction::class);
+    }
+
+    /**
+     * Reacciones activas del shoutout.
+     */
+    public function activeReactions(): \Illuminate\Database\Eloquent\Relations\HasMany {
+        return $this->reactions()->active();
+    }
+
+    /**
+     * Menciones en el shoutout.
+     */
+    public function mentions(): \Illuminate\Database\Eloquent\Relations\MorphMany {
+        return $this->morphMany(Mention::class, 'mentionable');
     }
 
     /**
