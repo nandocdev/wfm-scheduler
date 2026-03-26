@@ -2,6 +2,7 @@
 
 namespace App\Modules\OrganizationModule\Livewire;
 
+use App\Modules\EmployeesModule\Models\Employee;
 use App\Modules\OrganizationModule\Actions\UpdateTeamAction;
 use App\Modules\OrganizationModule\DTOs\TeamDTO;
 use App\Modules\OrganizationModule\Models\Team;
@@ -14,6 +15,7 @@ class EditTeam extends Component {
     public Team $team;
     public string $name = '';
     public ?string $description = '';
+    public ?int $supervisor_id = null;
     public bool $is_active = true;
 
     public function mount(Team $team): void {
@@ -22,6 +24,7 @@ class EditTeam extends Component {
 
         $this->name = $team->name;
         $this->description = $team->description;
+        $this->supervisor_id = $team->supervisor_id;
         $this->is_active = $team->is_active;
     }
 
@@ -32,6 +35,7 @@ class EditTeam extends Component {
         return [
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
+            'supervisor_id' => ['nullable', 'exists:employees,id'],
             'is_active' => ['boolean'],
         ];
     }
@@ -43,6 +47,7 @@ class EditTeam extends Component {
         return [
             'name' => 'nombre',
             'description' => 'descripción',
+            'supervisor_id' => 'supervisor',
             'is_active' => 'estado activo',
         ];
     }
@@ -66,8 +71,18 @@ class EditTeam extends Component {
         return $this->redirect(route('organization.teams.show', $this->team));
     }
 
+    /**
+     * Obtiene la lista de empleados disponibles como supervisores.
+     */
+    public function getAvailableSupervisorsProperty() {
+        return Employee::where('is_active', true)
+            ->where('is_manager', true)
+            ->orderBy('first_name')
+            ->orderBy('last_name')
+            ->get(['id', 'first_name', 'last_name', 'employee_number']);
+    }
+
     public function render() {
-        return view('organization::livewire.edit-team')
-            ->layout('layouts.app');
+        return view('organization::livewire.edit-team');
     }
 }

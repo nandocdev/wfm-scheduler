@@ -17,14 +17,14 @@ class TeamMember extends Model {
     protected $fillable = [
         'team_id',
         'employee_id',
-        'start_date',
-        'end_date',
+        'joined_at',
+        'left_at',
         'is_active',
     ];
 
     protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
+        'joined_at' => 'date',
+        'left_at' => 'date',
         'is_active' => 'boolean',
     ];
 
