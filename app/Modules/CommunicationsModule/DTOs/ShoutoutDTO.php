@@ -12,7 +12,8 @@ readonly class ShoutoutDTO {
         public int $employee_id,
         public string $message,
         public bool $is_active,
-    ) {}
+    ) {
+    }
 
     /**
      * Construye el DTO desde un array validado.

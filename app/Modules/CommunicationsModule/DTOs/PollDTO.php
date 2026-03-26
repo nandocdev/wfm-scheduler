@@ -13,7 +13,8 @@ readonly class PollDTO {
         public array $options,
         public bool $is_active,
         public ?string $expires_at = null,
-    ) {}
+    ) {
+    }
 
     /**
      * Construye el DTO desde un array validado.

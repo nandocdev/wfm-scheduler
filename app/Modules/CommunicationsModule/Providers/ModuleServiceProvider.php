@@ -4,15 +4,22 @@ declare(strict_types=1);
 
 namespace App\Modules\CommunicationsModule\Providers;
 
+use App\Modules\CommunicationsModule\Models\Category;
 use App\Modules\CommunicationsModule\Models\News;
 use App\Modules\CommunicationsModule\Models\Poll;
 use App\Modules\CommunicationsModule\Models\Shoutout;
+use App\Modules\CommunicationsModule\Models\Tag;
+use App\Modules\CommunicationsModule\Observers\CategoryObserver;
 use App\Modules\CommunicationsModule\Observers\NewsObserver;
 use App\Modules\CommunicationsModule\Observers\PollObserver;
 use App\Modules\CommunicationsModule\Observers\ShoutoutObserver;
+use App\Modules\CommunicationsModule\Observers\TagObserver;
+use App\Modules\CommunicationsModule\Policies\CategoryPolicy;
+use App\Modules\CommunicationsModule\Policies\ContentModerationPolicy;
 use App\Modules\CommunicationsModule\Policies\NewsPolicy;
 use App\Modules\CommunicationsModule\Policies\PollPolicy;
 use App\Modules\CommunicationsModule\Policies\ShoutoutPolicy;
+use App\Modules\CommunicationsModule\Policies\TagPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
@@ -43,12 +50,19 @@ class ModuleServiceProvider extends ServiceProvider {
         News::observe(NewsObserver::class);
         Poll::observe(PollObserver::class);
         Shoutout::observe(ShoutoutObserver::class);
+        Category::observe(CategoryObserver::class);
+        Tag::observe(TagObserver::class);
     }
 
     private function registerPolicies(): void {
         Gate::policy(News::class, NewsPolicy::class);
         Gate::policy(Poll::class, PollPolicy::class);
         Gate::policy(Shoutout::class, ShoutoutPolicy::class);
+        Gate::policy(Category::class, CategoryPolicy::class);
+        Gate::policy(Tag::class, TagPolicy::class);
+
+        // Policy para moderación de contenido
+        Gate::policy(ContentModerationPolicy::class, ContentModerationPolicy::class);
     }
 
     private function registerLivewireComponents(): void {

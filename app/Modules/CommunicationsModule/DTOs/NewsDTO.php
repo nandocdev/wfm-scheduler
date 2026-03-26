@@ -22,7 +22,8 @@ class NewsDTO {
         public readonly mixed $featuredImage = null,
         /** @var UploadedFile[] */
         public readonly array $attachments = []
-    ) {}
+    ) {
+    }
 
     /**
      * Construye el DTO desde un array validado.
