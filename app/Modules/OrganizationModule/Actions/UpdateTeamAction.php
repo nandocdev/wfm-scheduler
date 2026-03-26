@@ -23,6 +23,7 @@ class UpdateTeamAction {
             $team->update([
                 'name' => $dto->name,
                 'description' => $dto->description,
+                'supervisor_id' => $dto->supervisor_id,
                 'is_active' => $dto->is_active,
             ]);
 

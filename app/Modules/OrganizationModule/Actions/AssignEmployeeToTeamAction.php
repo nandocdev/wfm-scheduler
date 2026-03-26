@@ -20,23 +20,29 @@ class AssignEmployeeToTeamAction {
      */
     public function execute(AssignEmployeeToTeamDTO $dto): TeamMember {
         return DB::transaction(function () use ($dto) {
-            // Desactivar cualquier asignación activa previa del empleado
+            // Desactivar cualquier asignación activa previa del empleado que NO sea al equipo destino
             TeamMember::where('employee_id', $dto->employee_id)
                 ->where('is_active', true)
+                ->where('team_id', '!=', $dto->team_id)
                 ->update([
                     'is_active' => false,
-                    'end_date' => $dto->start_date,
+                    'left_at' => $dto->joined_at,
                     'updated_at' => now(),
                 ]);
 
-            // Crear nueva asignación
-            return TeamMember::create([
-                'team_id' => $dto->team_id,
-                'employee_id' => $dto->employee_id,
-                'start_date' => $dto->start_date,
-                'end_date' => $dto->end_date,
-                'is_active' => true,
-            ]);
+            // Crear o actualizar la asignación al equipo destino
+            return TeamMember::updateOrCreate(
+                [
+                    'team_id' => $dto->team_id,
+                    'employee_id' => $dto->employee_id,
+                    'joined_at' => $dto->joined_at,
+                ],
+                [
+                    'left_at' => $dto->left_at,
+                    'is_active' => true,
+                    'updated_at' => now(),
+                ]
+            );
         });
     }
 }

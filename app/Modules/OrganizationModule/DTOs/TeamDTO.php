@@ -9,6 +9,7 @@ readonly class TeamDTO {
     public function __construct(
         public string $name,
         public ?string $description = null,
+        public ?int $supervisor_id = null,
         public bool $is_active = true,
     ) {
     }
@@ -22,6 +23,7 @@ readonly class TeamDTO {
         return new self(
             name: $data['name'],
             description: $data['description'] ?? null,
+            supervisor_id: $data['supervisor_id'] ?? null,
             is_active: $data['is_active'] ?? true,
         );
     }

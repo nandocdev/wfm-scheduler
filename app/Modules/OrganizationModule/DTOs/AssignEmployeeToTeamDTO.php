@@ -9,8 +9,8 @@ readonly class AssignEmployeeToTeamDTO {
     public function __construct(
         public int $employee_id,
         public int $team_id,
-        public string $start_date,
-        public ?string $end_date = null,
+        public string $joined_at,
+        public ?string $left_at = null,
     ) {
     }
 
@@ -23,8 +23,8 @@ readonly class AssignEmployeeToTeamDTO {
         return new self(
             employee_id: $data['employee_id'],
             team_id: $data['team_id'],
-            start_date: $data['start_date'],
-            end_date: $data['end_date'] ?? null,
+            joined_at: $data['joined_at'] ?? now()->format('Y-m-d'),
+            left_at: $data['left_at'] ?? null,
         );
     }
 }

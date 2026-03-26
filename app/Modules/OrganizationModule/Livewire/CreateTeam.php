@@ -2,6 +2,7 @@
 
 namespace App\Modules\OrganizationModule\Livewire;
 
+use App\Modules\EmployeesModule\Models\Employee;
 use App\Modules\OrganizationModule\Actions\CreateTeamAction;
 use App\Modules\OrganizationModule\DTOs\TeamDTO;
 use Livewire\Component;
@@ -14,6 +15,7 @@ use Livewire\Component;
 class CreateTeam extends Component {
     public string $name = '';
     public ?string $description = '';
+    public ?int $supervisor_id = null;
     public bool $is_active = true;
 
     /**
@@ -23,6 +25,7 @@ class CreateTeam extends Component {
         return [
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
+            'supervisor_id' => ['nullable', 'exists:employees,id'],
             'is_active' => ['boolean'],
         ];
     }
@@ -34,6 +37,7 @@ class CreateTeam extends Component {
         return [
             'name' => 'nombre',
             'description' => 'descripción',
+            'supervisor_id' => 'supervisor',
             'is_active' => 'estado activo',
         ];
     }
@@ -56,6 +60,17 @@ class CreateTeam extends Component {
 
         // Resetear formulario
         $this->reset();
+    }
+
+    /**
+     * Obtiene la lista de empleados disponibles como supervisores.
+     */
+    public function getAvailableSupervisorsProperty() {
+        return Employee::where('is_active', true)
+            ->where('is_manager', true)
+            ->orderBy('first_name')
+            ->orderBy('last_name')
+            ->get(['id', 'first_name', 'last_name', 'employee_number']);
     }
 
     public function render() {

@@ -9,7 +9,7 @@ readonly class RemoveEmployeeFromTeamDTO {
     public function __construct(
         public int $employee_id,
         public int $team_id,
-        public string $end_date,
+        public string $left_at,
     ) {
     }
 
@@ -22,7 +22,7 @@ readonly class RemoveEmployeeFromTeamDTO {
         return new self(
             employee_id: $data['employee_id'],
             team_id: $data['team_id'],
-            end_date: $data['end_date'],
+            left_at: $data['left_at'] ?? $data['end_date'] ?? now()->format('Y-m-d'),
         );
     }
 }

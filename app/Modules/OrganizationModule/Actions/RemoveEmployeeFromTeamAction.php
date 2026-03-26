@@ -28,7 +28,7 @@ class RemoveEmployeeFromTeamAction {
 
             $teamMember->update([
                 'is_active' => false,
-                'end_date' => $dto->end_date,
+                'left_at' => $dto->left_at,
             ]);
 
             return $teamMember;
