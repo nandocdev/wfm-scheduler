@@ -13,14 +13,18 @@ use Illuminate\Support\Facades\Cache;
  */
 class MentionObserver {
     public function created(Mention $mention): void {
-        Cache::tags(['mentions', "user:{$mention->mentioned_user_id}"])->flush();
+        Cache::forget("user_mentions:{$mention->mentioned_user_id}");
+        Cache::forget('mentions_recent');
     }
 
     public function updated(Mention $mention): void {
-        Cache::tags(['mentions', "user:{$mention->mentioned_user_id}"])->flush();
+        Cache::forget("mention:{$mention->id}");
+        Cache::forget("user_mentions:{$mention->mentioned_user_id}");
     }
 
     public function deleted(Mention $mention): void {
-        Cache::tags(['mentions', "user:{$mention->mentioned_user_id}"])->flush();
+        Cache::forget("mention:{$mention->id}");
+        Cache::forget("user_mentions:{$mention->mentioned_user_id}");
+        Cache::forget('mentions_recent');
     }
 }

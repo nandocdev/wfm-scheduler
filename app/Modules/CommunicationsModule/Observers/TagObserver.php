@@ -16,7 +16,7 @@ class TagObserver {
      * Maneja el evento de creación.
      */
     public function created(Tag $tag): void {
-        Cache::tags(['tags'])->flush();
+        Cache::forget('tags_list');
     }
 
     /**
@@ -24,7 +24,7 @@ class TagObserver {
      */
     public function updated(Tag $tag): void {
         Cache::forget("tag:{$tag->id}");
-        Cache::tags(['tags'])->flush();
+        Cache::forget('tags_list');
     }
 
     /**
@@ -32,14 +32,14 @@ class TagObserver {
      */
     public function deleted(Tag $tag): void {
         Cache::forget("tag:{$tag->id}");
-        Cache::tags(['tags'])->flush();
+        Cache::forget('tags_list');
     }
 
     /**
      * Maneja el evento de restauración.
      */
     public function restored(Tag $tag): void {
-        Cache::tags(['tags'])->flush();
+        Cache::forget('tags_list');
     }
 
     /**
@@ -47,6 +47,6 @@ class TagObserver {
      */
     public function forceDeleted(Tag $tag): void {
         Cache::forget("tag:{$tag->id}");
-        Cache::tags(['tags'])->flush();
+        Cache::forget('tags_list');
     }
 }

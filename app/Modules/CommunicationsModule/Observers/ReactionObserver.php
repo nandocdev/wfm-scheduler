@@ -13,14 +13,18 @@ use Illuminate\Support\Facades\Cache;
  */
 class ReactionObserver {
     public function created(Reaction $reaction): void {
-        Cache::tags(['reactions', "shoutout:{$reaction->shoutout_id}"])->flush();
+        Cache::forget("shoutout_reactions:{$reaction->shoutout_id}");
+        Cache::forget('reactions_recent');
     }
 
     public function updated(Reaction $reaction): void {
-        Cache::tags(['reactions', "shoutout:{$reaction->shoutout_id}"])->flush();
+        Cache::forget("reaction:{$reaction->id}");
+        Cache::forget("shoutout_reactions:{$reaction->shoutout_id}");
     }
 
     public function deleted(Reaction $reaction): void {
-        Cache::tags(['reactions', "shoutout:{$reaction->shoutout_id}"])->flush();
+        Cache::forget("reaction:{$reaction->id}");
+        Cache::forget("shoutout_reactions:{$reaction->shoutout_id}");
+        Cache::forget('reactions_recent');
     }
 }

@@ -13,14 +13,18 @@ use Illuminate\Support\Facades\Cache;
  */
 class NotificationObserver {
     public function created(Notification $notification): void {
-        Cache::tags(['notifications', "user:{$notification->user_id}"])->flush();
+        Cache::forget("user_notifications:{$notification->user_id}");
+        Cache::forget('notifications_recent');
     }
 
     public function updated(Notification $notification): void {
-        Cache::tags(['notifications', "user:{$notification->user_id}"])->flush();
+        Cache::forget("notification:{$notification->id}");
+        Cache::forget("user_notifications:{$notification->user_id}");
     }
 
     public function deleted(Notification $notification): void {
-        Cache::tags(['notifications', "user:{$notification->user_id}"])->flush();
+        Cache::forget("notification:{$notification->id}");
+        Cache::forget("user_notifications:{$notification->user_id}");
+        Cache::forget('notifications_recent');
     }
 }

@@ -13,14 +13,18 @@ use Illuminate\Support\Facades\Cache;
  */
 class CommentObserver {
     public function created(Comment $comment): void {
-        Cache::tags(['comments', "news:{$comment->news_id}"])->flush();
+        Cache::forget("news_comments:{$comment->news_id}");
+        Cache::forget('comments_recent');
     }
 
     public function updated(Comment $comment): void {
-        Cache::tags(['comments', "news:{$comment->news_id}"])->flush();
+        Cache::forget("comment:{$comment->id}");
+        Cache::forget("news_comments:{$comment->news_id}");
     }
 
     public function deleted(Comment $comment): void {
-        Cache::tags(['comments', "news:{$comment->news_id}"])->flush();
+        Cache::forget("comment:{$comment->id}");
+        Cache::forget("news_comments:{$comment->news_id}");
+        Cache::forget('comments_recent');
     }
 }

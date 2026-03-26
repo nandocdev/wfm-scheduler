@@ -27,6 +27,7 @@ class ShoutoutObserver {
     }
 
     private function clearShoutoutsCache(): void {
-        Cache::tags(['shoutouts'])->flush();
+        Cache::forget('shoutouts_list');
+        Cache::forget('shoutouts_recent');
     }
 }

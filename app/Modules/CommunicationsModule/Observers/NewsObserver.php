@@ -27,6 +27,8 @@ class NewsObserver {
     }
 
     private function clearNewsCache(): void {
-        Cache::tags(['news'])->flush();
+        Cache::forget('news_list');
+        Cache::forget('news_featured');
+        Cache::forget('news_recent');
     }
 }

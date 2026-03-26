@@ -16,7 +16,8 @@ class CategoryObserver {
      * Maneja el evento de creación.
      */
     public function created(Category $category): void {
-        Cache::tags(['categories'])->flush();
+        Cache::forget('categories_list');
+        Cache::forget('categories_tree');
     }
 
     /**
@@ -24,7 +25,8 @@ class CategoryObserver {
      */
     public function updated(Category $category): void {
         Cache::forget("category:{$category->id}");
-        Cache::tags(['categories'])->flush();
+        Cache::forget('categories_list');
+        Cache::forget('categories_tree');
     }
 
     /**
@@ -32,14 +34,16 @@ class CategoryObserver {
      */
     public function deleted(Category $category): void {
         Cache::forget("category:{$category->id}");
-        Cache::tags(['categories'])->flush();
+        Cache::forget('categories_list');
+        Cache::forget('categories_tree');
     }
 
     /**
      * Maneja el evento de restauración.
      */
     public function restored(Category $category): void {
-        Cache::tags(['categories'])->flush();
+        Cache::forget('categories_list');
+        Cache::forget('categories_tree');
     }
 
     /**
@@ -47,6 +51,7 @@ class CategoryObserver {
      */
     public function forceDeleted(Category $category): void {
         Cache::forget("category:{$category->id}");
-        Cache::tags(['categories'])->flush();
+        Cache::forget('categories_list');
+        Cache::forget('categories_tree');
     }
 }

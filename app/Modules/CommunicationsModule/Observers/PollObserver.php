@@ -27,6 +27,7 @@ class PollObserver {
     }
 
     private function clearPollsCache(): void {
-        Cache::tags(['polls'])->flush();
+        Cache::forget('polls_active');
+        Cache::forget('polls_recent');
     }
 }
