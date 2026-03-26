@@ -10,6 +10,7 @@ use App\Modules\CommunicationsModule\Models\Notification;
 use App\Modules\CommunicationsModule\Models\Poll;
 use App\Modules\CommunicationsModule\Models\Reaction;
 use App\Modules\CommunicationsModule\Models\Shoutout;
+use Flux\Flux;
 use Livewire\Component;
 
 /**
@@ -27,7 +28,25 @@ class Home extends Component {
     ];
 
     public ?int $selectedNewsId = null;
+    public ?int $viewingNewsId = null;
+    public bool $showNewsModal = false;
     public bool $showComments = false;
+
+    /**
+     * Carga una noticia para mostrarla en el modal.
+     */
+    public function viewNews(int $newsId): void {
+        $this->viewingNewsId = $newsId;
+        $this->showNewsModal = true;
+    }
+
+    /**
+     * Cierra el modal de noticia.
+     */
+    public function closeNewsModal(): void {
+        $this->showNewsModal = false;
+        $this->viewingNewsId = null;
+    }
 
     /**
      * Votación en la encuesta activa.
@@ -36,12 +55,12 @@ class Home extends Component {
         $poll = Poll::where('is_active', true)->latest()->first();
 
         if (!$poll) {
-            flux()->toast('No hay encuestas activas en este momento.', variant: 'warning');
+            Flux::toast('No hay encuestas activas en este momento.', variant: 'warning');
             return;
         }
 
         if ($poll->hasVoted(auth()->id())) {
-            flux()->toast('Ya has participado en esta encuesta.', variant: 'error');
+            Flux::toast('Ya has participado en esta encuesta.', variant: 'error');
             return;
         }
 
@@ -56,7 +75,7 @@ class Home extends Component {
             'answer' => $this->pollForm['answer'],
         ]);
 
-        flux()->toast('¡Voto registrado! Gracias por participar.');
+        Flux::toast('¡Voto registrado! Gracias por participar.');
         $this->pollForm['answer'] = null;
     }
 
@@ -173,6 +192,7 @@ class Home extends Component {
                 ->latest()
                 ->first(),
             'selectedNews' => $this->selectedNewsId ? News::with('comments.user')->find($this->selectedNewsId) : null,
+            'viewingNews' => $this->viewingNewsId ? News::with('author', 'media')->find($this->viewingNewsId) : null,
             'recentNotifications' => Notification::where('user_id', auth()->id())
                 ->where('is_read', false)
                 ->latest()

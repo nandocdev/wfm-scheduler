@@ -58,16 +58,23 @@
                         @forelse ($newsItems as $news)
                             <flux:card
                                 class="group flex flex-col overflow-hidden p-0 transition hover:-translate-y-0.5 hover:shadow-md">
-                                <div class="h-48 w-full overflow-hidden border-b border-zinc-200 bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800">
-                                    <img src="{{ $news->getFirstMediaUrl('featured_image') ?: asset('img/news_placeholder.webp') }}"
-                                        alt="{{ $news->title }}"
-                                        class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]">
+                                <div class="h-48 w-full overflow-hidden border-b border-zinc-200 bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 relative">
+                                    <button wire:click="viewNews({{ $news->id }})" class="block h-full w-full text-left">
+                                        <img src="{{ $news->getFirstMediaUrl('featured_image') ?: asset('img/news-placeholder.png') }}"
+                                            alt="{{ $news->title }}"
+                                            class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]">
+                                    </button>
                                 </div>
                                 <div class="flex flex-1 flex-col p-5">
-                                    <div class="mb-3">
+                                    <div class="mb-3 flex items-center justify-between">
                                         <flux:badge color="blue" size="sm" inset="top bottom">Módulo Operativo</flux:badge>
+                                        <flux:button wire:click="viewNews({{ $news->id }})" variant="ghost" size="xs" icon-trailing="chevron-right">
+                                            Leer noticia
+                                        </flux:button>
                                     </div>
-                                    <flux:heading size="lg">{{ $news->title }}</flux:heading>
+                                    <button wire:click="viewNews({{ $news->id }})" class="hover:underline decoration-cyan-500 underline-offset-4 text-left">
+                                        <flux:heading size="lg">{{ $news->title }}</flux:heading>
+                                    </button>
                                     <flux:text class="mt-2 line-clamp-2 flex-1">{{ $news->excerpt ?: str($news->content)->limit(100) }}</flux:text>
                                     <div class="mt-5 flex items-center justify-between gap-3">
                                         <div class="flex items-center gap-2">
@@ -296,4 +303,93 @@
             @endforelse
         </div>
     </section>
+
+    <flux:modal name="news-detail-modal" wire:model="showNewsModal" class="md:min-w-[50rem] space-y-6">
+        @if ($viewingNews)
+            <div class="space-y-6">
+                <!-- Imagen Destacada -->
+                <div class="-mx-6 -mt-6 overflow-hidden aspect-[21/9] bg-zinc-100 dark:bg-zinc-800">
+                    <img 
+                        src="{{ $viewingNews->getFirstMediaUrl('featured_image') ?: asset('img/news-placeholder.png') }}" 
+                        alt="{{ $viewingNews->title }}" 
+                        class="w-full h-full object-cover"
+                    />
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2">
+                        <flux:badge color="blue" size="sm">Novedades</flux:badge>
+                        <flux:text class="text-xs">{{ $viewingNews->published_at->format('d M, Y') }}</flux:text>
+                    </div>
+
+                    <flux:heading size="xl">{{ $viewingNews->title }}</flux:heading>
+
+                    <div class="flex items-center gap-3">
+                        <flux:avatar src="{{ $viewingNews->author?->avatar_url }}" name="{{ $viewingNews->author?->name }}" size="sm" />
+                        <flux:text class="text-sm font-medium">{{ $viewingNews->author?->name }}</flux:text>
+                    </div>
+                </div>
+
+                <flux:separator />
+
+                <!-- Contenido Principal -->
+                <div class="prose prose-zinc dark:prose-invert max-w-none prose-sm sm:prose-base">
+                    {!! Str::markdown($viewingNews->content) !!}
+                </div>
+
+                <!-- Espacio Dinámico para Multimedia y Documentos -->
+                @if ($viewingNews->hasMedia('attachments'))
+                    <flux:separator />
+                    <div class="space-y-4">
+                        <flux:heading size="sm">Archivos y Multimedia</flux:heading>
+                        <div class="grid gap-4 sm:grid-cols-2">
+                            @foreach ($viewingNews->getMedia('attachments') as $media)
+                                @php
+                                    $extension = strtolower($media->extension);
+                                    $isVideo = in_array($extension, ['mp4', 'webm', 'ogg']);
+                                    $isPdf = $extension === 'pdf';
+                                    $isImage = in_array($extension, ['jpg', 'jpeg', 'png', 'webp', 'gif']);
+                                @endphp
+
+                                <flux:card class="p-4 flex flex-col gap-3">
+                                    <div class="flex items-center gap-3 overflow-hidden">
+                                        <flux:icon name="{{ $isPdf ? 'document-text' : ($isImage ? 'photo' : ($isVideo ? 'play-circle' : 'paper-clip')) }}" class="text-zinc-400" />
+                                        <flux:text class="truncate text-sm font-medium">{{ $media->file_name }}</flux:text>
+                                    </div>
+
+                                    @if ($isImage)
+                                        <img src="{{ $media->getUrl() }}" class="w-full h-32 object-cover rounded shadow-sm" />
+                                    @elseif ($isVideo)
+                                        <video controls class="w-full rounded shadow-sm">
+                                            <source src="{{ $media->getUrl() }}" type="{{ $media->mime_type }}">
+                                            Tu navegador no soporta el video.
+                                        </video>
+                                    @endif
+
+                                    <div class="mt-auto flex gap-2">
+                                        @if ($isPdf)
+                                            <flux:button href="{{ $media->getUrl() }}" target="_blank" variant="subtle" size="xs" class="flex-1">
+                                                Ver PDF
+                                            </flux:button>
+                                        @endif
+                                        <flux:button href="{{ $media->getUrl() }}" download variant="ghost" size="xs" icon="arrow-down-tray" class="flex-1">
+                                            Descargar
+                                        </flux:button>
+                                    </div>
+                                </flux:card>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+            </div>
+        @else
+            <div class="flex items-center justify-center py-20">
+                <flux:icon name="loading" class="animate-spin h-8 w-8 text-zinc-400" />
+            </div>
+        @endif
+
+        <div class="flex justify-end pt-4">
+            <flux:button wire:click="closeNewsModal" variant="ghost">Cerrar</flux:button>
+        </div>
+    </flux:modal>
 </div>

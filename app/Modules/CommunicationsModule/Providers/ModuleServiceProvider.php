@@ -41,6 +41,7 @@ use App\Modules\CommunicationsModule\Listeners\SendMentionNotificationListener;
 use App\Modules\CommunicationsModule\Listeners\SendReactionNotificationListener;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 
@@ -63,7 +64,7 @@ class ModuleServiceProvider extends ServiceProvider {
 
     private function registerRoutes(): void {
         if (file_exists(__DIR__ . '/../Routes/web.php')) {
-            $this->loadRoutesFrom(__DIR__ . '/../Routes/web.php');
+            Route::middleware('web')->group(__DIR__ . '/../Routes/web.php');
         }
     }
 
@@ -95,7 +96,10 @@ class ModuleServiceProvider extends ServiceProvider {
     }
 
     private function registerLivewireComponents(): void {
-        // Componentes Livewire se registrarán aquí cuando se implementen
+        Livewire::component('communications.list-news', \App\Modules\CommunicationsModule\Livewire\ListNews::class);
+        Livewire::component('communications.create-news', \App\Modules\CommunicationsModule\Livewire\CreateNews::class);
+        Livewire::component('communications.edit-news', \App\Modules\CommunicationsModule\Livewire\EditNews::class);
+        Livewire::component('communications.home', \App\Modules\CommunicationsModule\Livewire\Home::class);
     }
 
     private function registerEventListeners(): void {

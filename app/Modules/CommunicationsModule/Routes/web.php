@@ -49,7 +49,7 @@ Route::middleware(['auth'])->prefix('admin/communications')->name('communication
 });
 
 // Rutas públicas para interacciones sociales
-Route::middleware('auth')->group(function () {
+Route::middleware('auth')->name('communications.')->group(function () {
     // Comentarios en noticias
     Route::post('news/{news}/comments', [CommentController::class, 'store'])
         ->name('comments.store');
