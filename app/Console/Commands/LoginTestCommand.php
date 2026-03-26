@@ -10,13 +10,11 @@ use Illuminate\Support\Facades\Auth;
 
 #[Signature('app:login-test-command')]
 #[Description('Test authentication and route access for communications module')]
-class LoginTestCommand extends Command
-{
+class LoginTestCommand extends Command {
     /**
      * Execute the console command.
      */
-    public function handle()
-    {
+    public function handle() {
         $this->info('Testing authentication and route access...');
 
         // Find admin user
