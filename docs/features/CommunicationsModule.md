@@ -100,7 +100,6 @@ StoreShoutoutRequest, UpdateShoutoutRequest
 - Interfaz administrativa completa
 - Integración con News, Polls y Shoutouts
 
-### Módulo CommunicationsModule
 #### **3. Moderación y Workflow**
 - Estados de publicación: `draft`, `pending_review`, `published`, `archived`
 - Aprobación por roles superiores
@@ -112,6 +111,7 @@ StoreShoutoutRequest, UpdateShoutoutRequest
 - Sistema de menciones (@usuario)
 - Notificaciones en tiempo real
 
+### Módulo CommunicationsModule
 #### **5. Programación y Automatización**
 - Publicación programada (`scheduled_at`)
 - Archivado automático por fecha
