@@ -60,7 +60,7 @@ class RolesAndPermissionsSeeder extends Seeder {
             'employees.delete.all',
             'employees.manageTeamAssignments',
 
-            // Communications Module
+            // Communications Module - Contenido
             'news.viewAny',
             'news.view',
             'news.create',
@@ -68,6 +68,46 @@ class RolesAndPermissionsSeeder extends Seeder {
             'news.delete',
             'shoutouts.manage',
             'polls.manage',
+
+            // Communications Module - Gestión
+            'communications.manage',
+            'communications.moderate',
+            'communications.approve',
+            'communications.reject',
+            'communications.archive',
+            'communications.view_pending',
+
+            // Communications Module - Comentarios
+            'comments.view',
+            'comments.create',
+            'comments.edit',
+            'comments.delete',
+            'comments.restore',
+            'comments.force_delete',
+
+            // Communications Module - Reacciones
+            'reactions.view',
+            'reactions.create',
+            'reactions.edit',
+            'reactions.delete',
+            'reactions.restore',
+            'reactions.force_delete',
+
+            // Communications Module - Menciones
+            'mentions.view',
+            'mentions.create',
+            'mentions.edit',
+            'mentions.delete',
+            'mentions.restore',
+            'mentions.force_delete',
+
+            // Communications Module - Notificaciones
+            'notifications.view',
+            'notifications.create',
+            'notifications.edit',
+            'notifications.delete',
+            'notifications.restore',
+            'notifications.force_delete',
         ];
 
         // Registro de permisos
@@ -104,7 +144,7 @@ class RolesAndPermissionsSeeder extends Seeder {
             Role::findByName($roleName, 'web')->syncPermissions([]);
         }
 
-        // Instrucción actual: WFM y Admin con acceso total
+        // Roles con acceso total al sistema
         $wfmRole = Role::findByName('wfm', 'web');
         $wfmRole->syncPermissions(Permission::all());
 
