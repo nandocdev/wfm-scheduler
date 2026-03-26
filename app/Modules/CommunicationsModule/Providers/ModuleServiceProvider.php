@@ -5,21 +5,41 @@ declare(strict_types=1);
 namespace App\Modules\CommunicationsModule\Providers;
 
 use App\Modules\CommunicationsModule\Models\Category;
+use App\Modules\CommunicationsModule\Models\Comment;
+use App\Modules\CommunicationsModule\Models\Mention;
 use App\Modules\CommunicationsModule\Models\News;
+use App\Modules\CommunicationsModule\Models\Notification;
 use App\Modules\CommunicationsModule\Models\Poll;
+use App\Modules\CommunicationsModule\Models\Reaction;
 use App\Modules\CommunicationsModule\Models\Shoutout;
 use App\Modules\CommunicationsModule\Models\Tag;
 use App\Modules\CommunicationsModule\Observers\CategoryObserver;
+use App\Modules\CommunicationsModule\Observers\CommentObserver;
+use App\Modules\CommunicationsModule\Observers\MentionObserver;
 use App\Modules\CommunicationsModule\Observers\NewsObserver;
+use App\Modules\CommunicationsModule\Observers\NotificationObserver;
 use App\Modules\CommunicationsModule\Observers\PollObserver;
+use App\Modules\CommunicationsModule\Observers\ReactionObserver;
 use App\Modules\CommunicationsModule\Observers\ShoutoutObserver;
 use App\Modules\CommunicationsModule\Observers\TagObserver;
 use App\Modules\CommunicationsModule\Policies\CategoryPolicy;
+use App\Modules\CommunicationsModule\Policies\CommentPolicy;
 use App\Modules\CommunicationsModule\Policies\ContentModerationPolicy;
+use App\Modules\CommunicationsModule\Policies\MentionPolicy;
 use App\Modules\CommunicationsModule\Policies\NewsPolicy;
+use App\Modules\CommunicationsModule\Policies\NotificationPolicy;
 use App\Modules\CommunicationsModule\Policies\PollPolicy;
+use App\Modules\CommunicationsModule\Policies\ReactionPolicy;
 use App\Modules\CommunicationsModule\Policies\ShoutoutPolicy;
 use App\Modules\CommunicationsModule\Policies\TagPolicy;
+use App\Modules\CommunicationsModule\Events\CommentCreated;
+use App\Modules\CommunicationsModule\Events\MentionCreated;
+use App\Modules\CommunicationsModule\Events\ReactionAdded;
+use App\Modules\CommunicationsModule\Events\ReactionRemoved;
+use App\Modules\CommunicationsModule\Listeners\SendCommentNotificationListener;
+use App\Modules\CommunicationsModule\Listeners\SendMentionNotificationListener;
+use App\Modules\CommunicationsModule\Listeners\SendReactionNotificationListener;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
@@ -36,6 +56,7 @@ class ModuleServiceProvider extends ServiceProvider {
         $this->registerRoutes();
         $this->registerObservers();
         $this->registerPolicies();
+        $this->registerEventListeners();
         $this->registerLivewireComponents();
         $this->loadViews();
     }
@@ -52,6 +73,10 @@ class ModuleServiceProvider extends ServiceProvider {
         Shoutout::observe(ShoutoutObserver::class);
         Category::observe(CategoryObserver::class);
         Tag::observe(TagObserver::class);
+        Comment::observe(CommentObserver::class);
+        Reaction::observe(ReactionObserver::class);
+        Mention::observe(MentionObserver::class);
+        Notification::observe(NotificationObserver::class);
     }
 
     private function registerPolicies(): void {
@@ -60,6 +85,10 @@ class ModuleServiceProvider extends ServiceProvider {
         Gate::policy(Shoutout::class, ShoutoutPolicy::class);
         Gate::policy(Category::class, CategoryPolicy::class);
         Gate::policy(Tag::class, TagPolicy::class);
+        Gate::policy(Comment::class, CommentPolicy::class);
+        Gate::policy(Reaction::class, ReactionPolicy::class);
+        Gate::policy(Mention::class, MentionPolicy::class);
+        Gate::policy(Notification::class, NotificationPolicy::class);
 
         // Policy para moderación de contenido
         Gate::policy(ContentModerationPolicy::class, ContentModerationPolicy::class);
@@ -68,6 +97,24 @@ class ModuleServiceProvider extends ServiceProvider {
     private function registerLivewireComponents(): void {
         // Componentes Livewire se registrarán aquí cuando se implementen
     }
+
+    private function registerEventListeners(): void {
+        Event::listen(
+            CommentCreated::class,
+            SendCommentNotificationListener::class
+        );
+
+        Event::listen(
+            ReactionAdded::class,
+            SendReactionNotificationListener::class
+        );
+
+        Event::listen(
+            MentionCreated::class,
+            SendMentionNotificationListener::class
+        );
+    }
+
 
     private function loadViews(): void {
         $this->loadViewsFrom(__DIR__ . '/../Resources/Views', 'communications');

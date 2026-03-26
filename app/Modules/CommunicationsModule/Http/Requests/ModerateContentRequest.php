@@ -10,13 +10,11 @@ use Illuminate\Foundation\Http\FormRequest;
 /**
  * Valida y autoriza operaciones de moderación de contenido.
  */
-class ModerateContentRequest extends FormRequest
-{
+class ModerateContentRequest extends FormRequest {
     /**
      * Determina si el usuario está autorizado para esta acción.
      */
-    public function authorize(): bool
-    {
+    public function authorize(): bool {
         $policy = app(ContentModerationPolicy::class);
 
         return match ($this->input('action')) {
@@ -31,8 +29,7 @@ class ModerateContentRequest extends FormRequest
     /**
      * Reglas de validación.
      */
-    public function rules(): array
-    {
+    public function rules(): array {
         return [
             'action' => ['required', 'string', 'in:approve,reject,archive,submit_for_review'],
             'content_type' => ['required', 'string', 'in:news,poll,shoutout'],
@@ -44,8 +41,7 @@ class ModerateContentRequest extends FormRequest
     /**
      * Mensajes de validación personalizados.
      */
-    public function messages(): array
-    {
+    public function messages(): array {
         return [
             'action.required' => 'La acción de moderación es requerida.',
             'action.in' => 'La acción debe ser una de: approve, reject, archive, submit_for_review.',
@@ -59,8 +55,7 @@ class ModerateContentRequest extends FormRequest
     /**
      * Obtiene el modelo de contenido basado en el tipo y ID.
      */
-    public function getContent()
-    {
+    public function getContent(bool $asResource = false) {
         return match ($this->input('content_type')) {
             'news' => \App\Modules\CommunicationsModule\Models\News::findOrFail($this->input('content_id')),
             'poll' => \App\Modules\CommunicationsModule\Models\Poll::findOrFail($this->input('content_id')),

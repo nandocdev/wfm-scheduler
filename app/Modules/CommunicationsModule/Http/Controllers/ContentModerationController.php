@@ -15,13 +15,11 @@ use Illuminate\View\View;
  *
  * Maneja aprobación, rechazo y gestión de estados de contenido.
  */
-class ContentModerationController extends Controller
-{
+class ContentModerationController extends Controller {
     /**
      * Muestra el panel de moderación con contenido pendiente.
      */
-    public function index(): View
-    {
+    public function index(): View {
         $this->authorize('viewPending', \App\Modules\CommunicationsModule\Models\News::class);
 
         $pendingNews = \App\Modules\CommunicationsModule\Models\News::pendingReview()

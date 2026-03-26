@@ -54,8 +54,7 @@ class ContentModerationPolicy {
      * Por ahora, moderadores pueden moderar todo el contenido.
      * TODO: Implementar control por organización cuando esté disponible.
      */
-    public function moderateContent(User $user, Model $content): bool
-    {
+    public function moderateContent(User $user, Model $content): bool {
         return $user->hasRole(['admin', 'moderator']);
     }
 }
