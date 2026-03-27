@@ -17,28 +17,31 @@
                     <flux:textarea wire:model="form.excerpt" label="Resumen o Extracto (Opcional)" rows="2"
                         placeholder="Breve descripción para el listado..." />
 
-                    <flux:textarea wire:model="form.content" label="Contenido Completo (Markdown soportado)" rows="10"
+                    <flux:editor wire:model="form.content" label="Contenido Completo"
+                        description="Editor Markdown: usa la barra para formato rápido." rows="10"
                         placeholder="Escribe aquí el cuerpo de la noticia..." />
 
-                    <flux:field>
-                        <flux:select wire:model="form.category_ids" label="Categorías" multiple>
-                            @foreach($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
-                            @endforeach
-                        </flux:select>
-                        <flux:error name="form.category_ids" />
-                        <flux:error name="form.category_ids.*" />
-                    </flux:field>
+                    <div class="flex flex-col gap-4">
+                        <flux:field>
+                            <flux:select wire:model="form.category_ids" label="Categorías" multiple>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </flux:select>
+                            <flux:error name="form.category_ids" />
+                            <flux:error name="form.category_ids.*" />
+                        </flux:field>
 
-                    <flux:field>
-                        <flux:select wire:model="form.tag_ids" label="Etiquetas" multiple>
-                            @foreach($tags as $tag)
-                                <option value="{{ $tag->id }}">{{ $tag->name }}</option>
-                            @endforeach
-                        </flux:select>
-                        <flux:error name="form.tag_ids" />
-                        <flux:error name="form.tag_ids.*" />
-                    </flux:field>
+                        <flux:field>
+                            <flux:select wire:model="form.tag_ids" label="Etiquetas" multiple>
+                                @foreach($tags as $tag)
+                                    <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                                @endforeach
+                            </flux:select>
+                            <flux:error name="form.tag_ids" />
+                            <flux:error name="form.tag_ids.*" />
+                        </flux:field>
+                    </div>
                 </div>
             </flux:card>
         </div>
