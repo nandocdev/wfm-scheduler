@@ -47,6 +47,7 @@ class Notification extends Model {
         'reply' => 'Respuesta a comentario',
         'news_published' => 'Noticia publicada',
         'poll_expired' => 'Encuesta expirada',
+        'newsletter_auto' => 'Newsletter diario',
     ];
 
     /**
