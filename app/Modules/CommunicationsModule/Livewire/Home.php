@@ -52,6 +52,7 @@ class Home extends Component {
      * Votación en la encuesta activa.
      */
     public function submitPoll(): void {
+        /** @var Poll|null $poll */
         $poll = Poll::where('is_active', true)->latest()->first();
 
         if (!$poll) {
@@ -115,6 +116,7 @@ class Home extends Component {
         $existingReaction = Reaction::where('shoutout_id', $shoutoutId)
             ->where('user_id', $userId)
             ->first();
+        /** @var Reaction|null $existingReaction */
 
         if ($existingReaction) {
             if ($existingReaction->type === $type) {
@@ -162,7 +164,16 @@ class Home extends Component {
         $newsItems = News::with('author', 'media', 'comments.user')
             ->withCount('comments')
             ->where('is_active', true)
+            ->where('status', 'published')
             ->where('published_at', '<=', now())
+            ->where(function ($query) {
+                $query->whereNull('scheduled_at')
+                    ->orWhere('scheduled_at', '<=', now());
+            })
+            ->where(function ($query) {
+                $query->whereNull('archive_at')
+                    ->orWhere('archive_at', '>', now());
+            })
             ->latest('published_at')
             ->take(4)
             ->get();
@@ -170,6 +181,15 @@ class Home extends Component {
         $shoutoutItems = Shoutout::with('employee', 'reactions')
             ->withCount('reactions')
             ->where('is_active', true)
+            ->where('status', 'published')
+            ->where(function ($query) {
+                $query->whereNull('scheduled_at')
+                    ->orWhere('scheduled_at', '<=', now());
+            })
+            ->where(function ($query) {
+                $query->whereNull('archive_at')
+                    ->orWhere('archive_at', '>', now());
+            })
             ->latest()
             ->take(6)
             ->get();
@@ -186,8 +206,17 @@ class Home extends Component {
             'newsItems' => $newsItems,
             'shoutoutItems' => $shoutoutItems,
             'activePoll' => Poll::where('is_active', true)
+                ->where('status', 'published')
                 ->where(function ($q) {
                     $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
+                })
+                ->where(function ($query) {
+                    $query->whereNull('scheduled_at')
+                        ->orWhere('scheduled_at', '<=', now());
+                })
+                ->where(function ($query) {
+                    $query->whereNull('archive_at')
+                        ->orWhere('archive_at', '>', now());
                 })
                 ->latest()
                 ->first(),

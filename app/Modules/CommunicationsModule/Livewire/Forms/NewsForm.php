@@ -21,6 +21,8 @@ class NewsForm extends Form {
     public ?string $excerpt = '';
     public string $content = '';
     public string $published_at = '';
+    public ?string $scheduled_at = null;
+    public ?string $archive_at = null;
     public bool $is_active = true;
 
     // Media
@@ -37,6 +39,8 @@ class NewsForm extends Form {
             'excerpt' => 'nullable|string|max:500',
             'content' => 'required|string',
             'published_at' => 'required|date',
+            'scheduled_at' => 'nullable|date',
+            'archive_at' => 'nullable|date|after:scheduled_at',
             'is_active' => 'boolean',
             'featured_image' => 'nullable|image|max:2048', // 2MB max
             'attachments.*' => 'nullable|file|max:10240', // 10MB max per file
@@ -53,6 +57,8 @@ class NewsForm extends Form {
         $this->excerpt = $news->excerpt;
         $this->content = $news->content;
         $this->published_at = $news->published_at->format('Y-m-d\TH:i');
+        $this->scheduled_at = $news->scheduled_at?->format('Y-m-d\TH:i');
+        $this->archive_at = $news->archive_at?->format('Y-m-d\TH:i');
         $this->is_active = (bool) $news->is_active;
     }
 
@@ -63,7 +69,7 @@ class NewsForm extends Form {
      * Limpia el formulario.
      */
     public function resetForm(): void {
-        $this->reset(['title', 'slug', 'excerpt', 'content', 'published_at', 'is_active', 'featured_image', 'attachments']);
+        $this->reset(['title', 'slug', 'excerpt', 'content', 'published_at', 'scheduled_at', 'archive_at', 'is_active', 'featured_image', 'attachments']);
         $this->newsModel = null;
     }
 
@@ -77,6 +83,8 @@ class NewsForm extends Form {
             excerpt: $this->excerpt,
             content: $this->content,
             published_at: $this->published_at,
+            scheduled_at: $this->scheduled_at,
+            archive_at: $this->archive_at,
             is_active: $this->is_active,
             author_id: (int) auth()->id(),
             featuredImage: $this->featured_image,

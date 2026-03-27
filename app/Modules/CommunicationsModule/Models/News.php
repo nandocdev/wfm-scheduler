@@ -32,6 +32,8 @@ class News extends Model implements HasMedia {
         'author_id',
         'is_active',
         'published_at',
+        'scheduled_at',
+        'archive_at',
         'status',
         'approved_by',
         'approved_at',
@@ -42,6 +44,8 @@ class News extends Model implements HasMedia {
     protected $casts = [
         'is_active' => 'boolean',
         'published_at' => 'datetime',
+        'scheduled_at' => 'datetime',
+        'archive_at' => 'datetime',
         'approved_at' => 'datetime',
         'version_history' => 'array',
     ];

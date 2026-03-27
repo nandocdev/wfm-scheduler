@@ -13,6 +13,8 @@ readonly class PollDTO {
         public array $options,
         public bool $is_active,
         public ?string $expires_at = null,
+        public ?string $scheduled_at = null,
+        public ?string $archive_at = null,
     ) {
     }
 
@@ -25,6 +27,8 @@ readonly class PollDTO {
             options: $data['options'],
             is_active: $data['is_active'] ?? true,
             expires_at: $data['expires_at'] ?? null,
+            scheduled_at: $data['scheduled_at'] ?? null,
+            archive_at: $data['archive_at'] ?? null,
         );
     }
 }

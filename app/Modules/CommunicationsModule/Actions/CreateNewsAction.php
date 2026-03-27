@@ -23,6 +23,8 @@ class CreateNewsAction {
                 'excerpt' => $dto->excerpt,
                 'content' => $dto->content,
                 'published_at' => $dto->published_at,
+                'scheduled_at' => $dto->scheduled_at,
+                'archive_at' => $dto->archive_at,
                 'is_active' => $dto->is_active,
                 'author_id' => $dto->author_id,
             ]);

@@ -22,6 +22,8 @@ class CreatePollAction {
                 'options' => $dto->options,
                 'is_active' => $dto->is_active,
                 'expires_at' => $dto->expires_at,
+                'scheduled_at' => $dto->scheduled_at,
+                'archive_at' => $dto->archive_at,
             ]);
         });
     }
