@@ -25,9 +25,13 @@ class CreateNewsAction {
                 'published_at' => $dto->published_at,
                 'scheduled_at' => $dto->scheduled_at,
                 'archive_at' => $dto->archive_at,
+                'status' => $dto->workflowAction === 'submit_review' ? 'pending_review' : 'draft',
                 'is_active' => $dto->is_active,
                 'author_id' => $dto->author_id,
             ]);
+
+            $news->categories()->sync($dto->categoryIds);
+            $news->tags()->sync($dto->tagIds);
 
             // Procesar Imagen Destacada
             if ($dto->featuredImage) {

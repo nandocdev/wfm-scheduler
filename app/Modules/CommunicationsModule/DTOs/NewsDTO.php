@@ -18,6 +18,11 @@ class NewsDTO {
         public readonly string $published_at,
         public readonly ?string $scheduled_at,
         public readonly ?string $archive_at,
+        /** @var int[] */
+        public readonly array $categoryIds,
+        /** @var int[] */
+        public readonly array $tagIds,
+        public readonly string $workflowAction,
         public readonly bool $is_active,
         public readonly int $author_id,
         /** @var UploadedFile|null */
@@ -39,6 +44,9 @@ class NewsDTO {
             published_at: $data['published_at'] ?? now()->toDateTimeString(),
             scheduled_at: $data['scheduled_at'] ?? null,
             archive_at: $data['archive_at'] ?? null,
+            categoryIds: array_map('intval', $data['category_ids'] ?? []),
+            tagIds: array_map('intval', $data['tag_ids'] ?? []),
+            workflowAction: $data['workflow_action'] ?? 'save_draft',
             is_active: $data['is_active'] ?? true,
             author_id: $data['author_id'] ?? auth()->id(),
             featuredImage: $data['featured_image'] ?? null,

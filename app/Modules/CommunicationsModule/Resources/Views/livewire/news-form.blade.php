@@ -19,6 +19,26 @@
 
                     <flux:textarea wire:model="form.content" label="Contenido Completo (Markdown soportado)" rows="10"
                         placeholder="Escribe aquí el cuerpo de la noticia..." />
+
+                    <flux:field>
+                        <flux:select wire:model="form.category_ids" label="Categorías" multiple>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
+                        </flux:select>
+                        <flux:error name="form.category_ids" />
+                        <flux:error name="form.category_ids.*" />
+                    </flux:field>
+
+                    <flux:field>
+                        <flux:select wire:model="form.tag_ids" label="Etiquetas" multiple>
+                            @foreach($tags as $tag)
+                                <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                            @endforeach
+                        </flux:select>
+                        <flux:error name="form.tag_ids" />
+                        <flux:error name="form.tag_ids.*" />
+                    </flux:field>
                 </div>
             </flux:card>
         </div>
@@ -33,6 +53,17 @@
 
                     <flux:input type="datetime-local" wire:model="form.archive_at" label="Archivado Automático" />
 
+                    @if($mode === 'create')
+                        <flux:field>
+                            <flux:select wire:model="form.workflow_action" label="Flujo de moderación"
+                                placeholder="Selecciona una acción">
+                                <option value="save_draft">Guardar como borrador</option>
+                                <option value="submit_review">Enviar a revisión</option>
+                            </flux:select>
+                            <flux:error name="form.workflow_action" />
+                        </flux:field>
+                    @endif
+
                     <flux:checkbox wire:model="form.is_active" label="Noticia activa y visible" />
 
                     <flux:separator />
@@ -43,7 +74,8 @@
 
                     @if ($form->featured_image)
                         <div class="mt-2 text-xs text-zinc-500">Imagen seleccionada:
-                            {{ $form->featured_image->getClientOriginalName() }}</div>
+                            {{ $form->featured_image->getClientOriginalName() }}
+                        </div>
                     @elseif ($mode === 'edit' && $this->news->hasMedia('featured_image'))
                         <div class="mt-2">
                             <img src="{{ $this->news->getFirstMediaUrl('featured_image') }}"
@@ -74,8 +106,20 @@
             <div class="flex gap-3">
                 <flux:button variant="ghost" class="flex-1" href="{{ route('communications.news.index') }}"
                     wire:navigate>Cancelar</flux:button>
-                <flux:button variant="primary" type="submit" class="flex-1" :loading="true">
-                    {{ $mode === 'edit' ? 'Actualizar' : 'Publicar' }}</flux:button>
+                @if($mode === 'create')
+                    <flux:button variant="outline" type="submit" class="flex-1"
+                        wire:click="$set('form.workflow_action', 'save_draft')" :loading="true">
+                        Guardar borrador
+                    </flux:button>
+                    <flux:button variant="primary" type="submit" class="flex-1"
+                        wire:click="$set('form.workflow_action', 'submit_review')" :loading="true">
+                        Enviar a revisión
+                    </flux:button>
+                @else
+                    <flux:button variant="primary" type="submit" class="flex-1" :loading="true">
+                        Actualizar
+                    </flux:button>
+                @endif
             </div>
         </div>
     </form>

@@ -28,6 +28,9 @@ class UpdateNewsAction {
                 'is_active' => $dto->is_active,
             ]);
 
+            $news->categories()->sync($dto->categoryIds);
+            $news->tags()->sync($dto->tagIds);
+
             // Actualizar Imagen Destacada (Si hay una nueva)
             if ($dto->featuredImage) {
                 $news->clearMediaCollection('featured_image');
