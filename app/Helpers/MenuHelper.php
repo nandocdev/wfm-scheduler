@@ -30,6 +30,15 @@ class MenuHelper {
                 'pattern' => 'dashboard',
                 'permission' => null, // Público para autenticados
             ],
+
+            [
+                'label' => __('Noticias'),
+                'icon' => 'newspaper',
+                'route' => 'home',
+                'pattern' => 'news*',
+                'permission' => null, // Público para autenticados
+            ],
+
             [
                 'label' => __('Administración'),
                 'icon' => 'cog-6-tooth',

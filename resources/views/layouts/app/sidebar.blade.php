@@ -6,35 +6,48 @@
 </head>
 
 <body class="min-h-screen bg-white dark:bg-zinc-800">
+    @php($authUser = auth()->user())
+
     <flux:sidebar sticky collapsible="mobile"
         class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
         <flux:sidebar.header>
-            <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
+            <x-app-logo :sidebar="true" href="{{ $authUser ? route('dashboard') : route('home') }}" wire:navigate />
             <flux:sidebar.collapse class="lg:hidden" />
         </flux:sidebar.header>
 
         <flux:sidebar.nav>
-            @foreach(\App\Helpers\MenuHelper::getSidebarItems(auth()->user()) as $item)
-                @if(isset($item['submenu']) && !empty($item['submenu']))
-                    <flux:navlist.group :heading="$item['label']" :icon="$item['icon']" expandable
-                        :expanded="$item['is_active']">
-                        @foreach($item['submenu'] as $subItem)
-                            <flux:navlist.item :href="isset($subItem['route']) ? route($subItem['route']) : '#'"
-                                :current="$subItem['is_active']" wire:navigate>
-                                {{ $subItem['label'] }}
-                            </flux:navlist.item>
-                        @endforeach
-                    </flux:navlist.group>
-                @else
-                    <flux:sidebar.item :icon="$item['icon']" :href="isset($item['route']) ? route($item['route']) : '#'"
-                        :current="$item['is_active']" wire:navigate>
-                        {{ $item['label'] }}
-                    </flux:sidebar.item>
-                @endif
-            @endforeach
+            @if($authUser)
+                @foreach(\App\Helpers\MenuHelper::getSidebarItems($authUser) as $item)
+                    @if(isset($item['submenu']) && !empty($item['submenu']))
+                        <flux:navlist.group :heading="$item['label']" :icon="$item['icon']" expandable
+                            :expanded="$item['is_active']">
+                            @foreach($item['submenu'] as $subItem)
+                                <flux:navlist.item :href="isset($subItem['route']) ? route($subItem['route']) : '#'"
+                                    :current="$subItem['is_active']" wire:navigate>
+                                    {{ $subItem['label'] }}
+                                </flux:navlist.item>
+                            @endforeach
+                        </flux:navlist.group>
+                    @else
+                        <flux:sidebar.item :icon="$item['icon']" :href="isset($item['route']) ? route($item['route']) : '#'"
+                            :current="$item['is_active']" wire:navigate>
+                            {{ $item['label'] }}
+                        </flux:sidebar.item>
+                    @endif
+                @endforeach
+            @else
+                <flux:sidebar.item icon="home" :href="route('home')" :current="request()->routeIs('home')" wire:navigate>
+                    Inicio
+                </flux:sidebar.item>
+                <flux:sidebar.item icon="arrow-right-end-on-rectangle" :href="route('login')" wire:navigate>
+                    Iniciar sesión
+                </flux:sidebar.item>
+            @endif
         </flux:sidebar.nav>
         <flux:spacer />
-        <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
+        @if($authUser)
+            <x-desktop-user-menu class="hidden lg:block" :name="$authUser->name" />
+        @endif
     </flux:sidebar>
 
     <!-- Mobile User Menu -->
@@ -44,39 +57,48 @@
         <flux:spacer />
 
         <flux:dropdown position="top" align="end">
-            <flux:profile :initials="auth()->user()->initials()" icon-trailing="chevron-down" />
+            <flux:profile :initials="$authUser?->initials() ?? 'NA'" icon-trailing="chevron-down" />
 
             <flux:menu>
                 <flux:menu.radio.group>
                     <div class="p-0 text-sm font-normal">
                         <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
-                            <flux:avatar :name="auth()->user()->name" :initials="auth()->user()->initials()" />
+                            <flux:avatar :name="$authUser?->name ?? 'Invitado'"
+                                :initials="$authUser?->initials() ?? 'NA'" />
 
                             <div class="grid flex-1 text-start text-sm leading-tight">
-                                <flux:heading class="truncate">{{ auth()->user()->name }}</flux:heading>
-                                <flux:text class="truncate">{{ auth()->user()->email }}</flux:text>
+                                <flux:heading class="truncate">{{ $authUser?->name ?? 'Invitado' }}</flux:heading>
+                                <flux:text class="truncate">{{ $authUser?->email ?? 'Sin sesión' }}</flux:text>
                             </div>
                         </div>
                     </div>
                 </flux:menu.radio.group>
 
-                <flux:menu.separator />
+                @if($authUser)
+                    <flux:menu.separator />
 
-                <flux:menu.radio.group>
-                    <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>
-                        {{ __('Settings') }}
+                    <flux:menu.radio.group>
+                        <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>
+                            {{ __('Settings') }}
+                        </flux:menu.item>
+                    </flux:menu.radio.group>
+
+                    <flux:menu.separator />
+
+                    <form method="POST" action="{{ route('logout') }}" class="w-full">
+                        @csrf
+                        <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle"
+                            class="w-full cursor-pointer" data-test="logout-button">
+                            {{ __('Log out') }}
+                        </flux:menu.item>
+                    </form>
+                @else
+                    <flux:menu.separator />
+
+                    <flux:menu.item :href="route('login')" icon="arrow-right-end-on-rectangle" wire:navigate>
+                        Iniciar sesión
                     </flux:menu.item>
-                </flux:menu.radio.group>
-
-                <flux:menu.separator />
-
-                <form method="POST" action="{{ route('logout') }}" class="w-full">
-                    @csrf
-                    <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle"
-                        class="w-full cursor-pointer" data-test="logout-button">
-                        {{ __('Log out') }}
-                    </flux:menu.item>
-                </form>
+                @endif
             </flux:menu>
         </flux:dropdown>
     </flux:header>

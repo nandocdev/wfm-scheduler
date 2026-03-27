@@ -33,6 +33,19 @@ class Home extends Component {
     public bool $showComments = false;
 
     /**
+     * Valida que la acción sea ejecutada por un usuario autenticado.
+     */
+    private function ensureAuthenticated(string $actionLabel): bool {
+        if (auth()->check()) {
+            return true;
+        }
+
+        Flux::toast("Inicia sesión para {$actionLabel}.", variant: 'warning');
+
+        return false;
+    }
+
+    /**
      * Carga una noticia para mostrarla en el modal.
      */
     public function viewNews(int $newsId): void {
@@ -52,6 +65,10 @@ class Home extends Component {
      * Votación en la encuesta activa.
      */
     public function submitPoll(): void {
+        if (!$this->ensureAuthenticated('participar en la encuesta')) {
+            return;
+        }
+
         /** @var Poll|null $poll */
         $poll = Poll::where('is_active', true)->latest()->first();
 
@@ -60,7 +77,7 @@ class Home extends Component {
             return;
         }
 
-        if ($poll->hasVoted(auth()->id())) {
+        if ($poll->hasVoted((int) auth()->id())) {
             Flux::toast('Ya has participado en esta encuesta.', variant: 'error');
             return;
         }
@@ -84,6 +101,10 @@ class Home extends Component {
      * Crear un comentario en una noticia.
      */
     public function submitComment(): void {
+        if (!$this->ensureAuthenticated('comentar esta noticia')) {
+            return;
+        }
+
         $this->validate([
             'commentForm.content' => 'required|string|max:1000',
             'commentForm.news_id' => 'required|exists:news,id',
@@ -110,8 +131,12 @@ class Home extends Component {
      * Agregar o quitar reacción en un shoutout.
      */
     public function toggleReaction(int $shoutoutId, string $type): void {
+        if (!$this->ensureAuthenticated('reaccionar a este reconocimiento')) {
+            return;
+        }
+
         $shoutout = Shoutout::findOrFail($shoutoutId);
-        $userId = auth()->id();
+        $userId = (int) auth()->id();
 
         $existingReaction = Reaction::where('shoutout_id', $shoutoutId)
             ->where('user_id', $userId)
@@ -153,6 +178,10 @@ class Home extends Component {
      * Seleccionar noticia para comentar.
      */
     public function selectNewsForComment(int $newsId): void {
+        if (!$this->ensureAuthenticated('comentar esta noticia')) {
+            return;
+        }
+
         $this->commentForm['news_id'] = $newsId;
         $this->selectedNewsId = $newsId;
     }
@@ -161,6 +190,8 @@ class Home extends Component {
      * Renderizado del componente.
      */
     public function render() {
+        $isAuthenticated = auth()->check();
+
         $newsItems = News::with('author', 'media', 'comments.user')
             ->withCount('comments')
             ->where('is_active', true)
@@ -195,38 +226,62 @@ class Home extends Component {
             ->get();
 
         // Agregar reacciones del usuario actual a los shoutouts
-        $shoutoutItems->each(function ($shoutout) {
-            $shoutout->user_reactions = $shoutout->reactions
-                ->where('user_id', auth()->id())
-                ->pluck('type')
-                ->toArray();
+        $shoutoutItems->each(function ($shoutout) use ($isAuthenticated) {
+            $shoutout->user_reactions = $isAuthenticated
+                ? $shoutout->reactions
+                    ->where('user_id', auth()->id())
+                    ->pluck('type')
+                    ->toArray()
+                : [];
         });
 
-        return view('communications::livewire.home', [
-            'newsItems' => $newsItems,
-            'shoutoutItems' => $shoutoutItems,
-            'activePoll' => Poll::where('is_active', true)
-                ->where('status', 'published')
-                ->where(function ($q) {
-                    $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
-                })
-                ->where(function ($query) {
-                    $query->whereNull('scheduled_at')
-                        ->orWhere('scheduled_at', '<=', now());
-                })
-                ->where(function ($query) {
-                    $query->whereNull('archive_at')
-                        ->orWhere('archive_at', '>', now());
-                })
-                ->latest()
-                ->first(),
-            'selectedNews' => $this->selectedNewsId ? News::with('comments.user')->find($this->selectedNewsId) : null,
-            'viewingNews' => $this->viewingNewsId ? News::with('author', 'media')->find($this->viewingNewsId) : null,
-            'recentNotifications' => Notification::where('user_id', auth()->id())
+        /** @var Poll|null $activePoll */
+        $activePoll = Poll::where('is_active', true)
+            ->where('status', 'published')
+            ->where(function ($q) {
+                $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
+            })
+            ->where(function ($query) {
+                $query->whereNull('scheduled_at')
+                    ->orWhere('scheduled_at', '<=', now());
+            })
+            ->where(function ($query) {
+                $query->whereNull('archive_at')
+                    ->orWhere('archive_at', '>', now());
+            })
+            ->latest()
+            ->first();
+
+        $selectedNews = $this->selectedNewsId
+            ? News::with('comments.user')->find($this->selectedNewsId)
+            : null;
+
+        $viewingNews = $this->viewingNewsId
+            ? News::with('author', 'media')->find($this->viewingNewsId)
+            : null;
+
+        $recentNotifications = $isAuthenticated
+            ? Notification::where('user_id', auth()->id())
                 ->where('is_read', false)
                 ->latest()
                 ->take(5)
-                ->get(),
-        ]);
+                ->get()
+            : collect();
+
+        /** @phpstan-ignore-next-line Livewire agrega layout() al view configurable de page components. */
+        return view('communications::livewire.home', [
+            'isAuthenticated' => $isAuthenticated,
+            'newsItems' => $newsItems,
+            'shoutoutItems' => $shoutoutItems,
+            'activePoll' => $activePoll,
+            'hasVotedInActivePoll' => $isAuthenticated && $activePoll !== null
+                ? $activePoll->hasVoted((int) auth()->id())
+                : false,
+            'selectedNews' => $selectedNews,
+            'viewingNews' => $viewingNews,
+            'recentNotifications' => $recentNotifications,
+        ])->layout('layouts.guest', [
+                    'title' => 'Comunicaciones',
+                ]);
     }
 }
