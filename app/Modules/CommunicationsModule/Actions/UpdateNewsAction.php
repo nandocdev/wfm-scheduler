@@ -32,14 +32,14 @@ class UpdateNewsAction {
             $news->tags()->sync($dto->tagIds);
 
             // Actualizar Imagen Destacada (Si hay una nueva)
-            if ($dto->featuredImage) {
+            if ($dto->featuredImage !== null) {
                 $news->clearMediaCollection('featured_image');
-                $news->addMedia($dto->featuredImage)->toMediaCollection('featured_image');
+                $news->addMedia($dto->featuredImage)->toMediaCollection('featured_image', 'public');
             }
 
             // Agregar nuevos adjuntos (Sin borrar anteriores)
             foreach ($dto->attachments as $file) {
-                $news->addMedia($file)->toMediaCollection('attachments');
+                $news->addMedia($file)->toMediaCollection('attachments', 'public');
             }
 
             return $news->fresh();

@@ -36,13 +36,13 @@ class CreateNewsAction {
             // Procesar Imagen Destacada
             if ($dto->featuredImage) {
                 $news->addMedia($dto->featuredImage)
-                    ->toMediaCollection('featured_image');
+                    ->toMediaCollection('featured_image', 'public');
             }
 
             // Procesar Adjuntos (PDF, Videos, etc)
             foreach ($dto->attachments as $file) {
                 $news->addMedia($file)
-                    ->toMediaCollection('attachments');
+                    ->toMediaCollection('attachments', 'public');
             }
 
             return $news;

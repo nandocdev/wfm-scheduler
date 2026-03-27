@@ -74,6 +74,7 @@
                     <!-- Imagen Destacada -->
                     <flux:input type="file" wire:model="form.featured_image" label="Imagen Destacada"
                         accept="image/*" />
+                    <flux:error name="form.featured_image" />
 
                     @if ($form->featured_image)
                         <div class="mt-2 text-xs text-zinc-500">Imagen seleccionada:
@@ -89,7 +90,12 @@
                     <!-- Adjuntos (Vidéos, PDF, etc) -->
                     <flux:input type="file" wire:model="form.attachments"
                         label="Archivos Adjuntos (PDF, Videos, Imágenes)" multiple />
+                    <flux:error name="form.attachments" />
+                    <flux:error name="form.attachments.*" />
                     <flux:subheading class="mt-1 text-xs">Múltiples archivos permitidos.</flux:subheading>
+                    <flux:subheading class="text-xs text-zinc-500">
+                        Límite efectivo del servidor: {{ ini_get('upload_max_filesize') }} por archivo.
+                    </flux:subheading>
 
                     @if ($mode === 'edit' && $this->news->hasMedia('attachments'))
                         <div class="mt-4 space-y-2">

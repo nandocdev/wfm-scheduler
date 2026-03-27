@@ -97,9 +97,11 @@ class News extends Model implements HasMedia {
      */
     public function registerMediaCollections(): void {
         $this->addMediaCollection('featured_image')
+            ->useDisk('public')
             ->singleFile();
 
-        $this->addMediaCollection('attachments');
+        $this->addMediaCollection('attachments')
+            ->useDisk('public');
     }
 
     /**
