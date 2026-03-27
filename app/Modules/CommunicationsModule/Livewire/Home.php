@@ -280,7 +280,7 @@ class Home extends Component {
             'selectedNews' => $selectedNews,
             'viewingNews' => $viewingNews,
             'recentNotifications' => $recentNotifications,
-        ])->layout('layouts.guest', [
+        ])->layout('layouts.app', [
                     'title' => 'Comunicaciones',
                 ]);
     }
