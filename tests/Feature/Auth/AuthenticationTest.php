@@ -22,6 +22,8 @@ test('users can authenticate using the login screen', function () {
         ->assertRedirect(route('dashboard', absolute: false));
 
     $this->assertAuthenticated();
+
+    expect($user->fresh()->last_login_at)->not->toBeNull();
 });
 
 test('users can not authenticate with invalid password', function () {
@@ -33,6 +35,30 @@ test('users can not authenticate with invalid password', function () {
     ]);
 
     $response->assertSessionHasErrorsIn('email');
+
+    $this->assertGuest();
+});
+
+test('users are rate limited after five failed login attempts', function () {
+    $user = User::factory()->create();
+
+    for ($attempt = 1; $attempt <= 5; $attempt++) {
+        $this->post(route('login.store'), [
+            'email' => $user->email,
+            'password' => 'wrong-password',
+        ]);
+    }
+
+    $response = $this->post(route('login.store'), [
+        'email' => $user->email,
+        'password' => 'password',
+    ]);
+
+    if ($response->status() === 302) {
+        $response->assertSessionHasErrorsIn('email');
+    } else {
+        $response->assertStatus(429);
+    }
 
     $this->assertGuest();
 });
