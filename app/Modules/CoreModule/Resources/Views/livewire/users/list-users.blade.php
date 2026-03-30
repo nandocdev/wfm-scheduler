@@ -82,7 +82,8 @@
                                 @endcan
 
                                 @can('delete', $user)
-                                    <flux:button wire:click="delete({{ $user->id }})" variant="ghost" size="sm" title="Eliminar usuario">
+                                    <flux:button wire:click="delete({{ $user->id }})" variant="ghost" size="sm"
+                                        title="Eliminar usuario">
                                         <flux:icon.trash class="w-4 h-4" />
                                     </flux:button>
                                 @endcan

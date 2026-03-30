@@ -60,8 +60,7 @@ class ListUsers extends Component {
         );
     }
 
-    public function delete(int $userId, DeleteUserAction $action): void
-    {
+    public function delete(int $userId, DeleteUserAction $action): void {
         $user = User::findOrFail($userId);
 
         $this->authorize('delete', $user);
