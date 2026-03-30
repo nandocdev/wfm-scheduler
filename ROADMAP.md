@@ -46,7 +46,7 @@
 ### Módulo: Employees
 - [x] UC-EMP-01: Modelos `Employee`, `EmploymentStatus` con jerarquía (`parent_id`).
 - [x] UC-EMP-02: Interfaz Livewire reactiva con filtros avanzados (búsqueda, dpto, cargo).
--[x] UC-EMP-03: Policies con scope por `team_id` y permisos granulares.
+- [x] UC-EMP-03: Policies con scope por `team_id` y permisos granulares.
 - [~] UC-EMP-04: Importador masivo CSV. **[DEUDA TÉCNICA: Refactorizar a Chunked/Queueable para evitar memory leaks]**.
 
 ---

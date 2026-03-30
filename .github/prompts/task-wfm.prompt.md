@@ -1,5 +1,5 @@
 ---
-name: new-task
+name: task-wfm
 description: Ejecutar una tarea del ROADMAP en HorariosWFM (Monolito Modular) usando Laravel + Livewire + PostgreSQL, respetando estrictamente la arquitectura y el flujo de Git.
 ---
 
