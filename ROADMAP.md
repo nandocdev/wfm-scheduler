@@ -72,8 +72,8 @@
 
 ### Módulo: Schedule (Catálogos base)
 - [x] UC-SCH-01: Modelos base `Schedule` y `BreakTemplate` con ULIDs.
-- [ ] UC-SCH-02: `CreateBreakTemplateAction` (plantillas de descanso por equipo).
-- [ ] UC-SCH-03: `ScheduleValidationService` (validación estricta `start < end` y no-solapamiento).
+- [x] UC-SCH-02: `CreateBreakTemplateAction` (plantillas de descanso por equipo).
+- [x] UC-SCH-03: `ScheduleValidationService` (validación estricta `start < end` y no-solapamiento).
 
 ### Módulo: WeeklyPlanning (Asignaciones)
 - [ ] UC-WPL-01: Modelos `WeeklySchedule` y `WeeklyScheduleAssignment`.
