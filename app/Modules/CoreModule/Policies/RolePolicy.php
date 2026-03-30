@@ -11,22 +11,18 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 /**
  * Controla la autorización para la gestión de Roles y Permisos.
  */
-class RolePolicy
-{
+class RolePolicy {
     use HandlesAuthorization;
 
-    public function viewAny(User $authUser): bool
-    {
+    public function viewAny(User $authUser): bool {
         return $authUser->hasPermissionTo('roles.view');
     }
 
-    public function create(User $authUser): bool
-    {
+    public function create(User $authUser): bool {
         return $authUser->hasPermissionTo('roles.create');
     }
 
-    public function update(User $authUser, Role $role): bool
-    {
+    public function update(User $authUser, Role $role): bool {
         if (!$authUser->hasPermissionTo('roles.edit')) {
             return false;
         }
