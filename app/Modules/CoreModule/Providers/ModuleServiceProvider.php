@@ -4,9 +4,12 @@ namespace App\Modules\CoreModule\Providers;
 
 use App\Modules\CoreModule\Actions\Fortify\CreateNewUser;
 use App\Modules\CoreModule\Actions\Fortify\ResetUserPassword;
+use App\Modules\CoreModule\Listeners\UpdateLastLoginAtListener;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
@@ -39,7 +42,10 @@ class ModuleServiceProvider extends ServiceProvider {
         // 3. Configuración de Rate Limiting
         $this->configureRateLimiting();
 
-        // 4. Autorización (RBAC)
+        // 4. Registro de listeners de autenticación
+        $this->registerEventListeners();
+
+        // 5. Autorización (RBAC)
         $this->registerPolicies();
     }
 
@@ -104,5 +110,12 @@ class ModuleServiceProvider extends ServiceProvider {
 
             return Limit::perMinute(5)->by($throttleKey);
         });
+    }
+
+    /**
+     * Registra listeners de eventos del módulo.
+     */
+    protected function registerEventListeners(): void {
+        Event::listen(Login::class, UpdateLastLoginAtListener::class);
     }
 }
