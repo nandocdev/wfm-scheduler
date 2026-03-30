@@ -19,8 +19,8 @@ Route::get('/', [EmployeeController::class, 'index'])->name('index');
 Route::get('/create', [EmployeeController::class, 'create'])->name('create');
 Route::post('/', [EmployeeController::class, 'store'])->name('store');
 Route::get('/export', EmployeeExportController::class)
-	->name('export')
-	->can('export', \App\Modules\EmployeesModule\Models\Employee::class);
+    ->name('export')
+    ->can('export', \App\Modules\EmployeesModule\Models\Employee::class);
 Route::get('/{employee}', [EmployeeController::class, 'show'])->name('show');
 Route::get('/{employee}/edit', [EmployeeController::class, 'edit'])->name('edit');
 Route::put('/{employee}', [EmployeeController::class, 'update'])->name('update');

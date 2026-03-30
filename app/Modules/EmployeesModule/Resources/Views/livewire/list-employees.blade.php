@@ -46,8 +46,10 @@
             </div>
 
             <div class="flex items-center gap-2">
-                <flux:button as="a" href="{{ $csvExportUrl }}" target="_blank" variant="outline">Export CSV</flux:button>
-                <flux:button as="a" href="{{ $excelExportUrl }}" target="_blank" variant="outline">Export Excel</flux:button>
+                <flux:button as="a" href="{{ $csvExportUrl }}" target="_blank" variant="outline">Export CSV
+                </flux:button>
+                <flux:button as="a" href="{{ $excelExportUrl }}" target="_blank" variant="outline">Export Excel
+                </flux:button>
                 <flux:button wire:click="clearFilters" variant="outline">Limpiar filtros</flux:button>
             </div>
         </div>
