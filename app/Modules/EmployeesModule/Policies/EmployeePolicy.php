@@ -20,7 +20,9 @@ class EmployeePolicy {
      * Determina si el usuario puede ver cualquier empleado.
      */
     public function viewAny(User $user): bool {
-        return $user->hasPermissionTo('employees.view');
+        return $user->hasPermissionTo('employees.view')
+            || $user->hasPermissionTo('employees.view.others')
+            || $user->hasPermissionTo('employees.view.all');
     }
 
     /**
@@ -28,17 +30,19 @@ class EmployeePolicy {
      * Aplica scoping por team_id.
      */
     public function view(User $user, Employee $employee): bool {
-        if (!$user->hasPermissionTo('employees.view')) {
-            return false;
-        }
-
-        // Si el usuario tiene permiso global, puede ver todos
         if ($user->hasPermissionTo('employees.view.all')) {
             return true;
         }
 
-        // Si no, solo puede ver empleados de su mismo team
-        return $this->isInSameTeam($user, $employee);
+        if ($this->isOwn($user, $employee)) {
+            return $user->hasPermissionTo('employees.view');
+        }
+
+        if ($this->isInSameTeam($user, $employee)) {
+            return $user->hasPermissionTo('employees.view.others');
+        }
+
+        return false;
     }
 
     /**
@@ -53,17 +57,19 @@ class EmployeePolicy {
      * Aplica scoping por team_id.
      */
     public function update(User $user, Employee $employee): bool {
-        if (!$user->hasPermissionTo('employees.edit')) {
-            return false;
-        }
-
-        // Si el usuario tiene permiso global, puede editar todos
         if ($user->hasPermissionTo('employees.edit.all')) {
             return true;
         }
 
-        // Si no, solo puede editar empleados de su mismo team
-        return $this->isInSameTeam($user, $employee);
+        if ($this->isOwn($user, $employee)) {
+            return $user->hasPermissionTo('employees.edit');
+        }
+
+        if ($this->isInSameTeam($user, $employee)) {
+            return $user->hasPermissionTo('employees.edit.others');
+        }
+
+        return false;
     }
 
     /**
@@ -71,17 +77,38 @@ class EmployeePolicy {
      * Aplica scoping por team_id.
      */
     public function delete(User $user, Employee $employee): bool {
-        if (!$user->hasPermissionTo('employees.delete')) {
-            return false;
-        }
-
-        // Si el usuario tiene permiso global, puede eliminar todos
         if ($user->hasPermissionTo('employees.delete.all')) {
             return true;
         }
 
-        // Si no, solo puede eliminar empleados de su mismo team
-        return $this->isInSameTeam($user, $employee);
+        if ($this->isOwn($user, $employee)) {
+            return $user->hasPermissionTo('employees.delete');
+        }
+
+        if ($this->isInSameTeam($user, $employee)) {
+            return $user->hasPermissionTo('employees.delete.others');
+        }
+
+        return false;
+    }
+
+    /**
+     * Eliminación permanente (hard delete) restringida a alto privilegio.
+     */
+    public function forceDelete(User $user, Employee $employee): bool {
+        if ($user->hasPermissionTo('employees.force_delete.all')) {
+            return true;
+        }
+
+        if ($this->isOwn($user, $employee)) {
+            return $user->hasPermissionTo('employees.force_delete');
+        }
+
+        if ($this->isInSameTeam($user, $employee)) {
+            return $user->hasPermissionTo('employees.force_delete.others');
+        }
+
+        return false;
     }
 
     /**
@@ -91,17 +118,16 @@ class EmployeePolicy {
         // Si el usuario tiene permisos globales, no aplicar filtro
         if ($user->hasPermissionTo('employees.view.all') ||
             $user->hasPermissionTo('employees.edit.all') ||
-            $user->hasPermissionTo('employees.delete.all')) {
+            $user->hasPermissionTo('employees.delete.all') ||
+            $user->hasPermissionTo('employees.force_delete.all')) {
             return $query;
         }
 
         // Si el usuario tiene un empleado asociado, filtrar por su team
         if ($user->employee) {
-            $teamId = $user->employee->currentTeamMember?->team_id;
+            $teamId = $user->employee->team_id;
             if ($teamId) {
-                return $query->whereHas('currentTeamMember', function ($q) use ($teamId) {
-                    $q->where('team_id', $teamId)->where('is_active', true);
-                });
+                return $query->where('team_id', $teamId);
             }
         }
 
@@ -113,14 +139,18 @@ class EmployeePolicy {
      * Verifica si el usuario y el empleado están en el mismo team.
      */
     private function isInSameTeam(User $user, Employee $employee): bool {
-        if (!$user->employee) {
+        if (!$user->employee || !$user->employee->team_id || !$employee->team_id) {
             return false;
         }
 
-        $userTeamId = $user->employee->currentTeamMember?->team_id;
-        $employeeTeamId = $employee->currentTeamMember?->team_id;
+        return $user->employee->team_id === $employee->team_id;
+    }
 
-        return $userTeamId && $userTeamId === $employeeTeamId;
+    /**
+     * Identifica si el empleado corresponde al usuario autenticado.
+     */
+    private function isOwn(User $user, Employee $employee): bool {
+        return (int) ($user->employee?->id ?? 0) === (int) $employee->id;
     }
 
     /**
@@ -135,5 +165,54 @@ class EmployeePolicy {
      */
     public function export(User $user): bool {
         return $user->hasPermissionTo('employees.export');
+    }
+
+    /**
+     * Permisos efectivos considerando jerarquía de rol y override de admin.
+     *
+     * @return array<string, mixed>
+     */
+    public function effectivePermissions(User $user, ?Employee $employee = null): array {
+        $hierarchyLevel = (int) ($user->roles->max('hierarchy_level') ?? 0);
+        $isAdminOverride = $user->hasRole('admin') || $hierarchyLevel >= 99;
+
+        if ($isAdminOverride) {
+            return [
+                'scope' => 'all',
+                'hierarchy_level' => $hierarchyLevel,
+                'admin_override' => true,
+                'can_view' => true,
+                'can_create' => true,
+                'can_update' => true,
+                'can_delete' => true,
+                'can_force_delete' => true,
+                'can_export' => true,
+            ];
+        }
+
+        $target = $employee ?? new Employee(['team_id' => $user->employee?->team_id]);
+        $isOwn = $employee ? $this->isOwn($user, $employee) : false;
+        $isSameTeam = $employee ? $this->isInSameTeam($user, $employee) : (bool) $user->employee?->team_id;
+
+        $scope = 'none';
+        if ($user->hasPermissionTo('employees.view.all')) {
+            $scope = 'all';
+        } elseif ($isOwn && $user->hasPermissionTo('employees.view')) {
+            $scope = 'own';
+        } elseif ($isSameTeam && $user->hasPermissionTo('employees.view.others')) {
+            $scope = 'others';
+        }
+
+        return [
+            'scope' => $scope,
+            'hierarchy_level' => $hierarchyLevel,
+            'admin_override' => false,
+            'can_view' => $employee ? $this->view($user, $target) : $this->viewAny($user),
+            'can_create' => $this->create($user),
+            'can_update' => $employee ? $this->update($user, $target) : $user->hasPermissionTo('employees.edit') || $user->hasPermissionTo('employees.edit.others') || $user->hasPermissionTo('employees.edit.all'),
+            'can_delete' => $employee ? $this->delete($user, $target) : $user->hasPermissionTo('employees.delete') || $user->hasPermissionTo('employees.delete.others') || $user->hasPermissionTo('employees.delete.all'),
+            'can_force_delete' => $employee ? $this->forceDelete($user, $target) : $user->hasPermissionTo('employees.force_delete') || $user->hasPermissionTo('employees.force_delete.others') || $user->hasPermissionTo('employees.force_delete.all'),
+            'can_export' => $this->export($user),
+        ];
     }
 }
