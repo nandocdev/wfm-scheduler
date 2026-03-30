@@ -39,6 +39,15 @@ class EmployeeController extends Controller {
     }
 
     /**
+     * Muestra el formulario de importación masiva CSV.
+     */
+    public function import(): View {
+        $this->authorize('import', Employee::class);
+
+        return view('employees::import');
+    }
+
+    /**
      * Almacena un nuevo empleado.
      */
     public function store(

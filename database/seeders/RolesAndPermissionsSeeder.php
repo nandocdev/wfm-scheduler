@@ -66,6 +66,7 @@ class RolesAndPermissionsSeeder extends Seeder {
             'employees.force_delete.all',
             'employees.manageTeamAssignments',
             'employees.export',
+            'employees.import',
 
             // Communications Module - Contenido
             'news.viewAny',
