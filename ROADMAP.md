@@ -59,10 +59,10 @@
 - [x] UC-EMP-03: Policies con scope por `team_id` y permisos granulares.
   - [x] UC-EMP-03.1: Distintos scopes `own` vs `others` y `force_delete` solo para roles de alto privilegio.
   - [x] UC-EMP-03.2: Policy `effectivePermissions` con role hierarchy y administrator override.
-- [~] UC-EMP-04: Importador masivo CSV. **[DEUDA TÉCNICA: Refactorizar a Chunked/Queueable para evitar memory leaks]**.
-  - [ ] UC-EMP-04.1: Acción `ImportEmployeesAction` con `LazyCollection::chunk(1000)` + `DB::transaction` por chunk.
-  - [ ] UC-EMP-04.2: Job/Batch en queue y reporte de filas rechazadas / inválidas.
-  - [ ] UC-EMP-04.3: Manejo de duplicados, relaciones inexistentes (`position`, `team`) y rollback selectivo.
+- [x] UC-EMP-04: Importador masivo CSV. **[DEUDA TÉCNICA: Refactorizado a Chunked/Queueable para evitar memory leaks]**.
+  - [x] UC-EMP-04.1: Acción `ImportEmployeesAction` con `LazyCollection::chunk(1000)` + `DB::transaction` por chunk.
+  - [x] UC-EMP-04.2: Job/Batch en queue y reporte de filas rechazadas / inválidas.
+  - [x] UC-EMP-04.3: Manejo de duplicados, relaciones inexistentes (`position`, `team`) y rollback selectivo.
 
 ---
 
