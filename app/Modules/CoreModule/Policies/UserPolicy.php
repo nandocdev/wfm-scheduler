@@ -58,10 +58,10 @@ class UserPolicy
             return true; // Puede editarse a sí mismo
         }
 
-        $authMaxHierarchy = $authUser->roles()->min('hierarchy_level') ?? 99;
-        $targetMaxHierarchy = $target->roles()->min('hierarchy_level') ?? 100;
+        $authMaxHierarchy = $authUser->roles()->min('hierarchy_level') ?? 0;
+        $targetMaxHierarchy = $target->roles()->min('hierarchy_level') ?? 0;
 
-        // Regla: Solo puedes administrar a usuarios con nivel >= que el tuyo
-        return $authMaxHierarchy <= $targetMaxHierarchy;
+        // Regla: Solo puedes administrar a usuarios con nivel de jerarquía menor o igual al tuyo
+        return $authMaxHierarchy >= $targetMaxHierarchy;
     }
 }

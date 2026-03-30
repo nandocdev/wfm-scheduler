@@ -32,9 +32,9 @@ class RolePolicy
         }
 
         // No puedes editar roles de jerarquía superior a la tuya
-        $authMaxHierarchy = $authUser->roles()->min('hierarchy_level') ?? 99;
-        $targetHierarchy = (int) ($role->hierarchy_level ?? 99);
+        $authMaxHierarchy = $authUser->roles()->min('hierarchy_level') ?? 0;
+        $targetHierarchy = (int) ($role->hierarchy_level ?? 0);
 
-        return $authMaxHierarchy <= $targetHierarchy;
+        return $authMaxHierarchy >= $targetHierarchy;
     }
 }
