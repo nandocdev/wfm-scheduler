@@ -71,7 +71,7 @@
 > *Módulo más complejo. Riesgo alto de consultas N+1 y solapamientos.*
 
 ### Módulo: Schedule (Catálogos base)
--[~] UC-SCH-01: Modelos base `Schedule` y `BreakTemplate` con ULIDs.
+- [x] UC-SCH-01: Modelos base `Schedule` y `BreakTemplate` con ULIDs.
 - [ ] UC-SCH-02: `CreateBreakTemplateAction` (plantillas de descanso por equipo).
 - [ ] UC-SCH-03: `ScheduleValidationService` (validación estricta `start < end` y no-solapamiento).
 

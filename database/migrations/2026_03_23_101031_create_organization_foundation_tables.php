@@ -4,13 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
+    public function up(): void {
         // 1. Directorates
         Schema::create('directorates', function (Blueprint $table) {
             $table->id();
@@ -75,7 +73,7 @@ return new class extends Migration
 
         // 8. Schedules (WFM Core)
         Schema::create('schedules', function (Blueprint $table) {
-            $table->id();
+            $table->ulid('id')->primary();
             $table->string('name')->unique();
             $table->time('start_time');
             $table->time('end_time');
@@ -90,8 +88,7 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('schedules');
         Schema::dropIfExists('teams');
         Schema::dropIfExists('provinces');
