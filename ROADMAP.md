@@ -31,6 +31,7 @@
 - [x] UC-COR-03: RBAC (Spatie Permissions) jerárquico + Caché de permisos.
 - [x] UC-ORG-01: Estructura organizacional completa (Directorates → Teams).
 - [x] UC-GEO-01: Catálogo geográfico (LocationModule).
+- [ ] NA: Forzar cambio de contraseña en primer login (Implementar en Fase 2).
 
 ### Módulo: Audit & Cache
 - [x] UC-AUD-01: Modelo `AuditLog` y Trait `Auditable` implementado.
