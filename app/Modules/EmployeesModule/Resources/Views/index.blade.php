@@ -11,11 +11,19 @@
                 <flux:subheading>Gestiona la información de los empleados de la organización</flux:subheading>
             </div>
 
-            @can('create', \App\Modules\EmployeesModule\Models\Employee::class)
-                <flux:button href="{{ route('employees.create') }}" icon="plus" wire:navigate>
-                    Nuevo Empleado
-                </flux:button>
-            @endcan
+            <div class="flex items-center gap-2">
+                @can('import', \App\Modules\EmployeesModule\Models\Employee::class)
+                    <flux:button href="{{ route('employees.import') }}" variant="outline" wire:navigate>
+                        Importar CSV
+                    </flux:button>
+                @endcan
+
+                @can('create', \App\Modules\EmployeesModule\Models\Employee::class)
+                    <flux:button href="{{ route('employees.create') }}" icon="plus" wire:navigate>
+                        Nuevo Empleado
+                    </flux:button>
+                @endcan
+            </div>
         </div>
 
         <!-- Lista de empleados -->

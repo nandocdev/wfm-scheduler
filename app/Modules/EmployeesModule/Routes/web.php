@@ -18,6 +18,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [EmployeeController::class, 'index'])->name('index');
 Route::get('/create', [EmployeeController::class, 'create'])->name('create');
 Route::post('/', [EmployeeController::class, 'store'])->name('store');
+Route::get('/import', [EmployeeController::class, 'import'])
+    ->name('import')
+    ->can('import', \App\Modules\EmployeesModule\Models\Employee::class);
 Route::get('/export', EmployeeExportController::class)
     ->name('export')
     ->can('export', \App\Modules\EmployeesModule\Models\Employee::class);

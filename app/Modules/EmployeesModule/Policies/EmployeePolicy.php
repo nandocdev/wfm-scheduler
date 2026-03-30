@@ -168,6 +168,13 @@ class EmployeePolicy {
     }
 
     /**
+     * Determina si el usuario puede importar empleados.
+     */
+    public function import(User $user): bool {
+        return $user->hasPermissionTo('employees.import');
+    }
+
+    /**
      * Permisos efectivos considerando jerarquía de rol y override de admin.
      *
      * @return array<string, mixed>
