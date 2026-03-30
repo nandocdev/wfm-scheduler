@@ -16,6 +16,14 @@ class EmploymentStatus extends Model {
         return $this->hasMany(Employee::class);
     }
 
+    public function parent(): \Illuminate\Database\Eloquent\Relations\BelongsTo {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    public function children(): \Illuminate\Database\Eloquent\Relations\HasMany {
+        return $this->hasMany(self::class, 'parent_id');
+    }
+
     public function scopeActive($query): mixed {
         return $query->where('is_active', true);
     }

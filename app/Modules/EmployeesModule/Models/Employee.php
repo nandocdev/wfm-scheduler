@@ -12,7 +12,7 @@ class Employee extends Model {
     protected $fillable = [
         'employee_number', 'username', 'first_name', 'last_name', 'email',
         'birth_date', 'gender', 'blood_type', 'phone', 'mobile_phone', 'address',
-        'township_id', 'department_id', 'position_id', 'employment_status_id',
+        'township_id', 'department_id', 'position_id', 'team_id', 'employment_status_id',
         'parent_id', 'user_id', 'hire_date', 'salary', 'is_active', 'is_manager', 'metadata'
     ];
 
@@ -40,6 +40,10 @@ class Employee extends Model {
 
     public function position(): BelongsTo {
         return $this->belongsTo(\App\Modules\OrganizationModule\Models\Position::class);
+    }
+
+    public function team(): BelongsTo {
+        return $this->belongsTo(\App\Modules\OrganizationModule\Models\Team::class);
     }
 
     public function employmentStatus(): BelongsTo {
