@@ -56,6 +56,12 @@ class MenuHelper {
                         'pattern' => 'admin/roles*',
                         'permission' => 'roles.view',
                     ],
+                    [
+                        'label' => __('Auditoría'),
+                        'route' => 'audit.index',
+                        'pattern' => 'admin/audit*',
+                        'gate' => ['viewAny', \App\Modules\AuditModule\Models\AuditLog::class],
+                    ],
                 ],
             ],
             [
@@ -147,13 +153,25 @@ class MenuHelper {
      * Verifica si el usuario actual tiene permiso para ver el elemento.
      */
     protected static function canView(array $item): bool {
-        // Si no requiere permiso, es visible
-        if (!isset($item['permission']) || empty($item['permission'])) {
-            return true;
+        $user = self::$currentUser ?: AuthFacade::user();
+
+        // Si no requiere permiso ni gate, es visible para autenticados.
+        if ((!isset($item['permission']) || empty($item['permission'])) && !isset($item['gate'])) {
+            return (bool) $user;
         }
 
-        $user = self::$currentUser ?: AuthFacade::user();
-        return $user && $user->can($item['permission']);
+        // Permiso simple (legacy, Spatie name-based)
+        if (isset($item['permission']) && !empty($item['permission'])) {
+            return $user && $user->can($item['permission']);
+        }
+
+        // Gate específico (policy call like viewAny, update, etc.)
+        if (isset($item['gate']) && is_array($item['gate']) && count($item['gate']) >= 1) {
+            [$ability, $model] = $item['gate'] + [null, null];
+            return $user && $user->can($ability, $model);
+        }
+
+        return false;
     }
 
     /**
