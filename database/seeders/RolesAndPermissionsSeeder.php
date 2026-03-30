@@ -52,6 +52,14 @@ class RolesAndPermissionsSeeder extends Seeder {
             'positions.update',
             'positions.delete',
 
+            // Schedule Engine
+            'schedules.viewAny',
+            'schedules.create',
+            'schedules.update',
+            'break_templates.viewAny',
+            'break_templates.create',
+            'break_templates.update',
+
             // Employees Module
             'employees.view',
             'employees.view.others',
@@ -188,6 +196,14 @@ class RolesAndPermissionsSeeder extends Seeder {
             'positions.create',
             'positions.update',
             'positions.delete',
+
+            // Schedule Engine
+            'schedules.viewAny',
+            'schedules.create',
+            'schedules.update',
+            'break_templates.viewAny',
+            'break_templates.create',
+            'break_templates.update',
 
             'employees.view',
             'employees.view.others',
