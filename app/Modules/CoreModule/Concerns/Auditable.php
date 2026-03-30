@@ -2,7 +2,7 @@
 
 namespace App\Modules\CoreModule\Concerns;
 
-use App\Modules\SupportModule\Models\AuditLog;
+use App\Modules\AuditModule\Models\AuditLog;
 use Illuminate\Database\Eloquent\Model;
 
 /**

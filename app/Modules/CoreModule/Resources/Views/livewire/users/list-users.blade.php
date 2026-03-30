@@ -81,9 +81,12 @@
                                     </flux:button>
                                 @endcan
 
-                                <flux:button size="sm" title="Eliminar usuario">
-                                    <flux:icon.trash class="w-4 h-4" />
-                                </flux:button>
+                                @can('delete', $user)
+                                    <flux:button wire:click="delete({{ $user->id }})" variant="ghost" size="sm"
+                                        title="Eliminar usuario">
+                                        <flux:icon.trash class="w-4 h-4" />
+                                    </flux:button>
+                                @endcan
                             </flux:button.group>
                         </flux:table.cell>
                     </flux:table.row>

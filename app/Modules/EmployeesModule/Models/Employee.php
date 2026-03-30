@@ -4,15 +4,16 @@ namespace App\Modules\EmployeesModule\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Employee extends Model {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
     protected $fillable = [
         'employee_number', 'username', 'first_name', 'last_name', 'email',
         'birth_date', 'gender', 'blood_type', 'phone', 'mobile_phone', 'address',
-        'township_id', 'department_id', 'position_id', 'employment_status_id',
+        'township_id', 'department_id', 'position_id', 'team_id', 'employment_status_id',
         'parent_id', 'user_id', 'hire_date', 'salary', 'is_active', 'is_manager', 'metadata'
     ];
 
@@ -42,8 +43,17 @@ class Employee extends Model {
         return $this->belongsTo(\App\Modules\OrganizationModule\Models\Position::class);
     }
 
+    public function team(): BelongsTo {
+        return $this->belongsTo(\App\Modules\OrganizationModule\Models\Team::class);
+    }
+
     public function employmentStatus(): BelongsTo {
         return $this->belongsTo(EmploymentStatus::class);
+    }
+
+    // Alias para mantener semántica roadmap/status en consultas eager loading
+    public function status(): BelongsTo {
+        return $this->employmentStatus();
     }
 
     // Jerarquía Operativa (Adjacency List)

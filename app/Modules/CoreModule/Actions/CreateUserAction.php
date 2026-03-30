@@ -12,15 +12,13 @@ use Illuminate\Support\Facades\Hash;
 /**
  * Crea un usuario institucional con roles y permisos básicos.
  */
-class CreateUserAction
-{
-    public function execute(UserDTO $dto): User
-    {
+class CreateUserAction {
+    public function execute(UserDTO $dto): User {
         return DB::transaction(function () use ($dto) {
             $user = User::create([
                 'name' => $dto->name,
                 'email' => $dto->email,
-                'password' => Hash::make($dto->password ?? Str::random(12)),
+                'password' => Hash::make($dto->password ?? \Illuminate\Support\Str::random(12)),
                 'is_active' => $dto->is_active,
                 'force_password_change' => $dto->force_password_change,
             ]);
@@ -31,7 +29,7 @@ class CreateUserAction
             }
 
             // [UC-INT-05] Registro de auditoría (disparado vía Observer)
-            
+
             return $user;
         });
     }

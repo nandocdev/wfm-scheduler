@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\CoreModule\Livewire\Users;
 
+use App\Modules\CoreModule\Actions\DeleteUserAction;
 use App\Modules\CoreModule\Models\User;
 use App\Modules\CoreModule\Models\Role;
 use Flux\Flux;
@@ -57,5 +58,16 @@ class ListUsers extends Component {
             ? 'Usuario activado correctamente.'
             : 'Usuario desactivado correctamente.'
         );
+    }
+
+    public function delete(int $userId, DeleteUserAction $action): void {
+        $user = User::findOrFail($userId);
+
+        $this->authorize('delete', $user);
+
+        $action->execute($user);
+
+        Flux::toast('Usuario eliminado (soft delete).');
+        $this->resetPage();
     }
 }

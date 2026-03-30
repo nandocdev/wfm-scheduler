@@ -23,20 +23,26 @@ class CreateNewsAction {
                 'excerpt' => $dto->excerpt,
                 'content' => $dto->content,
                 'published_at' => $dto->published_at,
+                'scheduled_at' => $dto->scheduled_at,
+                'archive_at' => $dto->archive_at,
+                'status' => $dto->workflowAction === 'submit_review' ? 'pending_review' : 'draft',
                 'is_active' => $dto->is_active,
                 'author_id' => $dto->author_id,
             ]);
 
+            $news->categories()->sync($dto->categoryIds);
+            $news->tags()->sync($dto->tagIds);
+
             // Procesar Imagen Destacada
             if ($dto->featuredImage) {
                 $news->addMedia($dto->featuredImage)
-                    ->toMediaCollection('featured_image');
+                    ->toMediaCollection('featured_image', 'public');
             }
 
             // Procesar Adjuntos (PDF, Videos, etc)
             foreach ($dto->attachments as $file) {
                 $news->addMedia($file)
-                    ->toMediaCollection('attachments');
+                    ->toMediaCollection('attachments', 'public');
             }
 
             return $news;

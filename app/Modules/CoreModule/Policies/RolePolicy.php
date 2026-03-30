@@ -11,30 +11,26 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 /**
  * Controla la autorización para la gestión de Roles y Permisos.
  */
-class RolePolicy
-{
+class RolePolicy {
     use HandlesAuthorization;
 
-    public function viewAny(User $authUser): bool
-    {
+    public function viewAny(User $authUser): bool {
         return $authUser->hasPermissionTo('roles.view');
     }
 
-    public function create(User $authUser): bool
-    {
+    public function create(User $authUser): bool {
         return $authUser->hasPermissionTo('roles.create');
     }
 
-    public function update(User $authUser, Role $role): bool
-    {
+    public function update(User $authUser, Role $role): bool {
         if (!$authUser->hasPermissionTo('roles.edit')) {
             return false;
         }
 
         // No puedes editar roles de jerarquía superior a la tuya
-        $authMaxHierarchy = $authUser->roles()->min('hierarchy_level') ?? 99;
-        $targetHierarchy = (int) ($role->hierarchy_level ?? 99);
+        $authMaxHierarchy = $authUser->roles()->min('hierarchy_level') ?? 0;
+        $targetHierarchy = (int) ($role->hierarchy_level ?? 0);
 
-        return $authMaxHierarchy <= $targetHierarchy;
+        return $authMaxHierarchy >= $targetHierarchy;
     }
 }

@@ -22,6 +22,8 @@ class Shoutout extends Model {
         'employee_id',
         'content',
         'is_active',
+        'scheduled_at',
+        'archive_at',
         'status',
         'approved_by',
         'approved_at',
@@ -31,6 +33,8 @@ class Shoutout extends Model {
 
     protected $casts = [
         'is_active' => 'boolean',
+        'scheduled_at' => 'datetime',
+        'archive_at' => 'datetime',
         'approved_at' => 'datetime',
         'version_history' => 'array',
     ];

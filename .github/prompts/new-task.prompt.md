@@ -1,15 +1,15 @@
 ---
 name: new-task
-description: Ejecutar una tarea del ROADMAP en HoarariosWFM (Monolito Modular) usando Laravel + Livewire + PostgreSQL, respetando estrictamente la arquitectura.
+description: Ejecutar una tarea del ROADMAP en HorariosWFM (Monolito Modular) usando Laravel + Livewire + PostgreSQL, respetando estrictamente la arquitectura y el flujo de Git.
 ---
 
 ## 🎯 Contexto obligatorio
 
-Proyecto: HoarariosWFM
+Proyecto: HorariosWFM
 Arquitectura: Monolito Modular (app/Modules)
-Stack: Laravel 12 + Livewire 3 + FluxUI + PostgreSQL
+Stack: Laravel 12 + Livewire 3 + FluxUI + PostgreSQL + Pest/PHPUnit
 
-Documentación base (leer SIEMPRE antes de generar código):
+Documentación base (leer SIEMPRE el contexto de estos archivos si están disponibles):
 - docs/technical/07_Arquitectura.md
 - docs/technical/08_ModuleModels.md
 - docs/technical/05_DDL.md
@@ -18,20 +18,33 @@ Documentación base (leer SIEMPRE antes de generar código):
 - docs/technical/02_requisitos.md
 - docs/technical/06_Permisos.md
 - docs/technical/ROADMAP.md
+- docs/features/NuevosModulos.md
 
 ---
 
-## 🚫 Reglas Inquebrantables
+## 🌿 Reglas de Control de Versiones (Git Flow)
 
-- Livewire = controlador UI → NUNCA lógica de negocio
-- Lógica de negocio → SOLO en Actions (una responsabilidad)
-- Validación → Livewire Forms (NO FormRequest en web)
-- Escrituras → DB::transaction()
-- Autorización → Policies SIEMPRE
-- Módulos NO se acoplan directamente (usar Events o DTOs)
-- PostgreSQL nativo (jsonb, constraints, índices)
-- Evitar N+1 (usar eager loading obligatorio)
-- No sobreingeniería
+Al procesar la tarea, DEBES estructurar tu respuesta o ejecución (si eres un agente de terminal) siguiendo estrictamente este flujo:
+1. **Crear rama:** A partir de `develop`, crear una rama descriptiva (`feature/UC-XX-nombre` o `fix/nombre`).
+2. **Ejecutar tarea:** Escribir todo el código requerido separando las responsabilidades (ver sección de Output).
+3. **Commits atómicos:** Generar commits modulares por cada unidad lógica usando Conventional Commits.
+4. **Merge a develop:** Finalizar con los comandos para cambiar a `develop` y hacer el merge de la rama trabajada.
+
+**EJECUTA TODA LA TAREA EN UN SOLO BLOQUE DE RESPUESTA, INCLUYENDO LOS COMANDOS DE GIT. NO HAGAS RESPUESTAS PARCIALES.**
+
+---
+
+## 🚫 Reglas Arquitectónicas Inquebrantables
+
+- Livewire = controlador UI → NUNCA lógica de negocio.
+- Lógica de negocio → SOLO en Actions (una responsabilidad).
+- Validación → Livewire Form Objects (NO FormRequest en web).
+- Escrituras → `DB::transaction()` obligatorio.
+- Autorización → Policies SIEMPRE invocadas antes de la acción.
+- Módulos NO se acoplan directamente (usar Events, Listeners o DTOs).
+- PostgreSQL nativo (jsonb, constraints, índices, sin sintaxis de MySQL).
+- Evitar N+1 (uso de `with()` obligatorio para relaciones).
+- No sobreingeniería.
 
 ---
 
@@ -39,135 +52,87 @@ Documentación base (leer SIEMPRE antes de generar código):
 
 {{TAREA_DEL_ROADMAP}}
 
-Ejemplo:
-- UC-OP-05 — Solicitud de Permiso Total con validación de duplicados
+*(Ejemplo: UC-OP-05 — Solicitud de Permiso Total con validación de duplicados)*
 
 ---
 
-## 🧠 Proceso interno (Copilot)
+## 🧠 Proceso interno de la IA
 
-1. Identificar:
-   - Módulo destino
-   - Entidades involucradas
-   - Caso de uso asociado
-
-2. Determinar:
-   - DTO necesario
-   - Action principal
-   - Eventos (si aplica)
-   - Policy requerida
-   - Validaciones críticas
-
-3. Detectar riesgos:
-   - race conditions
-   - duplicados (constraints)
-   - N+1 queries
-   - dependencias entre módulos
+1. **Planificar Git:** Definir nombre de la rama.
+2. **Identificar:** Módulo destino, entidades involucradas, caso de uso asociado.
+3. **Determinar Arquitectura:** DTO necesario, Action principal, Eventos, Policy requerida.
+4. **Detectar Riesgos:** Race conditions (prevenir en DB), N+1 queries, dependencias entre módulos cruzados.
+5. **Generar Tests:** Definir las pruebas unitarias/feature para blindar el Action.
 
 ---
 
 ## 📦 Output obligatorio (código listo para producción)
 
-Generar SOLO lo necesario, separado por archivos reales:
+Generar SOLO lo necesario, separado por rutas de archivos reales:
 
-### Backend (obligatorio)
-- Model (si aplica)
-- Migration (PostgreSQL optimizada)
-- DTO (readonly, tipado estricto)
-- Action (transaccional)
-- Event + Listener (si aplica)
-- Policy
+### Scripts Git (Inicio)
+- Comando de creación de rama. ``git checkout -b feature/UC-XX-nombre develop``
 
-### Livewire (obligatorio en UI)
-- Componente Livewire (orquestador)
-- Livewire Form (validación)
-- Blade con FluxUI (`<flux:input>`, `<flux:button>`, etc.)
+### Backend (Obligatorio)
+- Model & Migration (optimizada para PostgreSQL).
+- DTO (readonly, tipado estricto PHP 8.2+).
+- Action (transaccional, única responsabilidad).
+- Event + Listener (si interactúa con otro módulo).
+- Policy (autorización estricta).
 
-### Infraestructura
-- Routes (web.php del módulo)
-- Registro en ModuleServiceProvider
+### Frontend / UI (Obligatorio)
+- Componente Livewire (orquestador, `wire:submit`, redirecciones con `navigate: true`).
+- Livewire Form Object (reglas de validación).
+- Blade con FluxUI (Uso exclusivo de `<flux:input>`, `<flux:button>`, etc.).
+
+### Testing (Obligatorio)
+- Feature Test (Pest o PHPUnit) evaluando la Action, la validación del Form Object y la base de datos.
+
+### Scripts Git (Cierre y Commits)
+- Lista de comandos de commits atómicos.
+- Comandos para merge a `develop`.
 
 ---
 
-## ⚠️ Reglas Livewire específicas
+## ⚠️ Reglas Livewire y FluxUI específicas
 
-- Usar `wire:model` con Form Objects
-- Usar `wire:submit`
-- Redirecciones con `navigate: true`
-- UI SIEMPRE con FluxUI (prohibido HTML plano si existe componente)
-- NO lógica en métodos del componente (solo delegación)
+- UI SIEMPRE con FluxUI. **Si no conoces un componente específico de FluxUI**, usa componentes HTML nativos de Laravel/Blade pero coméntalos con `<!-- TODO: Refactor to FluxUI -->`. **NO inventes propiedades de FluxUI**.
+- Usar `wire:model` apuntando al Form Object.
+- NO lógica de base de datos en métodos del componente Livewire (solo delegación a la Action).
 
 ---
 
 ## 🧪 Validaciones mínimas obligatorias
 
-- No permitir duplicados (DB constraint + validación)
-- Validar ownership (`.own`, `.team`)
-- Validar estado (ej: no crear sobre registros publicados)
-- Manejo de errores consistente
+- No permitir duplicados (Constraint DB + Validación Form).
+- Validar ownership (`.own`, `.team` o jerarquía).
+- Manejo de excepciones consistente dentro del Action.
 
 ---
 
-## 🔍 Checklist de validación (Copilot debe cumplir TODO)
+## 🔍 Checklist de validación (La IA debe cumplir TODO)
 
-- [ ] Código dentro de app/Modules/{Modulo}
-- [ ] Livewire NO contiene lógica de negocio
-- [ ] Action implementa DB::transaction()
-- [ ] DTO usado correctamente
-- [ ] Policy aplicada en Livewire
-- [ ] Sin N+1 queries (uso de with())
-- [ ] Uso correcto de PostgreSQL (sin sintaxis MySQL)
-- [ ] Índices y constraints definidos
-- [ ] Eventos usados si hay interacción entre módulos
-- [ ] UI construida con FluxUI
-- [ ] Código tipado (PHP 8.2+)
-- [ ] Sin dependencias cruzadas entre módulos
+- [ ] Comandos Git incluidos (Rama, Commits, Merge).
+- [ ] Código dentro de `app/Modules/{Modulo}`.
+- [ ] Action implementa `DB::transaction()`.
+- [ ] Policy aplicada correctamente.
+- [ ] Sin N+1 queries.
+- [ ] Feature Test incluido y funcional.
+- [ ] Tipado estricto en PHP 8.2+.
+- [ ] Sin explicaciones innecesarias ("yapping").
 
 ---
 
-## ⚠️ Anti-patrones prohibidos
+## 🧾 Entrega final y Commits Atómicos
 
-- CRUD directo en Livewire
-- Queries dentro de Blade
-- Lógica en Models (fat models)
-- Llamar otro módulo directamente
-- Uso de DB::raw innecesario
-- Validaciones duplicadas sin constraint en DB
+- **CERO EXPLICACIONES:** No expliques cómo instalar Laravel, ni cómo funciona el código. Empieza directamente con los comandos Git y las rutas de los archivos con su código.
+- Los commits deben usar **Conventional Commits en español**.
 
----
+**Formato de Commits requeridos al final de la respuesta:**
+`git commit -m "feat(<modulo>): crear DTO y Action transaccional para <entidad>"`
+`git commit -m "feat(<modulo>): implementar Livewire component y Form Object"`
+`git commit -m "test(<modulo>): agregar feature tests para <caso_uso>"`
 
-## 🧾 Entrega final
-
-- Código completo, listo para copiar/pegar
-- Separado por archivos (paths reales)
-- Sin explicaciones largas
-- Comentarios solo si son críticos
-
----
-
-## 🧩 Commits (OBLIGATORIO)
-
-Generar commits atómicos usando Conventional Commits en español:
-
-Formato:
-<tipo>(<modulo>): <descripcion>
-
-Tipos:
-- feat
-- fix
-- refactor
-- test
-- docs
-- chore
-
-Ejemplo:
-
-feat(workflows): implementar solicitud de permiso total
-feat(workflows): agregar validación de duplicados en leave_requests
-fix(workflows): corregir race condition en aprobación de permisos
-refactor(workflows): extraer lógica a LeaveRequestAction
-
-Reglas:
-- Un commit por unidad lógica
-- No mezclar responsabilidades
-- Mensajes claros y técnicos
+**Cierre del flujo Git:**
+`git checkout develop`
+`git merge --no-ff <nombre-de-la-rama>`

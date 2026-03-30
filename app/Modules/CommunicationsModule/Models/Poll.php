@@ -19,6 +19,9 @@ class Poll extends Model {
         'options',
         'is_active',
         'expires_at',
+        'scheduled_at',
+        'archive_at',
+        'reminder_sent_at',
         'status',
         'approved_by',
         'approved_at',
@@ -30,6 +33,9 @@ class Poll extends Model {
         'options' => 'array', // jsonb en Postgres
         'is_active' => 'boolean',
         'expires_at' => 'datetime',
+        'scheduled_at' => 'datetime',
+        'archive_at' => 'datetime',
+        'reminder_sent_at' => 'datetime',
         'approved_at' => 'datetime',
         'version_history' => 'array',
     ];
