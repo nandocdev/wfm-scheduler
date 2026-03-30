@@ -35,7 +35,12 @@
 
 ### Módulo: Audit & Cache
 - [x] UC-AUD-01: Modelo `AuditLog` y Trait `Auditable` implementado.
-- [ ] UC-AUD-02: Componente UI Livewire (FluxUI) para visor/búsqueda de logs operativos.
+- [x] UC-AUD-02: Componente UI Livewire (FluxUI) para visor/búsqueda de logs operativos.
+  - [x] UC-AUD-02.1: Listado paginado de `audit_logs` con filtros (usuario, entidad, acción, rango de fechas).
+  - [x] UC-AUD-02.2: Acción de exportar CSV/JSON para resultados filtrados.
+  - [x] UC-AUD-02.3: Políticas de acceso `audit.view` y `audit.export` (Spatie + Gate).
+  - [x] UC-AUD-02.4: Test de integración Pest para UI y API de logs.
+- [x] UC-AUD-03: Command de retención/limpieza de logs (`audit:prune --days=...`).
 - [x] UC-CAC-01: Caché inteligente habilitado en config e invalidación en Observers.
 
 ---
