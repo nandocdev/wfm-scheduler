@@ -45,7 +45,7 @@ class UsersPerRoleSeeder extends Seeder {
                     'password' => Hash::make('password'),
                     'email_verified_at' => now(),
                     'is_active' => true,
-                    'force_password_change' => false,
+                    'force_password_change' => true,
                 ]);
             } else {
                 if ($user->trashed()) {
@@ -57,7 +57,7 @@ class UsersPerRoleSeeder extends Seeder {
                     'password' => Hash::make('password'),
                     'email_verified_at' => $user->email_verified_at ?? now(),
                     'is_active' => true,
-                    'force_password_change' => false,
+                    'force_password_change' => true,
                 ]);
 
                 $user->save();

@@ -26,8 +26,7 @@ new #[Title('Security settings')] class extends Component {
     /**
      * Mount the component.
      */
-    public function mount(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void
-    {
+    public function mount(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void {
         $this->canManageTwoFactor = Features::canManageTwoFactorAuthentication();
 
         if ($this->canManageTwoFactor) {
@@ -43,8 +42,7 @@ new #[Title('Security settings')] class extends Component {
     /**
      * Update the password for the currently authenticated user.
      */
-    public function updatePassword(): void
-    {
+    public function updatePassword(): void {
         try {
             $validated = $this->validate([
                 'current_password' => $this->currentPasswordRules(),
@@ -56,9 +54,10 @@ new #[Title('Security settings')] class extends Component {
             throw $e;
         }
 
-        Auth::user()->update([
+        Auth::user()->forceFill([
             'password' => $validated['password'],
-        ]);
+            'force_password_change' => false,
+        ])->save();
 
         $this->reset('current_password', 'password', 'password_confirmation');
 
@@ -69,16 +68,14 @@ new #[Title('Security settings')] class extends Component {
      * Handle the two-factor authentication enabled event.
      */
     #[On('two-factor-enabled')]
-    public function onTwoFactorEnabled(): void
-    {
+    public function onTwoFactorEnabled(): void {
         $this->twoFactorEnabled = true;
     }
 
     /**
      * Disable two-factor authentication for the user.
      */
-    public function disable(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void
-    {
+    public function disable(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void {
         $disableTwoFactorAuthentication(auth()->user());
 
         $this->twoFactorEnabled = false;
@@ -92,30 +89,12 @@ new #[Title('Security settings')] class extends Component {
 
     <x-pages::settings.layout :heading="__('Update password')" :subheading="__('Ensure your account is using a long, random password to stay secure')">
         <form method="POST" wire:submit="updatePassword" class="mt-6 space-y-6">
-            <flux:input
-                wire:model="current_password"
-                :label="__('Current password')"
-                type="password"
-                required
-                autocomplete="current-password"
-                viewable
-            />
-            <flux:input
-                wire:model="password"
-                :label="__('New password')"
-                type="password"
-                required
-                autocomplete="new-password"
-                viewable
-            />
-            <flux:input
-                wire:model="password_confirmation"
-                :label="__('Confirm password')"
-                type="password"
-                required
-                autocomplete="new-password"
-                viewable
-            />
+            <flux:input wire:model="current_password" :label="__('Current password')" type="password" required
+                autocomplete="current-password" viewable />
+            <flux:input wire:model="password" :label="__('New password')" type="password" required
+                autocomplete="new-password" viewable />
+            <flux:input wire:model="password_confirmation" :label="__('Confirm password')" type="password" required
+                autocomplete="new-password" viewable />
 
             <div class="flex items-center gap-4">
                 <div class="flex items-center justify-end">
@@ -143,10 +122,7 @@ new #[Title('Security settings')] class extends Component {
                             </flux:text>
 
                             <div class="flex justify-start">
-                                <flux:button
-                                    variant="danger"
-                                    wire:click="disable"
-                                >
+                                <flux:button variant="danger" wire:click="disable">
                                     {{ __('Disable 2FA') }}
                                 </flux:button>
                             </div>
@@ -160,10 +136,7 @@ new #[Title('Security settings')] class extends Component {
                             </flux:text>
 
                             <flux:modal.trigger name="two-factor-setup-modal">
-                                <flux:button
-                                    variant="primary"
-                                    wire:click="$dispatch('start-two-factor-setup')"
-                                >
+                                <flux:button variant="primary" wire:click="$dispatch('start-two-factor-setup')">
                                     {{ __('Enable 2FA') }}
                                 </flux:button>
                             </flux:modal.trigger>

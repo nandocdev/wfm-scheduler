@@ -87,6 +87,27 @@ test('password can be updated', function () {
     expect(Hash::check('new-password', $user->refresh()->password))->toBeTrue();
 });
 
+test('force_password_change flag is cleared after password update', function () {
+    $user = User::factory()->create([
+        'password' => Hash::make('password'),
+        'force_password_change' => true,
+    ]);
+
+    $this->actingAs($user);
+
+    Livewire::test('pages::settings.security')
+        ->set('current_password', 'password')
+        ->set('password', 'new-password')
+        ->set('password_confirmation', 'new-password')
+        ->call('updatePassword')
+        ->assertHasNoErrors();
+
+    $this->assertDatabaseHas('users', [
+        'id' => $user->id,
+        'force_password_change' => false,
+    ]);
+});
+
 test('correct password must be provided to update password', function () {
     $user = User::factory()->create([
         'password' => Hash::make('password'),
