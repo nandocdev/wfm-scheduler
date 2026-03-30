@@ -129,4 +129,11 @@ class EmployeePolicy {
     public function manageTeamAssignments(User $user): bool {
         return $user->hasPermissionTo('teams.members.manage');
     }
+
+    /**
+     * Determina si el usuario puede exportar empleados.
+     */
+    public function export(User $user): bool {
+        return $user->hasPermissionTo('employees.export');
+    }
 }
