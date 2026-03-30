@@ -69,7 +69,7 @@ class ListEmployees extends Component {
      */
     public function getEmployeesProperty() {
         return Employee::query()
-            ->with(['department', 'position', 'employmentStatus', 'township'])
+            ->with(['team', 'position', 'status', 'department', 'township'])
             ->when($this->search, function (Builder $query) {
                 $query->where(function (Builder $q) {
                     $q->where('first_name', 'ilike', "%{$this->search}%")

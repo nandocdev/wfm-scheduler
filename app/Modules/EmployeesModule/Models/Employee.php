@@ -50,6 +50,11 @@ class Employee extends Model {
         return $this->belongsTo(EmploymentStatus::class);
     }
 
+    // Alias para mantener semántica roadmap/status en consultas eager loading
+    public function status(): BelongsTo {
+        return $this->employmentStatus();
+    }
+
     // Jerarquía Operativa (Adjacency List)
     public function manager(): BelongsTo {
         return $this->belongsTo(Employee::class, 'parent_id');
