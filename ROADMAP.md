@@ -51,7 +51,7 @@
 
 ### Módulo: Employees
 - [x] UC-EMP-01: Modelos `Employee`, `EmploymentStatus` con jerarquía (`parent_id`).
-  - [ ] UC-EMP-01.1: Relaciones completas con `Team`, `Department`, `Position` y cascada de desactivación por status.
+  - [x] UC-EMP-01.1: Relaciones completas con `Team`, `Department`, `Position` y cascada de desactivación por status.
   - [ ] UC-EMP-01.2: Índices de DB `employee(team_id, status_id, deleted_at)` y `status(parent_id)`.
 - [x] UC-EMP-02: Interfaz Livewire reactiva con filtros avanzados (búsqueda, dpto, cargo).
   - [ ] UC-EMP-02.1: Paginación server-side con `with('team','position','status')` + anti N+1 test.

@@ -58,6 +58,7 @@ class ModuleServiceProvider extends ServiceProvider {
 
         // Registrar observers
         Employee::observe(EmployeeObserver::class);
+        \App\Modules\EmployeesModule\Models\EmploymentStatus::observe(\App\Modules\EmployeesModule\Observers\EmploymentStatusObserver::class);
     }
 
     private function registerPolicies(): void {
