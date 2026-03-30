@@ -45,12 +45,20 @@ class ModuleServiceProvider extends ServiceProvider {
         // 4. Registro de listeners de autenticación
         $this->registerEventListeners();
 
-        // 5. Autorización (RBAC)
+        // 5. Observers de entidad
+        $this->registerObservers();
+
+        // 6. Autorización (RBAC)
         $this->registerPolicies();
     }
 
-    /**
-     * Registra las políticas de autorización del módulo.
+    /**     * Registra observadores del módulo.
+     */
+    protected function registerObservers(): void {
+        \App\Modules\CoreModule\Models\Role::observe(\App\Modules\CoreModule\Observers\RoleObserver::class);
+    }
+
+    /**     * Registra las políticas de autorización del módulo.
      */
     protected function registerPolicies(): void {
         Gate::policy(User::class, UserPolicy::class);
