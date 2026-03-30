@@ -108,6 +108,11 @@ class RolesAndPermissionsSeeder extends Seeder {
             'notifications.delete',
             'notifications.restore',
             'notifications.force_delete',
+
+            // Audit Module
+            'audit.viewAny',
+            'audit.export',
+            'audit.prune',
         ];
 
         // Registro de permisos
@@ -144,9 +149,90 @@ class RolesAndPermissionsSeeder extends Seeder {
             Role::findByName($roleName, 'web')->syncPermissions([]);
         }
 
-        // Roles con acceso total al sistema
+        // Roles con acceso total / privilegiado
         $wfmRole = Role::findByName('wfm', 'web');
-        $wfmRole->syncPermissions(Permission::all());
+        $wfmRole->syncPermissions([
+            'users.view',
+            'users.create',
+            'users.edit',
+            'users.delete',
+            'roles.view',
+            'roles.create',
+            'roles.edit',
+
+            'directorates.viewAny',
+            'directorates.create',
+            'directorates.update',
+            'directorates.delete',
+            'departments.viewAny',
+            'departments.create',
+            'departments.update',
+            'departments.delete',
+            'teams.viewAny',
+            'teams.create',
+            'teams.update',
+            'teams.delete',
+            'positions.viewAny',
+            'positions.create',
+            'positions.update',
+            'positions.delete',
+
+            'employees.view',
+            'employees.view.all',
+            'employees.create',
+            'employees.edit',
+            'employees.edit.all',
+            'employees.delete',
+            'employees.delete.all',
+            'employees.manageTeamAssignments',
+
+            'news.viewAny',
+            'news.view',
+            'news.create',
+            'news.edit',
+            'news.delete',
+            'shoutouts.manage',
+            'polls.manage',
+
+            'communications.manage',
+            'communications.moderate',
+            'communications.approve',
+            'communications.reject',
+            'communications.archive',
+            'communications.view_pending',
+
+            'comments.view',
+            'comments.create',
+            'comments.edit',
+            'comments.delete',
+            'comments.restore',
+            'comments.force_delete',
+
+            'reactions.view',
+            'reactions.create',
+            'reactions.edit',
+            'reactions.delete',
+            'reactions.restore',
+            'reactions.force_delete',
+
+            'mentions.view',
+            'mentions.create',
+            'mentions.edit',
+            'mentions.delete',
+            'mentions.restore',
+            'mentions.force_delete',
+
+            'notifications.view',
+            'notifications.create',
+            'notifications.edit',
+            'notifications.delete',
+            'notifications.restore',
+            'notifications.force_delete',
+
+            'audit.viewAny',
+            'audit.export',
+            'audit.prune',
+        ]);
 
         $adminRole = Role::findByName('admin', 'web');
         $adminRole->syncPermissions(Permission::all());
