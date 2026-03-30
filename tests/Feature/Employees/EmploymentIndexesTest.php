@@ -8,9 +8,16 @@ it('has team_id, deleted_at and composite index on employees and parent index on
     expect(Schema::hasColumn('employees', 'deleted_at'))->toBeTrue();
     expect(Schema::hasColumn('employment_statuses', 'parent_id'))->toBeTrue();
 
-    $employeesIndexes = collect(DB::select("SELECT indexname FROM pg_indexes WHERE tablename = 'employees';"))->pluck('indexname')->toArray();
-    expect(in_array('employees_team_status_deleted_idx', $employeesIndexes))->toBeTrue();
+    $driver = DB::getDriverName();
 
-    $statusIndexes = collect(DB::select("SELECT indexname FROM pg_indexes WHERE tablename = 'employment_statuses';"))->pluck('indexname')->toArray();
+    if ($driver === 'sqlite') {
+        $employeesIndexes = collect(DB::select("PRAGMA index_list('employees');"))->pluck('name')->toArray();
+        $statusIndexes = collect(DB::select("PRAGMA index_list('employment_statuses');"))->pluck('name')->toArray();
+    } else {
+        $employeesIndexes = collect(DB::select("SELECT indexname AS name FROM pg_indexes WHERE tablename = 'employees';"))->pluck('name')->toArray();
+        $statusIndexes = collect(DB::select("SELECT indexname AS name FROM pg_indexes WHERE tablename = 'employment_statuses';"))->pluck('name')->toArray();
+    }
+
+    expect(in_array('employees_team_status_deleted_idx', $employeesIndexes))->toBeTrue();
     expect(in_array('employment_statuses_parent_idx', $statusIndexes))->toBeTrue();
 });
