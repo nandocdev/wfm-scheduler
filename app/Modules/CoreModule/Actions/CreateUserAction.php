@@ -20,7 +20,7 @@ class CreateUserAction
             $user = User::create([
                 'name' => $dto->name,
                 'email' => $dto->email,
-                'password' => Hash::make($dto->password ?? Str::random(12)),
+                'password' => Hash::make($dto->password ?? \Illuminate\Support\Str::random(12)),
                 'is_active' => $dto->is_active,
                 'force_password_change' => $dto->force_password_change,
             ]);
