@@ -21,5 +21,6 @@ return [
         \App\Modules\WorkflowsModule\Providers\ModuleServiceProvider::class,
         \App\Modules\SupportModule\Providers\ModuleServiceProvider::class,
         \App\Modules\CommunicationsModule\Providers\ModuleServiceProvider::class,
+        \App\Modules\AuditModule\Providers\ModuleServiceProvider::class,
     ],
 ];
