@@ -28,12 +28,28 @@
                 <flux:select.option value="1">Activo</flux:select.option>
                 <flux:select.option value="0">Inactivo</flux:select.option>
             </flux:select>
+
+            <flux:input label="Ingreso desde" type="date" wire:model.live="date_from" />
+            <flux:input label="Ingreso hasta" type="date" wire:model.live="date_to" />
         </div>
 
-        <div class="flex justify-end mt-4">
-            <flux:button wire:click="clearFilters" variant="outline">
-                Limpiar filtros
-            </flux:button>
+        <div class="flex justify-between items-center mt-4 gap-3 flex-wrap">
+            <div class="flex items-center gap-4">
+                <label class="inline-flex items-center gap-2 text-sm">
+                    <input type="radio" value="1" wire:model.live="exportAll">
+                    Exportar todos (filtrados)
+                </label>
+                <label class="inline-flex items-center gap-2 text-sm">
+                    <input type="radio" value="0" wire:model.live="exportAll">
+                    Exportar seleccionados
+                </label>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <flux:button as="a" href="{{ $csvExportUrl }}" target="_blank" variant="outline">Export CSV</flux:button>
+                <flux:button as="a" href="{{ $excelExportUrl }}" target="_blank" variant="outline">Export Excel</flux:button>
+                <flux:button wire:click="clearFilters" variant="outline">Limpiar filtros</flux:button>
+            </div>
         </div>
     </flux:card>
 
@@ -48,6 +64,9 @@
             @if($employees->count() > 0)
                 <flux:table :paginate="$employees">
                     <flux:table.columns>
+                        <flux:table.column>
+                            <input type="checkbox" wire:model.live="selectAll" />
+                        </flux:table.column>
                         <flux:table.column>Número</flux:table.column>
                         <flux:table.column>Nombre</flux:table.column>
                         <flux:table.column>Email</flux:table.column>
@@ -60,6 +79,10 @@
                     <flux:table.rows>
                         @forelse($employees as $employee)
                             <flux:table.row :key="$employee->id">
+                                <flux:table.cell>
+                                    <input type="checkbox" wire:model.live="selected" value="{{ $employee->id }}"
+                                        @disabled($exportAll) />
+                                </flux:table.cell>
                                 <flux:table.cell>{{ $employee->employee_number }}</flux:table.cell>
                                 <flux:table.cell>
                                     <div class="flex items-center gap-3">
@@ -103,7 +126,7 @@
                             </flux:table.row>
                         @empty
                             <flux:table.row>
-                                <flux:table.cell colspan="7" class="text-center py-10">
+                                <flux:table.cell colspan="8" class="text-center py-10">
                                     <flux:text size="sm" class="text-zinc-500 italic">No se encontraron empleados con esos
                                         criterios.</flux:text>
                                 </flux:table.cell>

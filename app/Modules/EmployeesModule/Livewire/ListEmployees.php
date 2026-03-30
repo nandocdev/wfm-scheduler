@@ -5,7 +5,6 @@ namespace App\Modules\EmployeesModule\Livewire;
 use App\Modules\EmployeesModule\Models\Employee;
 use App\Modules\OrganizationModule\Models\Department;
 use App\Modules\OrganizationModule\Models\Position;
-use App\Modules\OrganizationModule\Models\Team;
 use App\Modules\EmployeesModule\Models\EmploymentStatus;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -29,6 +28,13 @@ class ListEmployees extends Component {
     public ?int $employment_status_id = null;
     public ?bool $is_active = null;
     public ?bool $is_manager = null;
+    public ?string $date_from = null;
+    public ?string $date_to = null;
+
+    // Estado exportación
+    public bool $exportAll = true;
+    public bool $selectAll = false;
+    public array $selected = [];
 
     // Configuración de paginación
     public int $perPage = 15;
@@ -40,14 +46,20 @@ class ListEmployees extends Component {
         'employment_status_id' => ['except' => null],
         'is_active' => ['except' => null],
         'is_manager' => ['except' => null],
+        'date_from' => ['except' => null],
+        'date_to' => ['except' => null],
     ];
 
     /**
      * Reinicia la paginación cuando cambian los filtros.
      */
     public function updated($property): void {
-        if (in_array($property, ['search', 'department_id', 'position_id', 'employment_status_id', 'is_active', 'is_manager'])) {
+        if (in_array($property, ['search', 'department_id', 'position_id', 'employment_status_id', 'is_active', 'is_manager', 'date_from', 'date_to'])) {
             $this->resetPage();
+        }
+
+        if ($property === 'selectAll') {
+            $this->toggleSelectAll();
         }
     }
 
@@ -61,6 +73,11 @@ class ListEmployees extends Component {
         $this->employment_status_id = null;
         $this->is_active = null;
         $this->is_manager = null;
+        $this->date_from = null;
+        $this->date_to = null;
+        $this->selected = [];
+        $this->selectAll = false;
+        $this->exportAll = true;
         $this->resetPage();
     }
 
@@ -83,9 +100,53 @@ class ListEmployees extends Component {
             ->when($this->employment_status_id, fn(Builder $query) => $query->where('employment_status_id', $this->employment_status_id))
             ->when($this->is_active !== null, fn(Builder $query) => $query->where('is_active', $this->is_active))
             ->when($this->is_manager !== null, fn(Builder $query) => $query->where('is_manager', $this->is_manager))
+            ->when($this->date_from, fn(Builder $query) => $query->whereDate('hire_date', '>=', $this->date_from))
+            ->when($this->date_to, fn(Builder $query) => $query->whereDate('hire_date', '<=', $this->date_to))
             ->orderBy('last_name')
             ->orderBy('first_name')
             ->paginate($this->perPage);
+    }
+
+    public function toggleSelectAll(): void {
+        if ($this->selectAll) {
+            $this->selected = $this->employees->pluck('id')->map(fn($id) => (int) $id)->toArray();
+            $this->exportAll = false;
+
+            return;
+        }
+
+        $this->selected = [];
+    }
+
+    public function updatedExportAll(bool $value): void {
+        if ($value) {
+            $this->selected = [];
+            $this->selectAll = false;
+        }
+    }
+
+    public function getExportQueryParams(string $format): array {
+        return array_filter([
+            'search' => $this->search,
+            'department_id' => $this->department_id,
+            'position_id' => $this->position_id,
+            'employment_status_id' => $this->employment_status_id,
+            'is_active' => is_null($this->is_active) ? null : ((int) $this->is_active),
+            'is_manager' => is_null($this->is_manager) ? null : ((int) $this->is_manager),
+            'date_from' => $this->date_from,
+            'date_to' => $this->date_to,
+            'all' => $this->exportAll ? 1 : 0,
+            'selected' => !$this->exportAll ? $this->selected : null,
+            'format' => $format,
+        ], fn($value) => !is_null($value) && $value !== '' && $value !== []);
+    }
+
+    public function getCsvExportUrlProperty(): string {
+        return route('employees.export', $this->getExportQueryParams('csv'));
+    }
+
+    public function getExcelExportUrlProperty(): string {
+        return route('employees.export', $this->getExportQueryParams('excel'));
     }
 
     /**
@@ -103,6 +164,8 @@ class ListEmployees extends Component {
         return view('employees::livewire.list-employees', [
             'employees' => $this->employees,
             'filterOptions' => $this->filterOptions,
+            'csvExportUrl' => $this->csvExportUrl,
+            'excelExportUrl' => $this->excelExportUrl,
         ]);
     }
 }
