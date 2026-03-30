@@ -57,8 +57,8 @@
   - [x] UC-EMP-02.1: Paginación server-side con `with('team','position','status')` + anti N+1 test.
   - [x] UC-EMP-02.2: Export CSV/Excel desde UI (selected/all) y parámetros de rango de fechas.
 - [x] UC-EMP-03: Policies con scope por `team_id` y permisos granulares.
-  - [ ] UC-EMP-03.1: Distintos scopes `own` vs `others` y `force_delete` solo para roles de alto privilegio.
-  - [ ] UC-EMP-03.2: Policy `effectivePermissions` con role hierarchy y administrator override.
+  - [x] UC-EMP-03.1: Distintos scopes `own` vs `others` y `force_delete` solo para roles de alto privilegio.
+  - [x] UC-EMP-03.2: Policy `effectivePermissions` con role hierarchy y administrator override.
 - [~] UC-EMP-04: Importador masivo CSV. **[DEUDA TÉCNICA: Refactorizar a Chunked/Queueable para evitar memory leaks]**.
   - [ ] UC-EMP-04.1: Acción `ImportEmployeesAction` con `LazyCollection::chunk(1000)` + `DB::transaction` por chunk.
   - [ ] UC-EMP-04.2: Job/Batch en queue y reporte de filas rechazadas / inválidas.

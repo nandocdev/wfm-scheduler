@@ -52,12 +52,18 @@ class RolesAndPermissionsSeeder extends Seeder {
 
             // Employees Module
             'employees.view',
+            'employees.view.others',
             'employees.view.all',
             'employees.create',
             'employees.edit',
+            'employees.edit.others',
             'employees.edit.all',
             'employees.delete',
+            'employees.delete.others',
             'employees.delete.all',
+            'employees.force_delete',
+            'employees.force_delete.others',
+            'employees.force_delete.all',
             'employees.manageTeamAssignments',
             'employees.export',
 
@@ -179,12 +185,18 @@ class RolesAndPermissionsSeeder extends Seeder {
             'positions.delete',
 
             'employees.view',
+            'employees.view.others',
             'employees.view.all',
             'employees.create',
             'employees.edit',
+            'employees.edit.others',
             'employees.edit.all',
             'employees.delete',
+            'employees.delete.others',
             'employees.delete.all',
+            'employees.force_delete',
+            'employees.force_delete.others',
+            'employees.force_delete.all',
             'employees.manageTeamAssignments',
             'employees.export',
 
