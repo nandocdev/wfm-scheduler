@@ -86,7 +86,7 @@ Diseñar e implementar el módulo de Scheduling que reemplaza el proceso Excel, 
 - [x] UC-WPL-01: Modelos `WeeklySchedule`, `WeeklyScheduleAssignment` (estructura para publicaciones semanales).
 - [ ] UC-WPL-02: Constraints y migraciones: índices compuestos y constraints DB (`unique` y `exclude overlaps` donde aplique).
 - [x] UC-WPL-02: Constraints y migraciones: índices compuestos y constraints DB (`unique` y `exclude overlaps` donde aplique).
-- [ ] UC-WPL-03: `AssignEmployeeScheduleAction` (bulk inserts, validación por lote con `ScheduleValidationService`).
+- [x] UC-WPL-03: `AssignEmployeeScheduleAction` (bulk inserts, validación por lote con `ScheduleValidationService`).
 - [ ] UC-WPL-04: Componente Livewire para asignación en grid con edición masiva y preflight validation.
 
 ### Timeline y hitos (alineado con `docs/features/schedule.md`)
