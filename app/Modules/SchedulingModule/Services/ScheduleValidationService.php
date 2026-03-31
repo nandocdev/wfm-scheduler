@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\SchedulingModule\Services;
 
 use App\Modules\SchedulingModule\Models\WeeklyScheduleAssignment;
+use App\Modules\SchedulingModule\Models\Schedule;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -67,12 +68,13 @@ final class ScheduleValidationService {
         $existing = $query->get();
 
         foreach ($existing as $assign) {
-            if (!$assign->schedule) {
+            $sched = $assign->schedule ?? Schedule::find($assign->schedule_id);
+            if (!$sched) {
                 continue; // asignación inconsistente; skip
             }
 
-            $s = Carbon::createFromFormat('H:i:s', $this->normaliseTime($assign->schedule->start_time));
-            $e = Carbon::createFromFormat('H:i:s', $this->normaliseTime($assign->schedule->end_time));
+            $s = Carbon::createFromFormat('H:i:s', $this->normaliseTime($sched->start_time));
+            $e = Carbon::createFromFormat('H:i:s', $this->normaliseTime($sched->end_time));
 
             // Overlap if intervals intersect: startA < endB && startB < endA
             if ($newStart->lt($e) && $s->lt($newEnd)) {
