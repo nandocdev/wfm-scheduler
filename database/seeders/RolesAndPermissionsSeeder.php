@@ -58,6 +58,7 @@ class RolesAndPermissionsSeeder extends Seeder {
             'schedules.manage',
             'schedules.create',
             'schedules.update',
+            'schedules.assign',
             'break_templates.viewAny',
             'break_templates.create',
             'break_templates.update',
