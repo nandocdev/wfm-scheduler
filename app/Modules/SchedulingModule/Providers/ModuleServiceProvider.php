@@ -37,5 +37,7 @@ class ModuleServiceProvider extends ServiceProvider {
     private function registerPolicies(): void {
         Gate::policy(Schedule::class, SchedulePolicy::class);
         Gate::policy(BreakTemplate::class, BreakTemplatePolicy::class);
+        // Policy para asignaciones masivas de WeeklySchedule
+        Gate::policy(\App\Modules\SchedulingModule\Models\WeeklyScheduleAssignment::class, \App\Modules\SchedulingModule\Policies\WeeklyScheduleAssignmentPolicy::class);
     }
 }
