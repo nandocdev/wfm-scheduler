@@ -21,7 +21,7 @@ it('prevents overlapping weekly schedules at DB level', function () {
         expect(WeeklySchedule::count())->toBe(2);
         expect($second->name)->toBe('week-b');
     } else {
-        expect(fn () => WeeklySchedule::create([
+        expect(fn() => WeeklySchedule::create([
             'name' => 'week-b',
             'start_date' => '2026-04-05',
             'end_date' => '2026-04-11',
