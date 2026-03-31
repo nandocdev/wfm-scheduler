@@ -120,6 +120,12 @@ class MenuHelper {
                         'pattern' => 'scheduling/break-templates*',
                         'permission' => 'schedules.manage',
                     ],
+                    [
+                        'label' => __('Asignación en Grid'),
+                        'route' => 'scheduling.assign_grid',
+                        'pattern' => 'scheduling/assign-grid*',
+                        'permission' => 'schedules.assign',
+                    ],
                 ],
             ],
             [

@@ -31,6 +31,7 @@ class ModuleServiceProvider extends ServiceProvider {
     private function registerLivewireComponents(): void {
         if (class_exists(\Livewire\Livewire::class)) {
             \Livewire\Livewire::component('scheduling.create-break-template', \App\Modules\SchedulingModule\Livewire\CreateBreakTemplate::class);
+            \Livewire\Livewire::component('scheduling.assign-grid', \App\Modules\SchedulingModule\Livewire\AssignGrid::class);
         }
     }
 
