@@ -21,14 +21,16 @@ return new class extends Migration {
         });
 
         // Add exclusion constraint to prevent overlapping weekly schedules by date range
-        // Uses PostgreSQL daterange with gist exclusion (start_date..end_date must not overlap)
-        DB::statement("CREATE EXTENSION IF NOT EXISTS btree_gist;");
-        DB::statement(<<<SQL
-            ALTER TABLE weekly_schedules
-            ADD CONSTRAINT weekly_schedules_no_overlap
-            EXCLUDE USING gist (daterange(start_date, end_date, '[]') WITH &&);
-        SQL
-        );
+        // Only apply when using PostgreSQL (SQLite in-memory for tests does not support extensions)
+        if (config('database.default') === 'pgsql') {
+            DB::statement("CREATE EXTENSION IF NOT EXISTS btree_gist;");
+            DB::statement(<<<'SQL'
+                ALTER TABLE weekly_schedules
+                ADD CONSTRAINT weekly_schedules_no_overlap
+                EXCLUDE USING gist (daterange(start_date, end_date, '[]') WITH &&);
+            SQL
+            );
+        }
 
         // 2. Weekly Schedule Assignments (F: weekly_schedules, employees, schedules)
         Schema::create('weekly_schedule_assignments', function (Blueprint $table) {
