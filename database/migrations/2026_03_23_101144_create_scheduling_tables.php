@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration {
     /**
@@ -18,6 +19,16 @@ return new class extends Migration {
             $table->string('status', 20)->default('draft'); // draft, published, locked
             $table->timestamps();
         });
+
+        // Add exclusion constraint to prevent overlapping weekly schedules by date range
+        // Uses PostgreSQL daterange with gist exclusion (start_date..end_date must not overlap)
+        DB::statement("CREATE EXTENSION IF NOT EXISTS btree_gist;");
+        DB::statement(<<<SQL
+            ALTER TABLE weekly_schedules
+            ADD CONSTRAINT weekly_schedules_no_overlap
+            EXCLUDE USING gist (daterange(start_date, end_date, '[]') WITH &&);
+        SQL
+        );
 
         // 2. Weekly Schedule Assignments (F: weekly_schedules, employees, schedules)
         Schema::create('weekly_schedule_assignments', function (Blueprint $table) {
