@@ -54,6 +54,8 @@ class RolesAndPermissionsSeeder extends Seeder {
 
             // Schedule Engine
             'schedules.viewAny',
+            'schedules.view',
+            'schedules.manage',
             'schedules.create',
             'schedules.update',
             'break_templates.viewAny',
@@ -85,6 +87,8 @@ class RolesAndPermissionsSeeder extends Seeder {
             'news.edit',
             'news.delete',
             'shoutouts.manage',
+            'react_to_shoutouts',
+            'comment_on_news',
             'polls.manage',
 
             // Communications Module - Gestión
@@ -199,6 +203,8 @@ class RolesAndPermissionsSeeder extends Seeder {
 
             // Schedule Engine
             'schedules.viewAny',
+            'schedules.view',
+            'schedules.manage',
             'schedules.create',
             'schedules.update',
             'break_templates.viewAny',
@@ -227,6 +233,8 @@ class RolesAndPermissionsSeeder extends Seeder {
             'news.edit',
             'news.delete',
             'shoutouts.manage',
+            'react_to_shoutouts',
+            'comment_on_news',
             'polls.manage',
 
             'communications.manage',

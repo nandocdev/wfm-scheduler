@@ -21,6 +21,8 @@ class CommunicationsPermissionSeeder extends Seeder {
             'news.edit',
             'news.delete',
             'shoutouts.manage',
+            'react_to_shoutouts',
+            'comment_on_news',
             'polls.manage',
 
             // Permisos de gestión de comunicaciones (categorías, tags)
