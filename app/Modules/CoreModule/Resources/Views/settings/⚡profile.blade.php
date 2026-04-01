@@ -89,8 +89,8 @@ new #[Title('Configuración de Perfil')] class extends Component {
         });
 
         $this->dispatch('profile-updated', name: $user->name);
-        
-        flux()->toast('Perfil actualizado correctamente.');
+
+        \Flux\Flux::toast('Perfil actualizado correctamente.');
     }
 
     /**
