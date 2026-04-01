@@ -23,7 +23,13 @@
     @if($weekly)
         <h4>Asignaciones existentes</h4>
         <table>
-            <thead><tr><th>Empleado</th><th>Fecha</th><th>Schedule</th></tr></thead>
+            <thead>
+                <tr>
+                    <th>Empleado</th>
+                    <th>Fecha</th>
+                    <th>Schedule</th>
+                </tr>
+            </thead>
             <tbody>
                 @foreach($weekly->assignments as $a)
                     <tr>

@@ -75,7 +75,7 @@ class AssignGrid extends Component {
     }
 
     public function render(): mixed {
-        $weekly = WeeklySchedule::with('assignments.schedule','assignments.employee')->find($this->form->weekly_schedule_id);
+        $weekly = WeeklySchedule::with('assignments.schedule', 'assignments.employee')->find($this->form->weekly_schedule_id);
         return view('scheduling::livewire.assign-grid', ['weekly' => $weekly]);
     }
 }
