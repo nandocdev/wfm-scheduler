@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder {
             OrganizationModuleSeeder::class,
             EmploymentStatusSeeder::class,
             RolesAndPermissionsSeeder::class,
+            SchedulingPermissionsSeeder::class,
             UserFromEmployeeSeeder::class,
             AssignEmployeeRolesSeeder::class,
             EmployeeSeeder::class,
