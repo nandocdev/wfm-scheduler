@@ -4,7 +4,6 @@ namespace App\Modules\SchedulingModule\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Schedule extends Model {
     use HasUlids;
@@ -22,8 +21,5 @@ class Schedule extends Model {
         'end_time' => 'string',
         'is_active' => 'boolean',
     ];
-
-    public function breakTemplates(): HasMany {
-        return $this->hasMany(BreakTemplate::class);
-    }
 }
+
