@@ -11,6 +11,11 @@ Route::middleware(['web', 'auth'])
         Route::get('break-templates/create', [BreakTemplateController::class, 'create'])
             ->name('break_templates.create');
 
+        // Index route for break templates (needed by redirects)
+        Route::get('break-templates', function () {
+            return view('scheduling::index-break-templates');
+        })->name('break_templates.index');
+
         // Livewire grid for bulk assignment (UI)
         Route::get('assign-grid/{weekly_schedule_id?}', AssignGrid::class)
             ->name('assign_grid');
