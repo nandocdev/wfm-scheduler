@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->foreign('team_id')
                 ->references('id')->on('teams')
                 ->onDelete('cascade');
-            
+
             // Index (from 2026_04_01_000005)
             $table->index(['team_id', 'date'], 'coverage_snapshots_team_date_idx');
         });

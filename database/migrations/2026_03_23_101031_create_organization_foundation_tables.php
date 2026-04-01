@@ -73,9 +73,9 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        // 8. Schedules (WFM Core)
+        // 8. Schedules (WFM Core) - changed from ULID to bigint for consistency
         Schema::create('schedules', function (Blueprint $table) {
-            $table->ulid('id')->primary();
+            $table->bigIncrements('id');
             $table->string('name')->unique();
             $table->time('start_time');
             $table->time('end_time');

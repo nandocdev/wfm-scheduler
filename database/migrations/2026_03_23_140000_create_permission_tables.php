@@ -32,11 +32,11 @@ return new class extends Migration {
 
             $table->string('name');
             $table->string('guard_name');
-            
+
             // Institutional fields (from 2026_03_24_100156)
             $table->string('code', 50)->nullable();
             $table->integer('hierarchy_level')->default(0);
-            
+
             $table->timestamps();
 
             if ($teams) {

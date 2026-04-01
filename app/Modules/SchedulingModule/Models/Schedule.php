@@ -2,15 +2,9 @@
 
 namespace App\Modules\SchedulingModule\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 
 class Schedule extends Model {
-    use HasUlids;
-
-    public $incrementing = false;
-    protected $keyType = 'string';
-
     protected $fillable = [
         'name', 'start_time', 'end_time', 'lunch_minutes',
         'break_minutes', 'total_minutes', 'is_active'

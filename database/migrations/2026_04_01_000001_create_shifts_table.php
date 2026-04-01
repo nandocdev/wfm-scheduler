@@ -33,7 +33,7 @@ return new class extends Migration {
             $table->foreign('created_by')
                 ->references('id')->on('users')
                 ->nullOnDelete();
-            
+
             // Indexes (from 2026_04_01_000005)
             $table->index('employee_id', 'shifts_employee_idx');
             $table->index('date', 'shifts_date_idx');

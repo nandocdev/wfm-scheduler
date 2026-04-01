@@ -4,13 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
+    public function up(): void {
         // Noticias (+ moderation 2026_03_26 + automation 2026_03_27)
         Schema::create('news', function (Blueprint $table) {
             $table->id();
@@ -21,20 +19,20 @@ return new class extends Migration
             $table->foreignId('author_id')->constrained('users');
             $table->boolean('is_active')->default(true);
             $table->timestamp('published_at')->nullable();
-            
+
             // Moderation workflow (from 2026_03_26_100429)
             $table->enum('status', ['draft', 'pending_review', 'published', 'archived'])->default('draft');
             $table->foreignId('approved_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamp('approved_at')->nullable();
             $table->text('moderation_notes')->nullable();
             $table->jsonb('version_history')->nullable();
-            
+
             // Automation fields (from 2026_03_27_120000)
             $table->timestamp('scheduled_at')->nullable();
             $table->timestamp('archive_at')->nullable();
-            
+
             $table->timestamps();
-            
+
             // Indexes (from 2026_03_26 + 2026_03_27)
             $table->index(['status', 'created_at']);
             $table->index('approved_by');
@@ -48,20 +46,20 @@ return new class extends Migration
             $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete();
             $table->text('message');
             $table->boolean('is_active')->default(true);
-            
+
             // Moderation workflow (from 2026_03_26_100429)
             $table->enum('status', ['draft', 'pending_review', 'published', 'archived'])->default('draft');
             $table->foreignId('approved_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamp('approved_at')->nullable();
             $table->text('moderation_notes')->nullable();
             $table->jsonb('version_history')->nullable();
-            
+
             // Automation fields (from 2026_03_27_120000)
             $table->timestamp('scheduled_at')->nullable();
             $table->timestamp('archive_at')->nullable();
-            
+
             $table->timestamps();
-            
+
             // Indexes (from 2026_03_26 + 2026_03_27)
             $table->index(['status', 'created_at']);
             $table->index('approved_by');
@@ -76,21 +74,21 @@ return new class extends Migration
             $table->jsonb('options'); // [{label, value}]
             $table->boolean('is_active')->default(true);
             $table->timestamp('expires_at')->nullable();
-            
+
             // Moderation workflow (from 2026_03_26_100429)
             $table->enum('status', ['draft', 'pending_review', 'published', 'archived'])->default('draft');
             $table->foreignId('approved_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamp('approved_at')->nullable();
             $table->text('moderation_notes')->nullable();
             $table->jsonb('version_history')->nullable();
-            
+
             // Automation fields (from 2026_03_27_120000)
             $table->timestamp('scheduled_at')->nullable();
             $table->timestamp('archive_at')->nullable();
             $table->timestamp('reminder_sent_at')->nullable();
-            
+
             $table->timestamps();
-            
+
             // Indexes (from 2026_03_26 + 2026_03_27)
             $table->index(['status', 'created_at']);
             $table->index('approved_by');
@@ -113,8 +111,7 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('poll_responses');
         Schema::dropIfExists('polls');
         Schema::dropIfExists('shoutouts');
