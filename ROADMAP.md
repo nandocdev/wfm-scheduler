@@ -88,6 +88,7 @@ Diseñar e implementar el módulo de Scheduling que reemplaza el proceso Excel, 
 - [x] UC-WPL-02: Constraints y migraciones: índices compuestos y constraints DB (`unique` y `exclude overlaps` donde aplique).
 - [x] UC-WPL-03: `AssignEmployeeScheduleAction` (bulk inserts, validación por lote con `ScheduleValidationService`).
 - [x] UC-WPL-04: Componente Livewire para asignación en grid con edición masiva y preflight validation.
+- [x] UC-WPL-05: RFC técnico final de Scheduling/Weekly Planning documentado en `docs/technical/10_RFC_WPL-03-04.md`.
 
 ### Timeline y hitos (alineado con `docs/features/schedule.md`)
 
