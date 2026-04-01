@@ -9,11 +9,12 @@ return new class extends Migration {
      * Run the migrations.
      */
     public function up(): void {
-        // 1. Directorates
+        // 1. Directorates (+ is_active from 2026_03_25_145641)
         Schema::create('directorates', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->text('description')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
 
@@ -33,13 +34,14 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        // 4. Employment Statuses
+        // 4. Employment Statuses (+ parent_id from 2026_03_30_090000)
         Schema::create('employment_statuses', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('code', 50)->nullable();
             $table->text('description')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->foreignId('parent_id')->nullable()->constrained('employment_statuses')->onDelete('set null');
             $table->timestamps();
         });
 

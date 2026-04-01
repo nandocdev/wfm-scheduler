@@ -22,4 +22,3 @@ class Schedule extends Model {
         'is_active' => 'boolean',
     ];
 }
-

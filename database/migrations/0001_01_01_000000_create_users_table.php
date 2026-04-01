@@ -18,6 +18,18 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            
+            // Two-factor authentication (from 2025_08_14_170933)
+            $table->text('two_factor_secret')->nullable();
+            $table->text('two_factor_recovery_codes')->nullable();
+            $table->timestamp('two_factor_confirmed_at')->nullable();
+            
+            // Institutional fields (from 2026_03_23_101259)
+            $table->boolean('is_active')->default(true);
+            $table->timestamp('last_login_at', 0)->nullable();
+            $table->boolean('force_password_change')->default(false);
+            $table->softDeletes('deleted_at', 0);
+            
             $table->timestamps();
         });
 

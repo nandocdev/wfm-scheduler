@@ -5,8 +5,7 @@ namespace App\Modules\SchedulingModule\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Shift extends Model
-{
+class Shift extends Model {
     use HasFactory;
 
     protected $table = 'shifts';
@@ -33,18 +32,15 @@ class Shift extends Model
         'published_at' => 'datetime',
     ];
 
-    public function employee()
-    {
+    public function employee() {
         return $this->belongsTo(\App\Modules\EmployeesModule\Models\Employee::class, 'employee_id');
     }
 
-    public function weeklyAssignment()
-    {
+    public function weeklyAssignment() {
         return $this->belongsTo(\App\Modules\SchedulingModule\Models\WeeklyScheduleAssignment::class, 'weekly_schedule_assignment_id');
     }
 
-    public function activities()
-    {
+    public function activities() {
         return $this->hasMany(ShiftActivity::class, 'shift_id');
     }
 }

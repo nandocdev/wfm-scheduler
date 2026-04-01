@@ -39,6 +39,9 @@ return new class extends Migration
             // Relación con Usuario del Sistema
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
             
+            // Team assignment (from 2026_03_30_090000)
+            $table->foreignId('team_id')->nullable()->constrained('teams')->onDelete('set null');
+            
             // Datos laborales
             $table->date('hire_date')->nullable();
             $table->decimal('salary', 12, 2)->nullable();
@@ -46,11 +49,26 @@ return new class extends Migration
             $table->boolean('is_manager')->default(false);
             $table->jsonb('metadata')->nullable();
             
+            // Soft delete (from 2026_03_30_090000)
+            $table->softDeletes();
+            
             $table->timestamps();
+            
+            // Índice para team/status queries (from 2026_03_30_090000)
+            $table->index(['team_id', 'employment_status_id', 'deleted_at'], 'employees_team_status_deleted_idx');
+        });
+
+        // Add supervisor_id to teams (from 2026_03_25_151402 consolidated here)
+        Schema::table('teams', function (Blueprint $table) {
+            $table->foreignId('supervisor_id')->nullable()->constrained('employees')->nullOnDelete();
+        });
+
+        // Add parent_id index to employment_statuses (from 2026_03_30_090000)
+        Schema::table('employment_statuses', function (Blueprint $table) {
+            $table->index(['parent_id'], 'employment_statuses_parent_idx');
         });
 
         // Restricción adicional: parent_id no puede ser igual a id (Check constraint)
-        // Usamos DB::statement porque el Blueprint no soporta CHECK nativo de Postgres convenientemente.
         DB::statement('ALTER TABLE employees ADD CONSTRAINT employees_parent_not_self CHECK (parent_id <> id)');
     }
 

@@ -6,8 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up(): void
-    {
+    public function up(): void {
         Schema::create('shift_activities', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('shift_id');
@@ -25,6 +24,10 @@ return new class extends Migration {
             $table->foreign('created_by')
                 ->references('id')->on('users')
                 ->nullOnDelete();
+            
+            // Indexes (from 2026_04_01_000005)
+            $table->index('shift_id', 'shift_activities_shift_idx');
+            $table->index(['start_slot', 'end_slot'], 'shift_activities_slot_idx');
         });
 
         // Add CHECK constraint if supported by the connection
@@ -34,8 +37,7 @@ return new class extends Migration {
         }
     }
 
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('shift_activities');
     }
 };

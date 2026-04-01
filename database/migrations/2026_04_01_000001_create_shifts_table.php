@@ -5,8 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up(): void
-    {
+    public function up(): void {
         Schema::create('shifts', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('weekly_schedule_assignment_id')->nullable();
@@ -34,11 +33,14 @@ return new class extends Migration {
             $table->foreign('created_by')
                 ->references('id')->on('users')
                 ->nullOnDelete();
+            
+            // Indexes (from 2026_04_01_000005)
+            $table->index('employee_id', 'shifts_employee_idx');
+            $table->index('date', 'shifts_date_idx');
         });
     }
 
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('shifts');
     }
 };

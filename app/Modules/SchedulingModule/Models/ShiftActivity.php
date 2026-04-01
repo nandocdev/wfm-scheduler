@@ -5,8 +5,7 @@ namespace App\Modules\SchedulingModule\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ShiftActivity extends Model
-{
+class ShiftActivity extends Model {
     use HasFactory;
 
     protected $table = 'shift_activities';
@@ -25,8 +24,7 @@ class ShiftActivity extends Model
         'end_slot' => 'integer',
     ];
 
-    public function shift()
-    {
+    public function shift() {
         return $this->belongsTo(Shift::class, 'shift_id');
     }
 }

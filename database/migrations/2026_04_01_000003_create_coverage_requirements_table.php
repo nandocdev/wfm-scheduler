@@ -5,8 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up(): void
-    {
+    public function up(): void {
         Schema::create('coverage_requirements', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('team_id');
@@ -20,11 +19,13 @@ return new class extends Migration {
             $table->foreign('team_id')
                 ->references('id')->on('teams')
                 ->onDelete('cascade');
+            
+            // Index (from 2026_04_01_000005)
+            $table->index(['team_id', 'date'], 'coverage_requirements_team_date_idx');
         });
     }
 
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('coverage_requirements');
     }
 };

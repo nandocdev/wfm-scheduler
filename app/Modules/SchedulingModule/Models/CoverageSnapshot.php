@@ -5,8 +5,7 @@ namespace App\Modules\SchedulingModule\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CoverageSnapshot extends Model
-{
+class CoverageSnapshot extends Model {
     use HasFactory;
 
     protected $table = 'coverage_snapshots';
@@ -32,8 +31,7 @@ class CoverageSnapshot extends Model
         'created_at' => 'datetime',
     ];
 
-    public function team()
-    {
+    public function team() {
         return $this->belongsTo(\App\Modules\OrganizationModule\Models\Team::class, 'team_id');
     }
 }
