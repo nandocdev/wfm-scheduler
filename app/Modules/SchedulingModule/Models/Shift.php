@@ -1,11 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Modules\SchedulingModule\Models;
 
+use App\Modules\SchedulingModule\Enums\ShiftStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Shift extends Model {
+class Shift extends Model
+{
     use HasFactory;
 
     protected $table = 'shifts';
@@ -29,18 +35,22 @@ class Shift extends Model {
         'end_time' => 'time',
         'break_start' => 'time',
         'lunch_start' => 'time',
+        'status' => ShiftStatus::class,
         'published_at' => 'datetime',
     ];
 
-    public function employee() {
+    public function employee(): BelongsTo
+    {
         return $this->belongsTo(\App\Modules\EmployeesModule\Models\Employee::class, 'employee_id');
     }
 
-    public function weeklyAssignment() {
-        return $this->belongsTo(\App\Modules\SchedulingModule\Models\WeeklyScheduleAssignment::class, 'weekly_schedule_assignment_id');
+    public function weeklyAssignment(): BelongsTo
+    {
+        return $this->belongsTo(WeeklyScheduleAssignment::class, 'weekly_schedule_assignment_id');
     }
 
-    public function activities() {
+    public function activities(): HasMany
+    {
         return $this->hasMany(ShiftActivity::class, 'shift_id');
     }
 }
