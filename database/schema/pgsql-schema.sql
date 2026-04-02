@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict ERSoJR7u7rsoMEK8CbucVtwaKzQTuFVhalp0kwhTpZmXVBR4K0gcdD8tHusfmg8
+\restrict KLJflKmnBT9uWdpaVrnxcsRSjmAcXWgtbtJWKCAGljSNTfAjsHE6eEncxyKqBnu
 
 -- Dumped from database version 18.3
 -- Dumped by pg_dump version 18.3
@@ -18,6 +18,20 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
+
+--
+-- Name: btree_gist; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS btree_gist WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION btree_gist; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION btree_gist IS 'support for indexing common datatypes in GiST';
+
 
 SET default_tablespace = '';
 
@@ -98,40 +112,6 @@ ALTER SEQUENCE public.audit_logs_id_seq OWNED BY public.audit_logs.id;
 
 
 --
--- Name: break_templates; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.break_templates (
-    id bigint NOT NULL,
-    schedule_id bigint NOT NULL,
-    name character varying(255) NOT NULL,
-    start_time time(0) without time zone NOT NULL,
-    duration_minutes integer NOT NULL,
-    created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone
-);
-
-
---
--- Name: break_templates_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.break_templates_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: break_templates_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.break_templates_id_seq OWNED BY public.break_templates.id;
-
-
---
 -- Name: cache; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -151,6 +131,180 @@ CREATE TABLE public.cache_locks (
     owner character varying(255) NOT NULL,
     expiration integer NOT NULL
 );
+
+
+--
+-- Name: categories; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.categories (
+    id bigint NOT NULL,
+    name character varying(255) NOT NULL,
+    slug character varying(255) NOT NULL,
+    description text,
+    color character varying(7) DEFAULT '#3B82F6'::character varying NOT NULL,
+    is_active boolean DEFAULT true NOT NULL,
+    sort_order integer DEFAULT 0 NOT NULL,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone
+);
+
+
+--
+-- Name: categories_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.categories_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.categories_id_seq OWNED BY public.categories.id;
+
+
+--
+-- Name: categorizables; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.categorizables (
+    id bigint NOT NULL,
+    category_id bigint NOT NULL,
+    categorizable_type character varying(255) NOT NULL,
+    categorizable_id bigint NOT NULL,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone
+);
+
+
+--
+-- Name: categorizables_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.categorizables_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: categorizables_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.categorizables_id_seq OWNED BY public.categorizables.id;
+
+
+--
+-- Name: comments; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.comments (
+    id bigint NOT NULL,
+    news_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    content text NOT NULL,
+    parent_id bigint,
+    is_active boolean DEFAULT true NOT NULL,
+    published_at timestamp(0) without time zone,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone
+);
+
+
+--
+-- Name: comments_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.comments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: comments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.comments_id_seq OWNED BY public.comments.id;
+
+
+--
+-- Name: coverage_requirements; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.coverage_requirements (
+    id bigint NOT NULL,
+    team_id bigint NOT NULL,
+    date date NOT NULL,
+    slot_index smallint NOT NULL,
+    required_min smallint DEFAULT '0'::smallint NOT NULL,
+    created_at timestamp(0) with time zone,
+    updated_at timestamp(0) with time zone
+);
+
+
+--
+-- Name: coverage_requirements_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.coverage_requirements_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: coverage_requirements_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.coverage_requirements_id_seq OWNED BY public.coverage_requirements.id;
+
+
+--
+-- Name: coverage_snapshots; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.coverage_snapshots (
+    id bigint NOT NULL,
+    team_id bigint NOT NULL,
+    date date NOT NULL,
+    slot_index smallint NOT NULL,
+    assigned_count integer NOT NULL,
+    required_min integer NOT NULL,
+    deficit boolean NOT NULL,
+    created_at timestamp(0) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+--
+-- Name: coverage_snapshots_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.coverage_snapshots_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: coverage_snapshots_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.coverage_snapshots_id_seq OWNED BY public.coverage_snapshots.id;
 
 
 --
@@ -194,9 +348,9 @@ CREATE TABLE public.directorates (
     id bigint NOT NULL,
     name character varying(255) NOT NULL,
     description text,
+    is_active boolean DEFAULT true NOT NULL,
     created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone,
-    is_active boolean DEFAULT true NOT NULL
+    updated_at timestamp(0) without time zone
 );
 
 
@@ -316,40 +470,6 @@ ALTER SEQUENCE public.districts_id_seq OWNED BY public.districts.id;
 
 
 --
--- Name: employee_break_overrides; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.employee_break_overrides (
-    id bigint NOT NULL,
-    weekly_schedule_assignment_id bigint NOT NULL,
-    start_time time(0) without time zone NOT NULL,
-    duration_minutes integer NOT NULL,
-    reason text,
-    created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone
-);
-
-
---
--- Name: employee_break_overrides_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.employee_break_overrides_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: employee_break_overrides_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.employee_break_overrides_id_seq OWNED BY public.employee_break_overrides.id;
-
-
---
 -- Name: employee_dependents; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -450,6 +570,30 @@ ALTER SEQUENCE public.employee_diseases_id_seq OWNED BY public.employee_diseases
 
 
 --
+-- Name: employee_import_batches; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.employee_import_batches (
+    id character(26) NOT NULL,
+    batch_id character varying(255),
+    original_filename character varying(255) NOT NULL,
+    stored_path character varying(255) NOT NULL,
+    status character varying(32) DEFAULT 'pending'::character varying NOT NULL,
+    chunk_size integer DEFAULT 1000 NOT NULL,
+    total_rows integer DEFAULT 0 NOT NULL,
+    processed_rows integer DEFAULT 0 NOT NULL,
+    imported_rows integer DEFAULT 0 NOT NULL,
+    rejected_rows integer DEFAULT 0 NOT NULL,
+    errors jsonb,
+    created_by bigint,
+    started_at timestamp(0) without time zone,
+    finished_at timestamp(0) without time zone,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone
+);
+
+
+--
 -- Name: employee_positions; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -507,11 +651,13 @@ CREATE TABLE public.employees (
     employment_status_id bigint,
     parent_id bigint,
     user_id bigint,
+    team_id bigint,
     hire_date date,
     salary numeric(12,2),
     is_active boolean DEFAULT true NOT NULL,
     is_manager boolean DEFAULT false NOT NULL,
     metadata jsonb,
+    deleted_at timestamp(0) without time zone,
     created_at timestamp(0) without time zone,
     updated_at timestamp(0) without time zone,
     CONSTRAINT employees_parent_not_self CHECK ((parent_id <> id))
@@ -547,6 +693,7 @@ CREATE TABLE public.employment_statuses (
     code character varying(50),
     description text,
     is_active boolean DEFAULT true NOT NULL,
+    parent_id bigint,
     created_at timestamp(0) without time zone,
     updated_at timestamp(0) without time zone
 );
@@ -879,6 +1026,43 @@ ALTER SEQUENCE public.media_id_seq OWNED BY public.media.id;
 
 
 --
+-- Name: mentions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.mentions (
+    id bigint NOT NULL,
+    mentioned_user_id bigint NOT NULL,
+    mentioner_user_id bigint NOT NULL,
+    mentionable_type character varying(255) NOT NULL,
+    mentionable_id bigint NOT NULL,
+    context character varying(255),
+    is_read boolean DEFAULT false NOT NULL,
+    read_at timestamp(0) without time zone,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone
+);
+
+
+--
+-- Name: mentions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.mentions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: mentions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.mentions_id_seq OWNED BY public.mentions.id;
+
+
+--
 -- Name: migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -944,8 +1128,16 @@ CREATE TABLE public.news (
     author_id bigint NOT NULL,
     is_active boolean DEFAULT true NOT NULL,
     published_at timestamp(0) without time zone,
+    status character varying(255) DEFAULT 'draft'::character varying NOT NULL,
+    approved_by bigint,
+    approved_at timestamp(0) without time zone,
+    moderation_notes text,
+    version_history jsonb,
+    scheduled_at timestamp(0) without time zone,
+    archive_at timestamp(0) without time zone,
     created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone
+    updated_at timestamp(0) without time zone,
+    CONSTRAINT news_status_check CHECK (((status)::text = ANY ((ARRAY['draft'::character varying, 'pending_review'::character varying, 'published'::character varying, 'archived'::character varying])::text[])))
 );
 
 
@@ -966,6 +1158,46 @@ CREATE SEQUENCE public.news_id_seq
 --
 
 ALTER SEQUENCE public.news_id_seq OWNED BY public.news.id;
+
+
+--
+-- Name: notifications; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.notifications (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    type character varying(255) NOT NULL,
+    notifiable_type character varying(255) NOT NULL,
+    notifiable_id bigint NOT NULL,
+    title character varying(255) NOT NULL,
+    message text NOT NULL,
+    data json,
+    is_read boolean DEFAULT false NOT NULL,
+    read_at timestamp(0) without time zone,
+    expires_at timestamp(0) without time zone,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone
+);
+
+
+--
+-- Name: notifications_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.notifications_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: notifications_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.notifications_id_seq OWNED BY public.notifications.id;
 
 
 --
@@ -1091,8 +1323,17 @@ CREATE TABLE public.polls (
     options jsonb NOT NULL,
     is_active boolean DEFAULT true NOT NULL,
     expires_at timestamp(0) without time zone,
+    status character varying(255) DEFAULT 'draft'::character varying NOT NULL,
+    approved_by bigint,
+    approved_at timestamp(0) without time zone,
+    moderation_notes text,
+    version_history jsonb,
+    scheduled_at timestamp(0) without time zone,
+    archive_at timestamp(0) without time zone,
+    reminder_sent_at timestamp(0) without time zone,
     created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone
+    updated_at timestamp(0) without time zone,
+    CONSTRAINT polls_status_check CHECK (((status)::text = ANY ((ARRAY['draft'::character varying, 'pending_review'::character varying, 'published'::character varying, 'archived'::character varying])::text[])))
 );
 
 
@@ -1183,6 +1424,41 @@ ALTER SEQUENCE public.provinces_id_seq OWNED BY public.provinces.id;
 
 
 --
+-- Name: reactions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.reactions (
+    id bigint NOT NULL,
+    shoutout_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    type character varying(255) NOT NULL,
+    is_active boolean DEFAULT true NOT NULL,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone,
+    CONSTRAINT reactions_type_check CHECK (((type)::text = ANY ((ARRAY['like'::character varying, 'love'::character varying, 'celebrate'::character varying, 'support'::character varying, 'insightful'::character varying])::text[])))
+);
+
+
+--
+-- Name: reactions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.reactions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: reactions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.reactions_id_seq OWNED BY public.reactions.id;
+
+
+--
 -- Name: role_has_permissions; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1200,10 +1476,10 @@ CREATE TABLE public.roles (
     id bigint NOT NULL,
     name character varying(255) NOT NULL,
     guard_name character varying(255) NOT NULL,
-    created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone,
     code character varying(50),
-    hierarchy_level integer DEFAULT 0 NOT NULL
+    hierarchy_level integer DEFAULT 0 NOT NULL,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone
 );
 
 
@@ -1278,6 +1554,43 @@ CREATE TABLE public.sessions (
 
 
 --
+-- Name: shift_activities; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.shift_activities (
+    id bigint NOT NULL,
+    shift_id bigint NOT NULL,
+    activity_type character varying(30) NOT NULL,
+    start_slot smallint NOT NULL,
+    end_slot smallint NOT NULL,
+    description text,
+    created_by bigint,
+    created_at timestamp(0) with time zone,
+    updated_at timestamp(0) with time zone,
+    CONSTRAINT shift_activity_slot_check CHECK (((start_slot >= 0) AND (end_slot <= 288) AND (start_slot < end_slot)))
+);
+
+
+--
+-- Name: shift_activities_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.shift_activities_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: shift_activities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.shift_activities_id_seq OWNED BY public.shift_activities.id;
+
+
+--
 -- Name: shift_swap_approvals; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1348,6 +1661,46 @@ ALTER SEQUENCE public.shift_swap_requests_id_seq OWNED BY public.shift_swap_requ
 
 
 --
+-- Name: shifts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.shifts (
+    id bigint NOT NULL,
+    weekly_schedule_assignment_id bigint,
+    employee_id bigint NOT NULL,
+    date date NOT NULL,
+    start_time time(0) without time zone NOT NULL,
+    end_time time(0) without time zone NOT NULL,
+    break_start time(0) without time zone,
+    lunch_start time(0) without time zone,
+    status character varying(20) DEFAULT 'draft'::character varying NOT NULL,
+    published_at timestamp(0) with time zone,
+    created_by bigint,
+    created_at timestamp(0) with time zone,
+    updated_at timestamp(0) with time zone
+);
+
+
+--
+-- Name: shifts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.shifts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: shifts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.shifts_id_seq OWNED BY public.shifts.id;
+
+
+--
 -- Name: shoutouts; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1356,8 +1709,16 @@ CREATE TABLE public.shoutouts (
     employee_id bigint NOT NULL,
     message text NOT NULL,
     is_active boolean DEFAULT true NOT NULL,
+    status character varying(255) DEFAULT 'draft'::character varying NOT NULL,
+    approved_by bigint,
+    approved_at timestamp(0) without time zone,
+    moderation_notes text,
+    version_history jsonb,
+    scheduled_at timestamp(0) without time zone,
+    archive_at timestamp(0) without time zone,
     created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone
+    updated_at timestamp(0) without time zone,
+    CONSTRAINT shoutouts_status_check CHECK (((status)::text = ANY ((ARRAY['draft'::character varying, 'pending_review'::character varying, 'published'::character varying, 'archived'::character varying])::text[])))
 );
 
 
@@ -1378,6 +1739,73 @@ CREATE SEQUENCE public.shoutouts_id_seq
 --
 
 ALTER SEQUENCE public.shoutouts_id_seq OWNED BY public.shoutouts.id;
+
+
+--
+-- Name: taggables; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.taggables (
+    id bigint NOT NULL,
+    tag_id bigint NOT NULL,
+    taggable_type character varying(255) NOT NULL,
+    taggable_id bigint NOT NULL,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone
+);
+
+
+--
+-- Name: taggables_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.taggables_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: taggables_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.taggables_id_seq OWNED BY public.taggables.id;
+
+
+--
+-- Name: tags; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.tags (
+    id bigint NOT NULL,
+    name character varying(255) NOT NULL,
+    slug character varying(255) NOT NULL,
+    color character varying(7) DEFAULT '#6B7280'::character varying NOT NULL,
+    is_active boolean DEFAULT true NOT NULL,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone
+);
+
+
+--
+-- Name: tags_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.tags_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.tags_id_seq OWNED BY public.tags.id;
 
 
 --
@@ -1492,15 +1920,15 @@ CREATE TABLE public.users (
     email_verified_at timestamp(0) without time zone,
     password character varying(255) NOT NULL,
     remember_token character varying(100),
-    created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone,
     two_factor_secret text,
     two_factor_recovery_codes text,
     two_factor_confirmed_at timestamp(0) without time zone,
     is_active boolean DEFAULT true NOT NULL,
     last_login_at timestamp(0) without time zone,
     force_password_change boolean DEFAULT false NOT NULL,
-    deleted_at timestamp(0) without time zone
+    deleted_at timestamp(0) without time zone,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone
 );
 
 
@@ -1534,8 +1962,8 @@ CREATE TABLE public.weekly_schedule_assignments (
     schedule_id bigint,
     assignment_date date NOT NULL,
     is_manual boolean DEFAULT false NOT NULL,
-    created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone
+    created_at timestamp(0) with time zone,
+    updated_at timestamp(0) with time zone
 );
 
 
@@ -1568,8 +1996,8 @@ CREATE TABLE public.weekly_schedules (
     start_date date NOT NULL,
     end_date date NOT NULL,
     status character varying(20) DEFAULT 'draft'::character varying NOT NULL,
-    created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone
+    created_at timestamp(0) with time zone,
+    updated_at timestamp(0) with time zone
 );
 
 
@@ -1607,10 +2035,38 @@ ALTER TABLE ONLY public.audit_logs ALTER COLUMN id SET DEFAULT nextval('public.a
 
 
 --
--- Name: break_templates id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: categories id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.break_templates ALTER COLUMN id SET DEFAULT nextval('public.break_templates_id_seq'::regclass);
+ALTER TABLE ONLY public.categories ALTER COLUMN id SET DEFAULT nextval('public.categories_id_seq'::regclass);
+
+
+--
+-- Name: categorizables id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.categorizables ALTER COLUMN id SET DEFAULT nextval('public.categorizables_id_seq'::regclass);
+
+
+--
+-- Name: comments id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comments ALTER COLUMN id SET DEFAULT nextval('public.comments_id_seq'::regclass);
+
+
+--
+-- Name: coverage_requirements id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.coverage_requirements ALTER COLUMN id SET DEFAULT nextval('public.coverage_requirements_id_seq'::regclass);
+
+
+--
+-- Name: coverage_snapshots id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.coverage_snapshots ALTER COLUMN id SET DEFAULT nextval('public.coverage_snapshots_id_seq'::regclass);
 
 
 --
@@ -1646,13 +2102,6 @@ ALTER TABLE ONLY public.disease_types ALTER COLUMN id SET DEFAULT nextval('publi
 --
 
 ALTER TABLE ONLY public.districts ALTER COLUMN id SET DEFAULT nextval('public.districts_id_seq'::regclass);
-
-
---
--- Name: employee_break_overrides id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.employee_break_overrides ALTER COLUMN id SET DEFAULT nextval('public.employee_break_overrides_id_seq'::regclass);
 
 
 --
@@ -1754,6 +2203,13 @@ ALTER TABLE ONLY public.media ALTER COLUMN id SET DEFAULT nextval('public.media_
 
 
 --
+-- Name: mentions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mentions ALTER COLUMN id SET DEFAULT nextval('public.mentions_id_seq'::regclass);
+
+
+--
 -- Name: migrations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1765,6 +2221,13 @@ ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.m
 --
 
 ALTER TABLE ONLY public.news ALTER COLUMN id SET DEFAULT nextval('public.news_id_seq'::regclass);
+
+
+--
+-- Name: notifications id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.notifications ALTER COLUMN id SET DEFAULT nextval('public.notifications_id_seq'::regclass);
 
 
 --
@@ -1810,6 +2273,13 @@ ALTER TABLE ONLY public.provinces ALTER COLUMN id SET DEFAULT nextval('public.pr
 
 
 --
+-- Name: reactions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.reactions ALTER COLUMN id SET DEFAULT nextval('public.reactions_id_seq'::regclass);
+
+
+--
 -- Name: roles id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1821,6 +2291,13 @@ ALTER TABLE ONLY public.roles ALTER COLUMN id SET DEFAULT nextval('public.roles_
 --
 
 ALTER TABLE ONLY public.schedules ALTER COLUMN id SET DEFAULT nextval('public.schedules_id_seq'::regclass);
+
+
+--
+-- Name: shift_activities id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.shift_activities ALTER COLUMN id SET DEFAULT nextval('public.shift_activities_id_seq'::regclass);
 
 
 --
@@ -1838,10 +2315,31 @@ ALTER TABLE ONLY public.shift_swap_requests ALTER COLUMN id SET DEFAULT nextval(
 
 
 --
+-- Name: shifts id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.shifts ALTER COLUMN id SET DEFAULT nextval('public.shifts_id_seq'::regclass);
+
+
+--
 -- Name: shoutouts id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.shoutouts ALTER COLUMN id SET DEFAULT nextval('public.shoutouts_id_seq'::regclass);
+
+
+--
+-- Name: taggables id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.taggables ALTER COLUMN id SET DEFAULT nextval('public.taggables_id_seq'::regclass);
+
+
+--
+-- Name: tags id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tags ALTER COLUMN id SET DEFAULT nextval('public.tags_id_seq'::regclass);
 
 
 --
@@ -1911,14 +2409,6 @@ ALTER TABLE ONLY public.audit_logs
 
 
 --
--- Name: break_templates break_templates_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.break_templates
-    ADD CONSTRAINT break_templates_pkey PRIMARY KEY (id);
-
-
---
 -- Name: cache_locks cache_locks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1932,6 +2422,78 @@ ALTER TABLE ONLY public.cache_locks
 
 ALTER TABLE ONLY public.cache
     ADD CONSTRAINT cache_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: categories categories_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.categories
+    ADD CONSTRAINT categories_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: categories categories_slug_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.categories
+    ADD CONSTRAINT categories_slug_unique UNIQUE (slug);
+
+
+--
+-- Name: categorizables categorizables_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.categorizables
+    ADD CONSTRAINT categorizables_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: categorizables categorizables_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.categorizables
+    ADD CONSTRAINT categorizables_unique UNIQUE (category_id, categorizable_type, categorizable_id);
+
+
+--
+-- Name: comments comments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comments
+    ADD CONSTRAINT comments_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: coverage_requirements coverage_requirements_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.coverage_requirements
+    ADD CONSTRAINT coverage_requirements_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: coverage_requirements coverage_requirements_team_id_date_slot_index_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.coverage_requirements
+    ADD CONSTRAINT coverage_requirements_team_id_date_slot_index_unique UNIQUE (team_id, date, slot_index);
+
+
+--
+-- Name: coverage_snapshots coverage_snapshots_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.coverage_snapshots
+    ADD CONSTRAINT coverage_snapshots_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: coverage_snapshots coverage_snapshots_team_id_date_slot_index_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.coverage_snapshots
+    ADD CONSTRAINT coverage_snapshots_team_id_date_slot_index_unique UNIQUE (team_id, date, slot_index);
 
 
 --
@@ -2015,14 +2577,6 @@ ALTER TABLE ONLY public.districts
 
 
 --
--- Name: employee_break_overrides employee_break_overrides_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.employee_break_overrides
-    ADD CONSTRAINT employee_break_overrides_pkey PRIMARY KEY (id);
-
-
---
 -- Name: employee_dependents employee_dependents_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2044,6 +2598,14 @@ ALTER TABLE ONLY public.employee_disabilities
 
 ALTER TABLE ONLY public.employee_diseases
     ADD CONSTRAINT employee_diseases_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: employee_import_batches employee_import_batches_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.employee_import_batches
+    ADD CONSTRAINT employee_import_batches_pkey PRIMARY KEY (id);
 
 
 --
@@ -2215,6 +2777,14 @@ ALTER TABLE ONLY public.media
 
 
 --
+-- Name: mentions mentions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mentions
+    ADD CONSTRAINT mentions_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: migrations migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2252,6 +2822,14 @@ ALTER TABLE ONLY public.news
 
 ALTER TABLE ONLY public.news
     ADD CONSTRAINT news_slug_unique UNIQUE (slug);
+
+
+--
+-- Name: notifications notifications_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.notifications
+    ADD CONSTRAINT notifications_pkey PRIMARY KEY (id);
 
 
 --
@@ -2351,6 +2929,22 @@ ALTER TABLE ONLY public.provinces
 
 
 --
+-- Name: reactions reactions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.reactions
+    ADD CONSTRAINT reactions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: reactions reactions_shoutout_id_user_id_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.reactions
+    ADD CONSTRAINT reactions_shoutout_id_user_id_unique UNIQUE (shoutout_id, user_id);
+
+
+--
 -- Name: role_has_permissions role_has_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2399,6 +2993,14 @@ ALTER TABLE ONLY public.sessions
 
 
 --
+-- Name: shift_activities shift_activities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.shift_activities
+    ADD CONSTRAINT shift_activities_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: shift_swap_approvals shift_swap_approvals_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2415,11 +3017,59 @@ ALTER TABLE ONLY public.shift_swap_requests
 
 
 --
+-- Name: shifts shifts_employee_id_date_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.shifts
+    ADD CONSTRAINT shifts_employee_id_date_unique UNIQUE (employee_id, date);
+
+
+--
+-- Name: shifts shifts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.shifts
+    ADD CONSTRAINT shifts_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: shoutouts shoutouts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.shoutouts
     ADD CONSTRAINT shoutouts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: taggables taggables_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.taggables
+    ADD CONSTRAINT taggables_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: taggables taggables_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.taggables
+    ADD CONSTRAINT taggables_unique UNIQUE (tag_id, taggable_type, taggable_id);
+
+
+--
+-- Name: tags tags_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tags
+    ADD CONSTRAINT tags_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tags tags_slug_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tags
+    ADD CONSTRAINT tags_slug_unique UNIQUE (slug);
 
 
 --
@@ -2511,6 +3161,14 @@ ALTER TABLE ONLY public.weekly_schedules
 
 
 --
+-- Name: weekly_schedules weekly_schedules_no_overlap; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.weekly_schedules
+    ADD CONSTRAINT weekly_schedules_no_overlap EXCLUDE USING gist (daterange(start_date, end_date, '[]'::text) WITH &&);
+
+
+--
 -- Name: weekly_schedules weekly_schedules_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2540,6 +3198,90 @@ CREATE INDEX cache_locks_expiration_index ON public.cache_locks USING btree (exp
 
 
 --
+-- Name: categories_is_active_sort_order_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX categories_is_active_sort_order_index ON public.categories USING btree (is_active, sort_order);
+
+
+--
+-- Name: categorizables_categorizable_type_categorizable_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX categorizables_categorizable_type_categorizable_id_index ON public.categorizables USING btree (categorizable_type, categorizable_id);
+
+
+--
+-- Name: categorizables_morph_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX categorizables_morph_index ON public.categorizables USING btree (categorizable_type, categorizable_id);
+
+
+--
+-- Name: comments_news_id_is_active_created_at_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX comments_news_id_is_active_created_at_index ON public.comments USING btree (news_id, is_active, created_at);
+
+
+--
+-- Name: comments_parent_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX comments_parent_id_index ON public.comments USING btree (parent_id);
+
+
+--
+-- Name: comments_user_id_created_at_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX comments_user_id_created_at_index ON public.comments USING btree (user_id, created_at);
+
+
+--
+-- Name: coverage_requirements_team_date_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX coverage_requirements_team_date_idx ON public.coverage_requirements USING btree (team_id, date);
+
+
+--
+-- Name: coverage_snapshots_team_date_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX coverage_snapshots_team_date_idx ON public.coverage_snapshots USING btree (team_id, date);
+
+
+--
+-- Name: employee_import_batches_batch_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX employee_import_batches_batch_id_index ON public.employee_import_batches USING btree (batch_id);
+
+
+--
+-- Name: employee_import_batches_status_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX employee_import_batches_status_index ON public.employee_import_batches USING btree (status);
+
+
+--
+-- Name: employees_team_status_deleted_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX employees_team_status_deleted_idx ON public.employees USING btree (team_id, employment_status_id, deleted_at);
+
+
+--
+-- Name: employment_statuses_parent_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX employment_statuses_parent_idx ON public.employment_statuses USING btree (parent_id);
+
+
+--
 -- Name: jobs_queue_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2561,6 +3303,27 @@ CREATE INDEX media_order_column_index ON public.media USING btree (order_column)
 
 
 --
+-- Name: mentions_mentionable_type_mentionable_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX mentions_mentionable_type_mentionable_id_index ON public.mentions USING btree (mentionable_type, mentionable_id);
+
+
+--
+-- Name: mentions_mentioned_user_id_is_read_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX mentions_mentioned_user_id_is_read_index ON public.mentions USING btree (mentioned_user_id, is_read);
+
+
+--
+-- Name: mentions_mentioner_user_id_created_at_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX mentions_mentioner_user_id_created_at_index ON public.mentions USING btree (mentioner_user_id, created_at);
+
+
+--
 -- Name: model_has_permissions_model_id_model_type_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2572,6 +3335,55 @@ CREATE INDEX model_has_permissions_model_id_model_type_index ON public.model_has
 --
 
 CREATE INDEX model_has_roles_model_id_model_type_index ON public.model_has_roles USING btree (model_id, model_type);
+
+
+--
+-- Name: news_approved_by_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX news_approved_by_index ON public.news USING btree (approved_by);
+
+
+--
+-- Name: news_status_archive_at_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX news_status_archive_at_index ON public.news USING btree (status, archive_at);
+
+
+--
+-- Name: news_status_created_at_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX news_status_created_at_index ON public.news USING btree (status, created_at);
+
+
+--
+-- Name: news_status_scheduled_at_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX news_status_scheduled_at_index ON public.news USING btree (status, scheduled_at);
+
+
+--
+-- Name: notifications_notifiable_type_notifiable_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX notifications_notifiable_type_notifiable_id_index ON public.notifications USING btree (notifiable_type, notifiable_id);
+
+
+--
+-- Name: notifications_type_created_at_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX notifications_type_created_at_index ON public.notifications USING btree (type, created_at);
+
+
+--
+-- Name: notifications_user_id_is_read_created_at_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX notifications_user_id_is_read_created_at_index ON public.notifications USING btree (user_id, is_read, created_at);
 
 
 --
@@ -2589,6 +3401,55 @@ CREATE INDEX personal_access_tokens_tokenable_type_tokenable_id_index ON public.
 
 
 --
+-- Name: polls_approved_by_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX polls_approved_by_index ON public.polls USING btree (approved_by);
+
+
+--
+-- Name: polls_reminder_sent_at_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX polls_reminder_sent_at_index ON public.polls USING btree (reminder_sent_at);
+
+
+--
+-- Name: polls_status_archive_at_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX polls_status_archive_at_index ON public.polls USING btree (status, archive_at);
+
+
+--
+-- Name: polls_status_created_at_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX polls_status_created_at_index ON public.polls USING btree (status, created_at);
+
+
+--
+-- Name: polls_status_scheduled_at_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX polls_status_scheduled_at_index ON public.polls USING btree (status, scheduled_at);
+
+
+--
+-- Name: reactions_shoutout_id_type_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX reactions_shoutout_id_type_index ON public.reactions USING btree (shoutout_id, type);
+
+
+--
+-- Name: reactions_user_id_created_at_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX reactions_user_id_created_at_index ON public.reactions USING btree (user_id, created_at);
+
+
+--
 -- Name: sessions_last_activity_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2600,6 +3461,83 @@ CREATE INDEX sessions_last_activity_index ON public.sessions USING btree (last_a
 --
 
 CREATE INDEX sessions_user_id_index ON public.sessions USING btree (user_id);
+
+
+--
+-- Name: shift_activities_shift_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX shift_activities_shift_idx ON public.shift_activities USING btree (shift_id);
+
+
+--
+-- Name: shift_activities_slot_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX shift_activities_slot_idx ON public.shift_activities USING btree (start_slot, end_slot);
+
+
+--
+-- Name: shifts_date_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX shifts_date_idx ON public.shifts USING btree (date);
+
+
+--
+-- Name: shifts_employee_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX shifts_employee_idx ON public.shifts USING btree (employee_id);
+
+
+--
+-- Name: shoutouts_approved_by_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX shoutouts_approved_by_index ON public.shoutouts USING btree (approved_by);
+
+
+--
+-- Name: shoutouts_status_archive_at_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX shoutouts_status_archive_at_index ON public.shoutouts USING btree (status, archive_at);
+
+
+--
+-- Name: shoutouts_status_created_at_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX shoutouts_status_created_at_index ON public.shoutouts USING btree (status, created_at);
+
+
+--
+-- Name: shoutouts_status_scheduled_at_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX shoutouts_status_scheduled_at_index ON public.shoutouts USING btree (status, scheduled_at);
+
+
+--
+-- Name: taggables_morph_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX taggables_morph_index ON public.taggables USING btree (taggable_type, taggable_id);
+
+
+--
+-- Name: taggables_taggable_type_taggable_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX taggables_taggable_type_taggable_id_index ON public.taggables USING btree (taggable_type, taggable_id);
+
+
+--
+-- Name: tags_is_active_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX tags_is_active_index ON public.tags USING btree (is_active);
 
 
 --
@@ -2627,11 +3565,51 @@ ALTER TABLE ONLY public.audit_logs
 
 
 --
--- Name: break_templates break_templates_schedule_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: categorizables categorizables_category_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.break_templates
-    ADD CONSTRAINT break_templates_schedule_id_foreign FOREIGN KEY (schedule_id) REFERENCES public.schedules(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.categorizables
+    ADD CONSTRAINT categorizables_category_id_foreign FOREIGN KEY (category_id) REFERENCES public.categories(id) ON DELETE CASCADE;
+
+
+--
+-- Name: comments comments_news_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comments
+    ADD CONSTRAINT comments_news_id_foreign FOREIGN KEY (news_id) REFERENCES public.news(id) ON DELETE CASCADE;
+
+
+--
+-- Name: comments comments_parent_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comments
+    ADD CONSTRAINT comments_parent_id_foreign FOREIGN KEY (parent_id) REFERENCES public.comments(id) ON DELETE CASCADE;
+
+
+--
+-- Name: comments comments_user_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comments
+    ADD CONSTRAINT comments_user_id_foreign FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: coverage_requirements coverage_requirements_team_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.coverage_requirements
+    ADD CONSTRAINT coverage_requirements_team_id_foreign FOREIGN KEY (team_id) REFERENCES public.teams(id) ON DELETE CASCADE;
+
+
+--
+-- Name: coverage_snapshots coverage_snapshots_team_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.coverage_snapshots
+    ADD CONSTRAINT coverage_snapshots_team_id_foreign FOREIGN KEY (team_id) REFERENCES public.teams(id) ON DELETE CASCADE;
 
 
 --
@@ -2648,14 +3626,6 @@ ALTER TABLE ONLY public.departments
 
 ALTER TABLE ONLY public.districts
     ADD CONSTRAINT districts_province_id_foreign FOREIGN KEY (province_id) REFERENCES public.provinces(id) ON DELETE CASCADE;
-
-
---
--- Name: employee_break_overrides employee_break_overrides_weekly_schedule_assignment_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.employee_break_overrides
-    ADD CONSTRAINT employee_break_overrides_weekly_schedule_assignment_id_foreign FOREIGN KEY (weekly_schedule_assignment_id) REFERENCES public.weekly_schedule_assignments(id) ON DELETE CASCADE;
 
 
 --
@@ -2696,6 +3666,14 @@ ALTER TABLE ONLY public.employee_diseases
 
 ALTER TABLE ONLY public.employee_diseases
     ADD CONSTRAINT employee_diseases_employee_id_foreign FOREIGN KEY (employee_id) REFERENCES public.employees(id) ON DELETE CASCADE;
+
+
+--
+-- Name: employee_import_batches employee_import_batches_created_by_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.employee_import_batches
+    ADD CONSTRAINT employee_import_batches_created_by_foreign FOREIGN KEY (created_by) REFERENCES public.users(id) ON DELETE SET NULL;
 
 
 --
@@ -2747,6 +3725,14 @@ ALTER TABLE ONLY public.employees
 
 
 --
+-- Name: employees employees_team_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.employees
+    ADD CONSTRAINT employees_team_id_foreign FOREIGN KEY (team_id) REFERENCES public.teams(id) ON DELETE SET NULL;
+
+
+--
 -- Name: employees employees_township_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2760,6 +3746,14 @@ ALTER TABLE ONLY public.employees
 
 ALTER TABLE ONLY public.employees
     ADD CONSTRAINT employees_user_id_foreign FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE SET NULL;
+
+
+--
+-- Name: employment_statuses employment_statuses_parent_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.employment_statuses
+    ADD CONSTRAINT employment_statuses_parent_id_foreign FOREIGN KEY (parent_id) REFERENCES public.employment_statuses(id) ON DELETE SET NULL;
 
 
 --
@@ -2803,6 +3797,22 @@ ALTER TABLE ONLY public.leave_requests
 
 
 --
+-- Name: mentions mentions_mentioned_user_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mentions
+    ADD CONSTRAINT mentions_mentioned_user_id_foreign FOREIGN KEY (mentioned_user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: mentions mentions_mentioner_user_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mentions
+    ADD CONSTRAINT mentions_mentioner_user_id_foreign FOREIGN KEY (mentioner_user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
 -- Name: model_has_permissions model_has_permissions_permission_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2819,11 +3829,27 @@ ALTER TABLE ONLY public.model_has_roles
 
 
 --
+-- Name: news news_approved_by_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.news
+    ADD CONSTRAINT news_approved_by_foreign FOREIGN KEY (approved_by) REFERENCES public.users(id) ON DELETE SET NULL;
+
+
+--
 -- Name: news news_author_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.news
     ADD CONSTRAINT news_author_id_foreign FOREIGN KEY (author_id) REFERENCES public.users(id);
+
+
+--
+-- Name: notifications notifications_user_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.notifications
+    ADD CONSTRAINT notifications_user_id_foreign FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
@@ -2843,11 +3869,35 @@ ALTER TABLE ONLY public.poll_responses
 
 
 --
+-- Name: polls polls_approved_by_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.polls
+    ADD CONSTRAINT polls_approved_by_foreign FOREIGN KEY (approved_by) REFERENCES public.users(id) ON DELETE SET NULL;
+
+
+--
 -- Name: positions positions_department_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.positions
     ADD CONSTRAINT positions_department_id_foreign FOREIGN KEY (department_id) REFERENCES public.departments(id) ON DELETE CASCADE;
+
+
+--
+-- Name: reactions reactions_shoutout_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.reactions
+    ADD CONSTRAINT reactions_shoutout_id_foreign FOREIGN KEY (shoutout_id) REFERENCES public.shoutouts(id) ON DELETE CASCADE;
+
+
+--
+-- Name: reactions reactions_user_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.reactions
+    ADD CONSTRAINT reactions_user_id_foreign FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
@@ -2864,6 +3914,22 @@ ALTER TABLE ONLY public.role_has_permissions
 
 ALTER TABLE ONLY public.role_has_permissions
     ADD CONSTRAINT role_has_permissions_role_id_foreign FOREIGN KEY (role_id) REFERENCES public.roles(id) ON DELETE CASCADE;
+
+
+--
+-- Name: shift_activities shift_activities_created_by_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.shift_activities
+    ADD CONSTRAINT shift_activities_created_by_foreign FOREIGN KEY (created_by) REFERENCES public.users(id) ON DELETE SET NULL;
+
+
+--
+-- Name: shift_activities shift_activities_shift_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.shift_activities
+    ADD CONSTRAINT shift_activities_shift_id_foreign FOREIGN KEY (shift_id) REFERENCES public.shifts(id) ON DELETE CASCADE;
 
 
 --
@@ -2899,11 +3965,51 @@ ALTER TABLE ONLY public.shift_swap_requests
 
 
 --
+-- Name: shifts shifts_created_by_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.shifts
+    ADD CONSTRAINT shifts_created_by_foreign FOREIGN KEY (created_by) REFERENCES public.users(id) ON DELETE SET NULL;
+
+
+--
+-- Name: shifts shifts_employee_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.shifts
+    ADD CONSTRAINT shifts_employee_id_foreign FOREIGN KEY (employee_id) REFERENCES public.employees(id) ON DELETE CASCADE;
+
+
+--
+-- Name: shifts shifts_weekly_schedule_assignment_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.shifts
+    ADD CONSTRAINT shifts_weekly_schedule_assignment_id_foreign FOREIGN KEY (weekly_schedule_assignment_id) REFERENCES public.weekly_schedule_assignments(id) ON DELETE CASCADE;
+
+
+--
+-- Name: shoutouts shoutouts_approved_by_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.shoutouts
+    ADD CONSTRAINT shoutouts_approved_by_foreign FOREIGN KEY (approved_by) REFERENCES public.users(id) ON DELETE SET NULL;
+
+
+--
 -- Name: shoutouts shoutouts_employee_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.shoutouts
     ADD CONSTRAINT shoutouts_employee_id_foreign FOREIGN KEY (employee_id) REFERENCES public.employees(id) ON DELETE CASCADE;
+
+
+--
+-- Name: taggables taggables_tag_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.taggables
+    ADD CONSTRAINT taggables_tag_id_foreign FOREIGN KEY (tag_id) REFERENCES public.tags(id) ON DELETE CASCADE;
 
 
 --
@@ -2966,13 +4072,13 @@ ALTER TABLE ONLY public.weekly_schedule_assignments
 -- PostgreSQL database dump complete
 --
 
-\unrestrict ERSoJR7u7rsoMEK8CbucVtwaKzQTuFVhalp0kwhTpZmXVBR4K0gcdD8tHusfmg8
+\unrestrict KLJflKmnBT9uWdpaVrnxcsRSjmAcXWgtbtJWKCAGljSNTfAjsHE6eEncxyKqBnu
 
 --
 -- PostgreSQL database dump
 --
 
-\restrict wEAahOtlmnBLoseA1SkIbcJ8ZvQam8inJEdg7QJntKwjDrGZhzbuSdFFucQbmlz
+\restrict YQjat96615ra0Vug6rcu5xNsVtaKcBLngXCYBaWV0XefGaa1M4QKq02XzNXomdH
 
 -- Dumped from database version 18.3
 -- Dumped by pg_dump version 18.3
@@ -2997,23 +4103,28 @@ COPY public.migrations (id, migration, batch) FROM stdin;
 1	0001_01_01_000000_create_users_table	1
 2	0001_01_01_000001_create_cache_table	1
 3	0001_01_01_000002_create_jobs_table	1
-4	2025_08_14_170933_add_two_factor_columns_to_users_table	1
-5	2026_03_23_101031_create_organization_foundation_tables	1
-6	2026_03_23_101055_create_location_tables	1
-7	2026_03_23_101106_create_organization_structure_tables	1
-8	2026_03_23_101120_create_employees_table	1
-9	2026_03_23_101132_create_employee_detail_tables	1
-10	2026_03_23_101144_create_scheduling_tables	1
-11	2026_03_23_101156_create_operation_tables	1
-12	2026_03_23_101210_create_approval_and_audit_tables	1
-13	2026_03_23_101259_alter_users_table_add_institutional_columns	1
-14	2026_03_23_135528_create_personal_access_tokens_table	1
-15	2026_03_23_140000_create_permission_tables	1
-16	2026_03_24_100156_add_institutional_columns_to_roles_table	1
-17	2026_03_25_145641_add_is_active_to_directorates_table	1
-18	2026_03_25_151402_add_supervisor_id_to_teams_table	1
-19	2026_03_25_154853_create_media_table	1
-20	2026_03_25_154907_create_communications_tables	1
+4	2026_03_23_101031_create_organization_foundation_tables	1
+5	2026_03_23_101055_create_location_tables	1
+6	2026_03_23_101106_create_organization_structure_tables	1
+7	2026_03_23_101120_create_employees_table	1
+8	2026_03_23_101132_create_employee_detail_tables	1
+9	2026_03_23_101144_create_scheduling_tables	1
+10	2026_03_23_101156_create_operation_tables	1
+11	2026_03_23_101210_create_approval_and_audit_tables	1
+12	2026_03_23_135528_create_personal_access_tokens_table	1
+13	2026_03_23_140000_create_permission_tables	1
+14	2026_03_25_154853_create_media_table	1
+15	2026_03_25_154907_create_communications_tables	1
+16	2026_03_26_093808_create_categories_and_tags_tables	1
+17	2026_03_26_100925_create_comments_table	1
+18	2026_03_26_100936_create_reactions_table	1
+19	2026_03_26_100942_create_mentions_table	1
+20	2026_03_26_100951_create_notifications_table	1
+21	2026_03_30_140100_create_employee_import_batches_table	1
+22	2026_04_01_000001_create_shifts_table	1
+23	2026_04_01_000002_create_shift_activities_table	1
+24	2026_04_01_000003_create_coverage_requirements_table	1
+25	2026_04_01_000004_create_coverage_snapshots_table	1
 \.
 
 
@@ -3021,12 +4132,12 @@ COPY public.migrations (id, migration, batch) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 20, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 25, true);
 
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict wEAahOtlmnBLoseA1SkIbcJ8ZvQam8inJEdg7QJntKwjDrGZhzbuSdFFucQbmlz
+\unrestrict YQjat96615ra0Vug6rcu5xNsVtaKcBLngXCYBaWV0XefGaa1M4QKq02XzNXomdH
 

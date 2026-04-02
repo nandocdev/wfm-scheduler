@@ -4,18 +4,17 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        // 1. Directorates
+    public function up(): void {
+        // 1. Directorates (+ is_active from 2026_03_25_145641)
         Schema::create('directorates', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->text('description')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
 
@@ -35,13 +34,14 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // 4. Employment Statuses
+        // 4. Employment Statuses (+ parent_id from 2026_03_30_090000)
         Schema::create('employment_statuses', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('code', 50)->nullable();
             $table->text('description')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->foreignId('parent_id')->nullable()->constrained('employment_statuses')->onDelete('set null');
             $table->timestamps();
         });
 
@@ -73,9 +73,9 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // 8. Schedules (WFM Core)
+        // 8. Schedules (WFM Core) - changed from ULID to bigint for consistency
         Schema::create('schedules', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->string('name')->unique();
             $table->time('start_time');
             $table->time('end_time');
@@ -90,8 +90,7 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('schedules');
         Schema::dropIfExists('teams');
         Schema::dropIfExists('provinces');

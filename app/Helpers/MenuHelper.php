@@ -106,11 +106,25 @@ class MenuHelper {
                         'pattern' => 'employees*',
                         'permission' => 'employees.view',
                     ],
+
+                ],
+            ],
+            [
+                'label' => __('Programación'),
+                'icon' => 'clock',
+                'permission' => 'schedules.view',
+                'submenu' => [
                     [
-                        'label' => __('Gestión de Equipos'),
-                        'route' => 'employees.teams.manage',
-                        'pattern' => 'employees/teams/manage',
-                        'permission' => 'employees.manageTeamAssignments',
+                        'label' => __('Plantillas de descanso'),
+                        'route' => 'scheduling.break_templates.create',
+                        'pattern' => 'scheduling/break-templates*',
+                        'permission' => 'schedules.manage',
+                    ],
+                    [
+                        'label' => __('Asignación en Grid'),
+                        'route' => 'scheduling.assign_grid',
+                        'pattern' => 'scheduling/assign-grid*',
+                        'permission' => 'schedules.assign',
                     ],
                 ],
             ],

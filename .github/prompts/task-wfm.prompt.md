@@ -120,6 +120,10 @@ Generar SOLO lo necesario, separado por rutas de archivos reales:
 - [ ] Feature Test incluido y funcional.
 - [ ] Tipado estricto en PHP 8.2+.
 - [ ] Sin explicaciones innecesarias ("yapping").
+- [ ] Uso correcto de FluxUI o comentarios de refactorización.
+- [ ] Agregar permisos nuevos generados al seeder de permisos.
+- [ ] Actualizar menuHelper si es necesario para mostrar la nueva funcionalidad.
+- [ ] Actualizar el estado de las Tareas en el ROADMAP.md a "En Progreso" y luego a "Completada" al finalizar.
 
 ---
 

@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class WeeklyScheduleAssignment extends Model
-{
+class WeeklyScheduleAssignment extends Model {
+
     protected $fillable = [
-        'weekly_schedule_id', 'employee_id', 'schedule_id', 
+        'weekly_schedule_id', 'employee_id', 'schedule_id',
         'assignment_date', 'is_manual'
     ];
 
@@ -17,24 +17,19 @@ class WeeklyScheduleAssignment extends Model
         'assignment_date' => 'date',
         'is_manual' => 'boolean',
     ];
-
-    public function weeklySchedule(): BelongsTo
-    {
+    public function weeklySchedule(): BelongsTo {
         return $this->belongsTo(WeeklySchedule::class);
     }
 
-    public function schedule(): BelongsTo
-    {
+    public function schedule(): BelongsTo {
         return $this->belongsTo(Schedule::class);
     }
 
-    public function employee(): BelongsTo
-    {
+    public function employee(): BelongsTo {
         return $this->belongsTo(\App\Modules\EmployeesModule\Models\Employee::class);
     }
 
-    public function overrides(): HasMany
-    {
-        return $this->hasMany(EmployeeBreakOverride::class);
+    public function shifts(): HasMany {
+        return $this->hasMany(Shift::class, 'weekly_schedule_assignment_id');
     }
 }
