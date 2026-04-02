@@ -37,7 +37,8 @@
             </div>
 
             <div>
-                <flux:input wire:model="form.duration_minutes" type="number" min="1" max="480" label="Duración (minutos)" />
+                <flux:input wire:model="form.duration_minutes" type="number" min="1" max="480"
+                    label="Duración (minutos)" />
                 @error('form.duration_minutes') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
             </div>
 

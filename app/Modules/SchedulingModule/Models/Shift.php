@@ -10,8 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Shift extends Model
-{
+class Shift extends Model {
     use HasFactory;
 
     protected $table = 'shifts';
@@ -39,18 +38,15 @@ class Shift extends Model
         'published_at' => 'datetime',
     ];
 
-    public function employee(): BelongsTo
-    {
+    public function employee(): BelongsTo {
         return $this->belongsTo(\App\Modules\EmployeesModule\Models\Employee::class, 'employee_id');
     }
 
-    public function weeklyAssignment(): BelongsTo
-    {
+    public function weeklyAssignment(): BelongsTo {
         return $this->belongsTo(WeeklyScheduleAssignment::class, 'weekly_schedule_assignment_id');
     }
 
-    public function activities(): HasMany
-    {
+    public function activities(): HasMany {
         return $this->hasMany(ShiftActivity::class, 'shift_id');
     }
 }

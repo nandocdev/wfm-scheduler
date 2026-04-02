@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\SchedulingModule\DTOs;
 
-readonly class CreateBreakTemplateDTO
-{
+readonly class CreateBreakTemplateDTO {
     public function __construct(
         public int $schedule_id,
         public string $name,
@@ -17,8 +16,7 @@ readonly class CreateBreakTemplateDTO
     /**
      * @param array<string, mixed> $data
      */
-    public static function fromArray(array $data): self
-    {
+    public static function fromArray(array $data): self {
         return new self(
             schedule_id: (int) $data['schedule_id'],
             name: trim((string) $data['name']),

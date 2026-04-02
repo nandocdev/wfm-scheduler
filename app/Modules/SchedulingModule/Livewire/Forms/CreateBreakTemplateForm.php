@@ -7,8 +7,7 @@ namespace App\Modules\SchedulingModule\Livewire\Forms;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
-class CreateBreakTemplateForm extends Form
-{
+class CreateBreakTemplateForm extends Form {
     #[Validate(['required', 'exists:schedules,id'])]
     public string $schedule_id = '';
 

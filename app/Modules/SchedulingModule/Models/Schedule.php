@@ -8,8 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Schedule extends Model
-{
+class Schedule extends Model {
     use HasFactory;
 
     protected $fillable = [
@@ -23,13 +22,11 @@ class Schedule extends Model
         'is_active' => 'boolean',
     ];
 
-    public function breakTemplates(): HasMany
-    {
+    public function breakTemplates(): HasMany {
         return $this->hasMany(BreakTemplate::class);
     }
 
-    public function assignments(): HasMany
-    {
+    public function assignments(): HasMany {
         return $this->hasMany(WeeklyScheduleAssignment::class);
     }
 }

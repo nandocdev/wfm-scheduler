@@ -11,15 +11,13 @@ use App\Modules\SchedulingModule\Services\ScheduleValidationService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
-final class CreateBreakTemplateAction
-{
+final class CreateBreakTemplateAction {
     public function __construct(
         private readonly ScheduleValidationService $validator,
     ) {
     }
 
-    public function execute(CreateBreakTemplateDTO $dto): BreakTemplate
-    {
+    public function execute(CreateBreakTemplateDTO $dto): BreakTemplate {
         return DB::transaction(function () use ($dto): BreakTemplate {
             $schedule = Schedule::query()->findOrFail($dto->schedule_id);
 
@@ -55,8 +53,7 @@ final class CreateBreakTemplateAction
         });
     }
 
-    private function normalizeTime(string $time): string
-    {
+    private function normalizeTime(string $time): string {
         $parts = explode(':', $time);
 
         if (count($parts) === 2) {

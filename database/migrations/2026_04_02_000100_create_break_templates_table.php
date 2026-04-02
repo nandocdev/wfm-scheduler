@@ -8,8 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up(): void
-    {
+    public function up(): void {
         Schema::create('break_templates', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('schedule_id')->constrained('schedules')->cascadeOnDelete();
@@ -30,8 +29,7 @@ return new class extends Migration {
         }
     }
 
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('break_templates');
     }
 };

@@ -12,18 +12,15 @@ use App\Modules\SchedulingModule\Models\Schedule;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 
-class CreateBreakTemplate extends Component
-{
+class CreateBreakTemplate extends Component {
     public CreateBreakTemplateForm $form;
 
-    public function mount(): void
-    {
+    public function mount(): void {
         Gate::authorize('create', BreakTemplate::class);
         $this->form = new CreateBreakTemplateForm($this, 'form');
     }
 
-    public function save(CreateBreakTemplateAction $action): void
-    {
+    public function save(CreateBreakTemplateAction $action): void {
         $this->form->validate();
 
         $dto = CreateBreakTemplateDTO::fromArray([
@@ -42,8 +39,7 @@ class CreateBreakTemplate extends Component
         $this->redirect(route('scheduling.break_templates.create'), navigate: true);
     }
 
-    public function render(): mixed
-    {
+    public function render(): mixed {
         return view('scheduling::livewire.create-break-template', [
             'schedules' => Schedule::query()
                 ->where('is_active', true)

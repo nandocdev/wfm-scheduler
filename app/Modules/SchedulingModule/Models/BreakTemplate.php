@@ -8,8 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class BreakTemplate extends Model
-{
+class BreakTemplate extends Model {
     use HasFactory;
 
     protected $table = 'break_templates';
@@ -30,8 +29,7 @@ class BreakTemplate extends Model
         'is_active' => 'boolean',
     ];
 
-    public function schedule(): BelongsTo
-    {
+    public function schedule(): BelongsTo {
         return $this->belongsTo(Schedule::class);
     }
 }
