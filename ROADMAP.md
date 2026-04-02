@@ -68,149 +68,132 @@
 
 ## 🔵 FASE 3 / SPRINT 3: Scheduling (Core Técnico) (En Progreso 🟡)
 
-> *Módulo más complejo. Riesgo alto de consultas N+1 y solapamientos.*
-
-### Objetivo general
-
-Diseñar e implementar el módulo de Scheduling que reemplaza el proceso Excel, garantizando validaciones en tiempo real (no solapamientos), auditoría completa y publicación semanal automatizada.
-
-### Entregables clave (Sprint 3)
-
-- [x] UC-SCH-01: Modelos base `Schedule`, `BreakTemplate` y `Shift` con ULIDs y casts.
-- [x] UC-SCH-02: CRUD y Actions atómicos para `BreakTemplate` (Livewire + FluxUI).
-- [x] UC-SCH-03: `ScheduleValidationService` (validaciones: start < end, contigüidad, no-solapamiento por empleado/role/puesto).
-
-### Weekly Planning (Sprint 3 → Sprint 4)
-
-- [ ] UC-WPL-01: Modelos `WeeklySchedule`, `WeeklyScheduleAssignment` (estructura para publicaciones semanales).
-- [x] UC-WPL-01: Modelos `WeeklySchedule`, `WeeklyScheduleAssignment` (estructura para publicaciones semanales).
-- [ ] UC-WPL-02: Constraints y migraciones: índices compuestos y constraints DB (`unique` y `exclude overlaps` donde aplique).
-- [x] UC-WPL-02: Constraints y migraciones: índices compuestos y constraints DB (`unique` y `exclude overlaps` donde aplique).
-- [x] UC-WPL-03: `AssignEmployeeScheduleAction` (bulk inserts, validación por lote con `ScheduleValidationService`).
-- [x] UC-WPL-04: Componente Livewire para asignación en grid con edición masiva y preflight validation.
-- [x] UC-WPL-05: RFC técnico final de Scheduling/Weekly Planning documentado en `docs/technical/10_RFC_WPL-03-04.md`.
-
-### Timeline y hitos (alineado con `docs/features/schedule.md`)
-
-- Semana 9: Implementar modelos base y DDL (UC-SCH-01). Entregable: migraciones + modelos + observers.
-- Semana 10: Implementar CRUD de plantillas y Actions (UC-SCH-02). Entregable: Livewire Forms + tests feature.
-- Semana 11: Publicación & "Mi Horario" (primer MVP de publicación semanal y vista "Mi Horario").
-- Semana 12: Pruebas de performance y validación masiva (solapamientos, bulk assign). Ajustes antes de integrar WeeklyPlanning.
-
-### Criterios de aceptación (DoD)
-
-- Toda inserción/actualización en Scheduling debe ejecutarse dentro de `DB::transaction()`.
-- No permitir lazy-loading en endpoints/Livewire; usar `with()` y tests que verifiquen ausencia de N+1.
-- `ScheduleValidationService` cubre: start < end, solapamiento por empleado y colisión con `BreakTemplate` y `IntradayActivity`.
-- Tests: Feature tests en Pest para Actions, y pruebas unitarias para `ScheduleValidationService` (casos borde: end == existing.start permitido).
-- Migraciones incluyen constraints explícitos de PostgreSQL cuando corresponda (exclusion constraints si procede).
-
-### Riesgos y mitigaciones
-
-- Riesgo: Validación de solapamientos costosa en consultas grandes. Mitigación: indexar por employee_id + date, usar queries por rango y bulk checks en memoria por batch.
-- Riesgo: Publicación semanal puede bloquear operaciones si hay jobs largos. Mitigación: publicar usando Jobs/Batch con feedback (progress) y estrategias de retriable slices.
-
-### Tareas futuras (Sprint 4+)
-
-- [ ] Integrar `LeaveRequest` y `ShiftSwap` con el motor de validación para evitar inconsistencias.
-- [ ] Enlace con CISCO para registrar asistencia real-time y reconciliar incidencias con `AttendanceIncident`.
-- [ ] Dashboard de cumplimiento de horario y reportes automatizados (UC-REP-02).
-
-
----
-
-## 🟣 FASE 4 / SPRINT 4: Workflows (Flujo Operativo Real)
-
-> *Desacoplado en módulos independientes por principios SOLID.*
+> *Planificación, validación y publicación del horario como fuente de verdad operativa.*
 
 ### Objetivo
 
-Construir el conjunto de Workflows operativos que permitan a empleados y coordinadores gestionar permisos (vacaciones, ausencias), intercambios de turno y aprobaciones con trazabilidad y validación automática contra el motor de Scheduling.
+Implementar el ciclo completo de horario (`draft` → `published` → `modified/cancelled`) con validaciones de cobertura por franja de 5 minutos y publicación segura.
 
-### Entregables (Sprint 4)
+### Backlog ejecutable (Sprint 3) — estado verificado (2026-04-02)
 
-- [ ] UC-LRQ-01: Modelos `LeaveRequest` y `LeaveRequestApproval` con estados y trazabilidad (aprobado/pendiente/rechazado).
-- [ ] UC-LRQ-02: `CreateLeaveRequestAction` que valida contra `ScheduleValidationService` y `WeeklySchedule` para asegurar que no se rompa cobertura.
-- [ ] UC-LRQ-03: `ApproveLeaveRequestAction` / `RejectLeaveRequestAction` con comentarios y auditoría (observer/event → AuditLog).
-- [ ] UC-LRQ-04: Bandeja Livewire para Coordinadores con filtros por `team_id`, fecha, estado y acciones en lote.
+> Verificación real:
+> - `runTests` sobre Scheduling: **8 passed / 0 failed**
+> - `php artisan route:list --name=scheduling`: existen `scheduling.assign_grid` y `scheduling.break_templates.create`
 
-- [ ] UC-SWP-01: Modelo `ShiftSwapRequest` con estado y referencias a `WeeklyScheduleAssignment` originales.
-- [ ] UC-SWP-02: `CreateShiftSwapRequestAction` + `RespondToShiftSwapAction` para manejo de aceptación/rechazo por la contraparte.
-- [ ] UC-SWP-03: `ApproveShiftSwapAction` que valida compatibilidad horaria usando `ScheduleValidationService` y chequea cobertura mínima.
+- [x] UC-SCH-01: Completar modelos base `Schedule`, `BreakTemplate`, `Shift` y estados operativos.
+  - [x] `Schedule`, `BreakTemplate` y `Shift` existen y están alineados con la estrategia actual `bigint`.
+  - [x] Estados operativos de `Shift` disponibles mediante `ShiftStatus` (`draft`, `published`, `modified`, `cancelled`).
+- [ ] UC-SCH-02: Cerrar CRUD + Actions atómicas para plantillas y asignaciones iniciales.
+  - [x] Asignaciones iniciales implementadas con `AssignEmployeeScheduleAction`.
+  - [x] `CreateBreakTemplateAction`, `CreateBreakTemplateDTO` y componente Livewire `CreateBreakTemplate` ya están implementados.
+- [x] UC-SCH-03: `ScheduleValidationService` (solapamientos, contigüidad y reglas base).
+- [x] UC-WPL-01: `WeeklySchedule` y `WeeklyScheduleAssignment`.
+- [x] UC-WPL-02: Constraints e índices para planning semanal (`unique`, `exclude overlaps` en PG).
+- [x] UC-WPL-03: `AssignEmployeeScheduleAction` (bulk assign con validación).
+- [ ] UC-WPL-04: Integración final de la UI Livewire de asignación masiva.
+  - [x] `AssignGrid` y `preflight` existen.
+  - [ ] Falta la ruta real `scheduling.weekly_schedules.show` para cerrar el flujo post-aplicación.
+- [x] UC-WPL-05: RFC técnico final en `docs/technical/10_RFC_WPL-03-04.md`.
 
-### Timeline y criterios de aceptación
+### Nuevas funcionalidades a ejecutar
 
-- Semana 13: Modelos y migraciones (LRQ, SWP) con constraints y tests unitarios.
-- Semana 14: Implementación Actions y reglas de negocio (validaciones contra solapamientos, cobertura mínima).
-- Semana 15: Livewire UI para coordinadores y usuarios (solicitudes, respuesta, historial).
-- Semana 16: Integración con Jobs/Notifications y pruebas end-to-end.
+- [ ] UC-SCH-04: `PublishWeeklyScheduleAction` con validación de cobertura mínima por `team/date/slot` y bloqueo por déficit.
+- [ ] UC-SCH-05: Detalle de franjas deficitarias en respuesta de publicación (`slot_index`, hora, `assigned_count`, `required_min`).
+- [ ] UC-SCH-06: Reglas de actividades por turno (`ShiftActivity`): no solapamiento entre actividades ni con break/lunch.
+- [ ] UC-SCH-07: `GetMyScheduleAction` + vista "Mi Horario" en tiempo real (agente).
+- [ ] UC-SCH-08: Notificación de horario publicado (email + push + in-app).
+- [ ] UC-SCH-09: Feature tests de publicación exitosa y bloqueo por déficit.
 
-Aceptación (DoD):
+### DoD de la fase
 
-- Todas las solicitudes pasan por `FormRequest` y Policies; los Actions se ejecutan dentro de `DB::transaction()`.
-- Validaciones automáticas contra solapamientos a través de `ScheduleValidationService`.
-- Auditoría completa: quien solicitó, quien aprobó, motivo y timestamps en `AuditLog`.
-- Tests: Feature tests para flujo completo (crear → responder → aprobar/rechazar) y tests unitarios para Actions.
+- Publicación siempre en `DB::transaction()` y sin N+1 (`with()` obligatorio).
+- Cobertura validada por slots `0..287` (5 minutos).
+- Respuesta funcional con detalle accionable para coordinador.
+- Tests unitarios + feature para validaciones de cobertura y actividades.
 
-### Riesgos y mitigaciones
+---
 
-- Riesgo: Gran volumen de solicitudes concurrentes que bloquean la publicación semanal. Mitigación: procesar aprobaciones en Jobs en background y aplicar locks por `weekly_schedule_id` para evitar race conditions.
-- Riesgo: Usuarios forzando cambios que violan cobertura. Mitigación: bloquear aprobaciones si coverage < threshold y requerir escalado manual.
+## 🟣 FASE 4 / SPRINT 4: Workflows (Permisos y Swaps)
+
+> *Flujos operativos de solicitud/respuesta/aprobación con trazabilidad total.*
+
+### Objetivo
+
+Implementar permisos trimestrales y swaps (día/período/intraday) con reglas de cobertura y control de estados.
+
+### Backlog ejecutable (Sprint 4)
+
+- [ ] UC-LRQ-01: Ajustar `LeaveRequest` para incluir regla de permiso trimestral (`8h/trimestre`, no acumulable).
+- [ ] UC-LRQ-02: `GetQuarterlyPermissionBalanceAction` por agente/trimestre.
+- [ ] UC-LRQ-03: `CreateLeaveRequestAction` validando saldo trimestral + cobertura.
+- [ ] UC-LRQ-04: `Approve/RejectLeaveRequestAction` con auditoría y comentario obligatorio.
+- [ ] UC-LRQ-05: Bandeja Livewire para coordinador (filtros por equipo, estado, rango de fechas, acciones en lote).
+
+- [ ] UC-SWP-01: Modelo/flujo `ShiftSwapRequest` con estados: `PENDING`, `ACCEPTED`, `COORDINATOR_REVIEW`, `APPROVED`, `REJECTED`, `CANCELLED`.
+- [ ] UC-SWP-02: `CreateShiftSwapRequestAction` (`SINGLE_DAY` y `PERIOD`) con validación de compatibilidad.
+- [ ] UC-SWP-03: `RespondToShiftSwapAction` (usuario objetivo acepta/rechaza).
+- [ ] UC-SWP-04: `ApproveShiftSwapAction` con validación de cobertura y actualización automática de ambos horarios.
+- [ ] UC-SWP-05: `ForceApproveSwapAction` (solo Administrador/Supervisor) con nota obligatoria.
+- [ ] UC-SWP-06: Cancelación automática de swaps `PERIOD` si aparece excepción intermedia.
+- [ ] UC-SWP-07: `Swap intraday` con expiración automática de respuesta en 15 minutos.
+
+### DoD de la fase
+
+- Todos los Actions transaccionales y protegidos por Policy.
+- Trazabilidad completa en `AuditLog` (solicita/responde/aprueba/rechaza/fuerza).
+- Reglas de cobertura aplicadas en aprobación de permisos y swaps.
+- Feature tests end-to-end de permisos y swaps.
 
 ---
 
 ## 🟠 FASE 5 / SPRINT 5: Operations (Intradía e Incidencias)
 
-> *Control en tiempo real del piso de operaciones.*
+> *Operación en tiempo real: excepciones, justificaciones y alertamiento.*
 
 ### Objetivo
 
-Implementar las capacidades de operación en tiempo real: planificación intradía, actividades puntuales, registro y reconciliación de incidencias de asistencia (tardanzas, ausencias) integradas con el motor de Scheduling y con fuentes externas (CISCO).
+Registrar y reconciliar eventos intradía (tardanza, ausencia, cita médica, permiso no planificado) actualizando el horario en tiempo real.
 
-### Entregables (Sprint 5)
+### Backlog ejecutable (Sprint 5)
 
-- [ ] UC-INP-01: Modelos `IntradayActivity` y `IntradayActivityAssignment` que permitan actividades temporales sin romper el turno principal.
-- [ ] UC-INP-02: `AssignIntradayActivityAction` con validaciones de capacidad y bloqueo de conflictos con `ScheduleValidationService`.
-- [ ] UC-INP-03: UI FluxUI (MyDay) con timeline y posibilidad de reasignar actividades intra-día.
+- [ ] UC-INP-01: `AssignIntradayActivityAction` para actividades operativas (`MEETING`, `TRAINING`, `PROJECT`, etc.) sin solapamiento.
+- [ ] UC-INP-02: Timeline "Mi Día" (Livewire + FluxUI) con vista por slot.
+- [ ] UC-INP-03: Reasignación intradía con revalidación de cobertura en caliente.
 
-- [ ] UC-ATT-01: Modelos `IncidentType` y `AttendanceIncident` con integración de fuentes (CISCO events).
-- [ ] UC-ATT-02: `RecordAttendanceIncidentAction` que crea incidentes, notifica al empleado y sugiere acciones (justificar, solicitar permiso).
-- [ ] UC-ATT-03: Componentes UI para gestionar incidencias y reconciliación automática con `LeaveRequest` y `WeeklySchedule`.
+- [ ] UC-ATT-01: `RecordShiftExceptionAction` para `TARDINESS`, `ABSENCE`, `MEDICAL_APPOINTMENT`, `QUARTERLY_PERMISSION`, `OTHER`.
+- [ ] UC-ATT-02: `JustifyShiftExceptionAction` con ventana configurable (24-48h).
+- [ ] UC-ATT-03: Job de auto-marcado de incidencias injustificadas al vencer la ventana.
+- [ ] UC-ATT-04: Alerta a supervisor cuando un agente supera `N` incidencias injustificadas en el mes.
+- [ ] UC-ATT-05: Actualización en tiempo real del horario/estado del agente tras registrar excepción.
 
-### Timeline y criterios de aceptación
+### DoD de la fase
 
-- Semana 17: Modelos y APIs para Intraday + Attendance; migraciones y tests unitarios.
-- Semana 18: Implementar MyDay timeline (Livewire) y asignación de actividades.
-- Semana 19: Integración con CISCO (punto de partida: ingest de eventos) y pruebas de reconciliación.
-- Semana 20: Robustez y performance (pruebas de carga para ingest masivo de eventos y conciliación).
-
-Aceptación (DoD):
-
-- Integración con CISCO debe ser desacoplada (Jobs/Queue) y logueada en `AuditLog`.
-- Incidencias creadas por fuentes externas deben poder mapearse automáticamente a `LeaveRequest` o generar alertas para intervención manual.
-- No lazy-loading en endpoints que repueblen UI; usar `with()` y paginación eficiente.
-- Tests: cobertura de integración (ingest → reconciliación → notificaciones) y pruebas de performance.
-
-### Riesgos y mitigaciones
-
-- Riesgo: Volumen alto de eventos CISCO que generan spikes. Mitigación: ingest por batches y backpressure en queues; escalar workers.
-- Riesgo: Desajuste entre eventos y asignaciones semanales. Mitigación: implementar reconciliación heurística y fallback manual con trazabilidad.
-
-### Dependencias críticas
-
-- `ScheduleValidationService` — usado por Workflows, WeeklyPlanning e Intraday.
-- Jobs/Queue — para ingest de eventos, publicación y reconciliación.
-- Observers/Events — para mantener `AuditLog` y cache coherente.
-
+- Eventos intradía visibles en tiempo real para coordinador y agente.
+- Justificación con SLA configurable y fallback automático.
+- Alertas operativas disparadas por reglas mensuales.
+- Pruebas de integración para flujo registrar → justificar → alertar.
 
 ---
 
 ## 📊 FASE 6 / SPRINT 6: Reporting & Analytics
 
-### Módulo: Reports & Dashboard
-- [ ] UC-REP-01: `AttendanceReportService` y exportación a Excel/CSV.
-- [ ] UC-REP-02: `ScheduleComplianceReportService` (Adherencia al horario).
-- [ ] UC-DBR-01: Dashboard Livewire con KPIs (Ausentismo, Cobertura) integrando Recharts/Chart.js.
+> *Explotación operativa: cobertura, cumplimiento y salud del proceso.*
+
+### Backlog ejecutable (Sprint 6)
+
+- [ ] UC-REP-01: `CoverageReportService` por equipo/día/franja con exportación CSV/Excel.
+- [ ] UC-REP-02: `ScheduleComplianceReportService` (adherencia plan vs ejecutado).
+- [ ] UC-REP-03: `QuarterlyPermissionBalanceReportService` (consumo y saldos por trimestre).
+- [ ] UC-REP-04: `SwapLifecycleReportService` (tiempos de respuesta, aprobaciones/rechazos/expiraciones).
+- [ ] UC-REP-05: `UnjustifiedIncidentsReportService` (acumulado mensual por agente/equipo).
+- [ ] UC-DBR-01: Dashboard Livewire con KPIs: cobertura, déficit por franja, ausentismo, swaps, permisos trimestrales.
+- [ ] UC-DBR-02: Widget de alertas tempranas (`cobertura en riesgo`, `permiso ≥80% consumido`, `SLA swaps intraday`).
+
+### DoD de la fase
+
+- Consultas optimizadas (`with()`, índices compuestos, sin N+1).
+- Exportables funcionales y filtros por rol/equipo/fecha.
+- Métricas clave disponibles para Supervisor y Administración.
 
 ---
 
